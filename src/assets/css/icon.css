@@ -1,0 +1,244 @@
+
+.ico {
+    width: 16px;
+    height: 16px;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: rgba(0,0,0,0) url(../images/icons/sprite.svg);
+    display: block;
+}
+
+.ico--imagepdf, .ico--jpgpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -180px;
+}
+
+.ico--merge {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -5px;
+}
+
+.ico--compress {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -130px;
+}
+
+.ico--remove {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -55px;
+}
+
+.ico--extract {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -80px;
+}
+
+.ico--organize {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -105px;
+}
+
+.ico--scan {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -680px;
+}
+
+.ico--repair {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -155px;
+}
+
+.ico--pdfocr {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -705px;
+}
+
+.ico--wordpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -205px;
+}
+
+.ico--powerpointpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -230px;
+}
+
+.ico--excelpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -255px;
+}
+
+.ico--htmlpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -530px;
+}
+
+.ico--pdfjpg {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -280px;
+}.ico--pdfword {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -305px;
+}
+
+.ico--pdfpowerpoint {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -330px;
+}
+
+.ico--pdfexcel {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -355px;
+}
+
+.ico--pdfa {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -505px;
+}
+
+.ico--rotate {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -380px;
+}
+
+.ico--pagenumber {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -405px;
+}
+
+.ico--watermark {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -430px;
+}
+
+.ico--pdfcrop {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -830px;
+}
+
+.ico--editpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -630px;
+}
+
+.ico--unlock {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -455px;
+}
+
+.ico--protect {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -480px;
+}
+
+.ico--sign {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -555px;
+}
+
+.ico--redact {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -755px;
+}
+
+.ico--pdfcompare {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -730px;
+}
+
+.ico--jpgpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -180px;
+}
+
+.ico--wordpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -205px;
+}
+
+.ico--powerpointpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -230px;
+}
+
+.ico--excelpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -255px;
+}
+
+.ico--htmlpdf {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -530px;
+}
+
+.ico--pdfjpg {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -280px;
+}
+
+.ico--pdfword {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -305px;
+}
+
+.ico--pdfpowerpoint {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -330px;
+}
+
+.ico--pdfexcel {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -355px;
+}
+
+.ico--pdfa {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -505px;
+}
+
+.ico--split {
+    width: 20px;
+    height: 20px;
+    background-position: -5px -30px;
+}
