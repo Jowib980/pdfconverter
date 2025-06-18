@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../partials/Header.js';
-import { FaGoogleDrive, FaArrowCircleRight, FaLaptop } from 'react-icons/fa';
+import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload } from 'react-icons/fa';
+import Loader from '../../Loader.js';
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
+import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 function WordtoPdf({ files = [] }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [conversionStatus, setConversionStatus] = useState([]);
+  const [isConverting, setIsConverting] = useState(false);
+  const [conversionDone, setConversionDone] = useState(false);
+  const [convertedUrls, setConvertedUrls] = useState([]);
+  const token = uuidv4();
+  const navigate = useNavigate();
 
-  // Initialize with files from props
+
   useEffect(() => {
     if (files.length) {
       setSelectedFiles(files);
@@ -15,98 +26,169 @@ function WordtoPdf({ files = [] }) {
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
     setSelectedFiles((prev) => [...prev, ...newFiles]);
+    setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
   };
+
+  const Convert = async () => {
+    if (!selectedFiles.length) {
+      alert("Please add at least one .doc/.docx file.");
+      return;
+    }
+
+    setIsConverting(true);
+    setConversionDone(false);
+
+    const updatedStatus = [...conversionStatus];
+    const pdfUrls = [];
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+
+      updatedStatus[i] = "Converting...";
+      setConversionStatus([...updatedStatus]);
+
+      const formData = new FormData();
+      formData.append("File", file);
+      formData.append("StoreFile", "true");
+
+      try {
+        const response = await fetch(`${process.env.REACT_APP_CONVERT_API}docx/to/pdf`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${process.env.REACT_APP_CONVERT_API_TOKEN}`,
+          },
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.Files && result.Files[0]?.Url) {
+          updatedStatus[i] = "✅ Done";
+          pdfUrls.push(result.Files[0].Url);
+        } else {
+          updatedStatus[i] = "❌ Failed";
+        }
+
+      } catch (error) {
+        console.error("Conversion error:", error);
+        updatedStatus[i] = "❌ Error";
+      }
+
+      setConversionStatus([...updatedStatus]);
+    }
+
+		setConvertedUrls(pdfUrls);
+    setIsConverting(false);
+    setConversionDone(true);
+
+		localStorage.setItem(token, JSON.stringify(pdfUrls));
+		navigate(`/download/${token}`);
+  };
+
+  const handleDownload = async () => {
+	  const zip = new JSZip();
+
+	  for (let i = 0; i < convertedUrls.length; i++) {
+	    const url = convertedUrls[i];
+	    const response = await fetch(url);
+	    const blob = await response.blob();
+	    zip.file(`converted_file_${i + 1}.pdf`, blob);
+	  }
+
+	  const content = await zip.generateAsync({ type: "blob" });
+	  saveAs(content, "converted_pdfs.zip");
+	};
 
   return (
     <div className="content">
       <Header />
-      <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
-        {/* Left Section - File Preview */}
-        <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
-          {/* Floating Add Button */}
-          <div className="sidetool absolute -top-4 -right-4 z-20">
-            <div className="relative">
-              <label className="relative cursor-pointer">
-                <div className="bg-red-500 text-white rounded-full w-10 h-10 text-xl font-semibold shadow-lg hover:bg-red-600 flex items-center justify-center">
-                  +
+
+      {/* Selected Files Section */}
+      {!isConverting && !conversionDone && (
+        <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+          <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
+            <div className="sidetool absolute -top-4 -right-4 z-20">
+              <div className="relative">
+                <label className="relative cursor-pointer">
+                  <div className="bg-red-500 text-white rounded-full w-10 h-10 text-xl font-semibold shadow-lg hover:bg-red-600 flex items-center justify-center">
+                    +
+                  </div>
+                  <input
+                    type="file"
+                    accept=".doc,.docx"
+                    multiple
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
+                <span className="file-count absolute -top-2 -left-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {selectedFiles.length}
+                </span>
+              </div>
+            </div>
+
+            <div className="upload-extra absolute mt-2 right-0 hidden group-hover:flex flex-col gap-2 z-10">
+              <div className="relative">
+                <label className="relative cursor-pointer">
+                  <div className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition" title="Upload from device">
+                    <FaLaptop />
+                  </div>
+                  <input
+                    type="file"
+                    accept=".doc,.docx"
+                    multiple
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              </div>
+              <button className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition" title="Upload from Google Drive">
+                <FaGoogleDrive />
+              </button>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-4 mt-6">
+              {selectedFiles.map((file, index) => (
+                <div key={index} className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center w-40">
+                  <div className="file_canvas">
+                    <canvas width="127" height="180" className="docx docx word docx"></canvas>
+                  </div>
+                  <p className="text-xs text-gray-700 mt-2 text-center break-words">{file.name}</p>
+                  <p className="text-xs text-blue-500 mt-1">{conversionStatus[index]}</p>
                 </div>
-                <input
-                  type="file"
-                  accept=".doc,.docx"
-                  multiple
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
-
-              {/* File count */}
-              <span className="file-count absolute -top-2 -left-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                {selectedFiles.length}
-              </span>
+              ))}
             </div>
           </div>
 
-          {/* Upload Dropdown */}
-          <div className="upload-extra absolute mt-2 right-0 hidden group-hover:flex flex-col gap-2 z-10">
-            <div className="relative">
-              <label className="relative cursor-pointer">
-              <div
-                className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
-                title="Upload from device"
-              >
-                <FaLaptop />
-              </div>
-              <input
-                  type="file"
-                  accept=".doc,.docx"
-                  multiple
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </label>
+          <div className="w-[350px] bg-white border-l border-gray-200 flex flex-col justify-between">
+            <div className="p-6 text-center border-b">
+              <h1 className="tool-heading text-xl font-semibold">Word to PDF</h1>
             </div>
-            <button
-              className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
-              title="Upload from Google Drive"
-            >
-              <FaGoogleDrive />
-            </button>
-          </div>
-
-          {/* File Previews */}
-          <div className="flex flex-wrap justify-center gap-4 mt-6">
-            {selectedFiles.map((file, index) => (
-              <div
-                key={index}
-                className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center w-40"
+            <div className="p-6">
+              <button
+                className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
+                onClick={Convert}
               >
-                
-	            <div className="file_canvas">
-		             <canvas id="cover-o_1iu0oi0uc5bpp87siv14l91uf2b" width="127" height="180" class="docx docx  word docx"></canvas>
-	            </div>
-                <p className="text-xs text-gray-700 mt-2 text-center break-words">
-                  {file.name}
-                </p>
-              </div>
-            ))}
+                <span className="convert-button">Convert to PDF</span>
+                <span className="arrow-icon ml-2">
+                  <FaArrowCircleRight />
+                </span>
+              </button>
+            </div>
           </div>
         </div>
+      )}
 
-        {/* Right Section - Convert Panel */}
-        <div className="w-[350px] bg-white border-l border-gray-200 flex flex-col justify-between">
-          <div className="p-6 text-center border-b">
-            <h1 className="tool-heading text-xl font-semibold">Word to PDF</h1>
-          </div>
-          <div className="p-6">
-            <button className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300">
-              <span className="convert-button">Convert to PDF</span>
-              <span className="arrow-icon ml-2">
-                <FaArrowCircleRight />
-              </span>
-            </button>
-          </div>
+      {/* Conversion Loader Section */}
+      {isConverting && (
+        <div className="conversion-section min-h-screen bg-gray-50 mt-4 py-20 flex flex-col items-center justify-center">
+        <h1 className="section-title">Word file convert to PDF</h1>
+          <h2 className="text-2xl font-semibold mb-4">Converting your Word files...</h2>
+          <Loader />
         </div>
-      </div>
+      )}
+
+      
     </div>
   );
 }

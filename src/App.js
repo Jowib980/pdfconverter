@@ -5,6 +5,7 @@ import Home from "./components/pages/Home";
 import WordConverter from "./components/tools/WordtoPDF/WordConverter";
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
+import DownloadPdf from './components/tools/WordtoPDF/DownloadPdf';
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
 
           <Route path="/" element={<Home />} />
           <Route path="/word-to-pdf" element={<WordConverter />} />
+          <Route path="/download/:token" element={<DownloadPdf />} />
+
         </Routes>
       </div>
     </Router>

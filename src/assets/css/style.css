@@ -273,7 +273,7 @@ a#goRegister {
 }
 
 .tool-div:hover {
-    background-color: #f5f5fa;
+    background-color: #f8f8fc;
 }
 
 h1.tool-heading.text-xl.font-semibold {
@@ -319,4 +319,44 @@ canvas.docx {
     align-items: center;
     top: 146px;
     margin-top: 12px;
+}
+
+.section-title {
+    font-weight: 600;
+    font-size: 35px;
+    line-height: 52px;
+    color: #33333b;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 4px;
+    max-width: 1100px;
+}
+
+.section-subtitle {
+    font-weight: 600;
+    font-size: 35px;
+    line-height: 52px;
+    color: #33333b;
+    text-align: center;
+    margin-bottom: 4px;
+    max-width: 1100px;
+}
+
+span.back-button {
+    border: 1px solid #47474F;
+    border-radius: 50%;
+    padding: 8px;
+    margin-right: 10px;
+    background-color: #47474F;
+    color: white;
+}
+
+span.back-button:hover {
+    border: 1px solid #e5322d;
+    border-radius: 50%;
+    padding: 8px;
+    margin-right: 10px;
+    background-color: #e5322d;
+    color: white;
 }

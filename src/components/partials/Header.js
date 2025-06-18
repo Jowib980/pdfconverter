@@ -59,7 +59,7 @@ function Header() {
           title: "Convert to PDF",
           tools: [
             { title: "JPG to PDF", url: "/jpg_to_pdf", icon: "ico--jpgpdf" },
-            { title: "Word to PDF", url: "/word_to_pdf", icon: "ico--wordpdf" },
+            { title: "Word to PDF", url: "/word-to-pdf", icon: "ico--wordpdf" },
             { title: "PowerPoint to PDF", url: "/powerpoint_to_pdf", icon: "ico--powerpointpdf" },
             { title: "Excel to PDF", url: "/excel_to_pdf", icon: "ico--excelpdf" },
             { title: "HTML to PDF", url: "/html-to-pdf", icon: "ico--htmlpdf" },
