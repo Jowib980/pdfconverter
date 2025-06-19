@@ -360,3 +360,53 @@ span.back-button:hover {
     background-color: #e5322d;
     color: white;
 }
+
+canvas.pdf {
+    background-image: url(../images/pdf_logo.svg);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 12%), 0 4px 18px 0 rgb(0 0 0 / 14%);
+}
+
+canvas.ppt {
+    background-image: url(../images/pptx.svg);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 12%), 0 4px 18px 0 rgb(0 0 0 / 14%);
+}
+
+canvas.excel {
+    background-image: url(../images/xlsx.svg);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 12%), 0 4px 18px 0 rgb(0 0 0 / 14%);
+}
+
+
+canvas.html {
+    /*background-image: url(../images/xlsx.svg);*/
+    background-repeat: no-repeat;
+    background-position: 50%;
+    box-shadow: 0 2px 4px 0 rgb(0 0 0 / 12%), 0 4px 18px 0 rgb(0 0 0 / 14%);
+}
+
+.option__select__item {
+    border-bottom: 1px solid #adadb6;
+    padding: 20px 60px 16px 22px;
+    cursor: pointer;
+    position: relative;
+}
+
+.option__select__item:hover {
+    background: #ebebf4;
+}
+
+.option__select__item__title {
+    font-weight: 400;
+    font-size: 16px;
+    text-transform: uppercase;
+    color: #e5322d;
+    line-height: 22px;
+    display: block;
+    align-items: center;
+}

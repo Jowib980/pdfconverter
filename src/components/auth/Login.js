@@ -1,9 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import loginImg from '../../assets/images/login.png'; // Your right-side illustration
 import { FaFacebook, FaGoogle, FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+  });
+
+const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+
+  const handleLogin = async(e) => {
+    e.preventDefault();
+
+    if (!form.email && !form.password) {
+      alert("Enter email and password");
+      return;
+    }
+
+    try {
+      const response = await fetch(` ${process.env.REACT_APP_BACKEND_API_URL}login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Login successfully!");
+        localStorage.setItem("token", data.access_token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate('/');
+      } else {
+        alert(data.message || "Login failed.");
+        console.error(data.errors);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+    }
+  }
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="grid grid-cols-1 md:grid-cols-12 w-full max-w-6xl bg-white shadow-lg rounded-lg overflow-hidden">
@@ -43,8 +93,10 @@ function Login() {
               </span>
               <input
                 type="text"
-                name="LoginForm[email]"
+                name="email"
                 placeholder="Enter your email"
+                value={form.email} 
+                onChange={handleChange}
                 className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
@@ -55,8 +107,10 @@ function Login() {
               </span>
               <input
                 type="password"
-                name="LoginForm[password]"
+                name="password"
                 placeholder="Password"
+                value={form.password} 
+                onChange={handleChange}
                 className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-500"
               />
             </div>
@@ -75,6 +129,7 @@ function Login() {
             <button
               type="submit"
               className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
+              onClick={handleLogin}
             >
               Log in
             </button>

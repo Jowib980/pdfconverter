@@ -1,7 +1,23 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Header() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if(token) {
+      setIsAuthenticated(true);
+    }
+  }, [token]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    setIsAuthenticated(false);
+    navigate('/login');
+  }
+
   const navItems = [
     { title: "MERGE PDF", url: "/" },
     { title: "SPLIT PDF", url: "/split-pdf" },
@@ -69,7 +85,7 @@ function Header() {
           title: "Convert from PDF",
           tools: [
             { title: "PDF to JPG", url: "/pdf_to_jpg", icon: "ico--pdfjpg" },
-            { title: "PDF to Word", url: "/pdf_to_word", icon: "ico--pdfword" },
+            { title: "PDF to Word", url: "/pdf-to-word", icon: "ico--pdfword" },
             { title: "PDF to PowerPoint", url: "/pdf_to_powerpoint", icon: "ico--pdfpowerpoint" },
             { title: "PDF to Excel", url: "/pdf_to_excel", icon: "ico--pdfexcel" },
             { title: "PDF to PDF/A", url: "/convert-pdf-to-pdfa", icon: "ico--pdfa" },
@@ -163,18 +179,30 @@ function Header() {
 
         {/* Auth Buttons */}
         <div className="flex space-x-2">
-          <Link
-            to="/login"
-            className="text-sm px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50"
-          >
-            Login
-          </Link>
-          <Link
-            to="/signup"
-            className="text-sm px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Sign Up
-          </Link>
+        {isAuthenticated ? (
+           <button
+              onClick={handleLogout}
+              className="text-sm px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="text-sm px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50"
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="text-sm px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
+          
         </div>
       </div>
     </header>

@@ -6,40 +6,37 @@ import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 
 function DownloadPdf() {
-  const { token } = useParams();
   const [urls, setUrls] = useState([]);
+  const { token } = useParams();
+
 
   useEffect(() => {
-    const stored = localStorage.getItem(token);
-    if (stored) {
-      setUrls(JSON.parse(stored));
-    }
-  }, [token]);
+  fetch(`${process.env.REACT_APP_BACKEND_API_URL}fetch-download/${token}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.urls) setUrls(data.urls);
+      else setUrls([]);
+    });
+}, [token]);
 
-  const handleDownload = async () => {
-    if (urls.length === 1) {
-      const response = await fetch(urls[0]);
-      const blob = await response.blob();
-      saveAs(blob, 'converted_file.pdf');
-    } else {
-      const zip = new JSZip();
-      for (let i = 0; i < urls.length; i++) {
-        const res = await fetch(urls[i]);
-        const blob = await res.blob();
-        zip.file(`converted_file_${i + 1}.pdf`, blob);
-      }
-      const content = await zip.generateAsync({ type: "blob" });
-      saveAs(content, "converted_pdfs.zip");
-    }
+
+
+  const handleDownload = () => {
+    const downloadUrl = `${process.env.REACT_APP_BACKEND_API_URL}download-file/${token}`;
+    window.location.href = downloadUrl;
   };
+
+  const Back = () => {
+    window.history.back();
+  }
 
   return (
     <div className="content">
       <Header />
       <div className="download-section min-h-screen flex flex-col items-center justify-center text-center px-4 bg-gray-50 mt-4 py-20">
-        <h2 className="text-2xl font-semibold mb-4">WORD file(s) has been converted to PDF</h2>
+        <h2 className="text-2xl font-semibold mb-4">Your file has been ready to download..</h2>
         <div className="flex items-center ">
-        	<span className="back-button"><a href="/word-to-pdf"><FaArrowLeft /></a></span>
+        	<span className="back-button" onClick={Back}><FaArrowLeft /></span>
 	        {urls.length > 0 ? (
 	        	
 	          <button

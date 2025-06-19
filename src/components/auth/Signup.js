@@ -1,9 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import loginImg from '../../assets/images/login.png'; // Your right-side illustration
 import { FaFacebook, FaGoogle, FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Signup() {
+const navigate = useNavigate();
+const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirm_password: '',
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+
+    if (form.password !== form.confirm_password) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const response = await fetch(` ${process.env.REACT_APP_BACKEND_API_URL}register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          password_confirmation: form.confirm_password
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Registered successfully!");
+        localStorage.setItem("token", data.token);
+        navigate('/');
+      } else {
+        alert(data.message || "Registration failed.");
+        console.error(data.errors);
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="grid grid-cols-1 md:grid-cols-12 w-full max-w-6xl bg-white shadow-lg rounded-lg overflow-hidden">
@@ -43,8 +93,10 @@ function Signup() {
 	              </span>
 	              <input
 	                type="text"
-	                name="LoginForm[name]"
+	                name="name"
 	                placeholder="Name"
+                  value={form.name} 
+                  onChange={handleChange}
 	                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-500"
 	              />
 	            </div>
@@ -54,8 +106,9 @@ function Signup() {
 	              </span>
 	              <input
 	                type="text"
-	                name="LoginForm[email]"
+	                name="email"
 	                placeholder="Email"
+                  value={form.email} onChange={handleChange}
 	                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-500"
 	              />
 	            </div>
@@ -66,15 +119,30 @@ function Signup() {
 	              </span>
 	              <input
 	                type="password"
-	                name="LoginForm[password]"
+	                name="password"
 	                placeholder="Password"
+                  value={form.password} onChange={handleChange}
 	                className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-500"
 	              />
 	            </div>
 
+              <div className="relative">
+                <span className="absolute top-3 left-3 text-gray-400">
+                  <FaLock />
+                </span>
+                <input
+                  type="password"
+                  name="confirm_password"
+                  placeholder="Confirm Password"
+                  value={form.confirm_password} onChange={handleChange}
+                  className="pl-10 w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+                />
+              </div>
+
             <button
               type="submit"
               className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition"
+              onClick={handleSignup}
             >
               Signup
             </button>

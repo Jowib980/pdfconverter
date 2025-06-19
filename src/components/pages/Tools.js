@@ -33,12 +33,50 @@ function Tools() {
 			    //   title: "PDF to Word",
 			    //   description: "Easily convert your PDF files into DOC and DOCX documents.",
 			    //   icon: "ico--pdfword",
+			    //   link: "pdf-to-word",
 			    // },
 			    // {
 			    //   title: "PDF to PowerPoint",
 			    //   description: "Turn your PDF files into editable PPT and PPTX slideshows.",
 			    //   icon: "ico--pdfpowerpoint",
+			    //   link: "pdf-to-ppt",
 			    // },
+			    {
+			      title: "PowerPoint to PDF",
+			      description: "Make PPT and PPTX slideshows easy to view by converting them to PDF.",
+			      icon: "ico--powerpointpdf",
+			      link: "ppt-to-pdf",
+			    },
+			    {
+			      title: "Excel to PDF",
+			      description: "Make EXCEL spreadsheets easy to read by converting them to PDF.",
+			      icon: "ico--excelpdf",
+			      link: "excel-to-pdf",
+			    },
+			    {
+			      title: "HTML to PDF",
+			      description: "Convert webpages in HTML to PDF. Copy and paste the URL of the page you want and convert it to PDF with a click.",
+			      icon: "ico--htmlpdf",
+			      link: "html-to-pdf",
+			    },
+			    {
+			      title: "Merge PDF",
+			      description: "Combine PDFs in the order you want with the easiest PDF merger available.",
+			      icon: "ico--merge",
+			      link: "merge-pdf",
+			    },
+			    {
+			    	title: "Split PDF",
+			    	description: "Separate one page or a whole set for easy conversion into independent PDF files.",
+			    	icon: "ico--split",
+			    	link: "split-pdf",
+			    },
+			     {
+			    	title: "Compress PDF",
+			    	description: "Reduce file size while optimizing for maximal PDF quality.",
+			    	icon: "ico--compress",
+			    	link: "compress-pdf",
+			    },
 			  ].map((tool, index) => (
 			    <a href={tool.link}><div
 			      key={index}
