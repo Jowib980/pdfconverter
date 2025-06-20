@@ -4,6 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const token = localStorage.getItem("token");
+  const userString = localStorage.getItem("user");
+  let user = null;
+  if (userString) {
+    user = JSON.parse(userString);
+  }
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -180,12 +185,15 @@ function Header() {
         {/* Auth Buttons */}
         <div className="flex space-x-2">
         {isAuthenticated ? (
-           <button
-              onClick={handleLogout}
-              className="text-sm px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50"
-            >
-              Logout
-            </button>
+            <>
+              <p className="rounded-lg px-3 py-2 text-slate-700 font-medium">{user ? user.name : 'Guest'}</p>
+              <button
+                onClick={handleLogout}
+                className="text-sm px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50"
+              >
+                Logout
+              </button>
+            </>
           ) : (
             <>
               <Link

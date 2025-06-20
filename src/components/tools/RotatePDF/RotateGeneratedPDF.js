@@ -47,7 +47,7 @@ function RotateGeneratedPDF({ files = [] }) {
     });
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}split-pdf`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}rotate-pdf`, {
         method: "POST",
         body: formData,
       });
@@ -149,8 +149,8 @@ const handleRemoveFile = (indexToRemove) => {
       {/* Conversion Loader Section */}
       {isConverting && (
         <div className="conversion-section min-h-screen bg-gray-50 mt-4 py-20 flex flex-col items-center justify-center">
-        <h1 className="section-title">Split PDF</h1>
-          <h2 className="text-2xl font-semibold mb-4">Spliting PDF file...</h2>
+        <h1 className="section-title">Rotate PDF</h1>
+          <h2 className="text-2xl font-semibold mb-4">Rotating PDF file...</h2>
           <Loader />
         </div>
       )}

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import loginImg from '../../assets/images/login.png'; // Your right-side illustration
 import { FaFacebook, FaGoogle, FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 function Login() {
   const [user, setUser] = useState(null);
@@ -71,12 +73,45 @@ const handleChange = (e) => {
             >
               <FaFacebook className="mr-2" /> Facebook
             </a>
-            <a
-              href="/auth/auth?authclient=google"
-              className="flex items-center justify-center border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-100 transition w-32"
-            >
-              <FaGoogle className="mr-2" /> Google
-            </a>
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                if (credentialResponse.credential) {
+                  const decoded = jwtDecode(credentialResponse.credential);
+                  console.log("Google user info:", decoded);
+
+                  fetch(`${process.env.REACT_APP_BACKEND_API_URL}auth/google-login`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      token: credentialResponse.credential
+                    })
+                  })
+                    .then(res => res.json())
+                    .then(data => {
+                      if (data.token) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        alert('Google Login Successful!');
+                        navigate('/');
+                      } else {
+                        alert('Google login failed. Server did not return a token.');
+                      }
+                    })
+                    .catch(err => {
+                      console.error('Google login error:', err);
+                      alert('An error occurred during login.');
+                    });
+                } else {
+                  alert('No credential returned by Google.');
+                }
+              }}
+              onError={() => {
+                alert('Google login failed.');
+              }}
+              useOneTap
+            />
             <a
               href="/auth/auth?authclient=sso"
               className="flex items-center justify-center border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-100 transition w-32"
