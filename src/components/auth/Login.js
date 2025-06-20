@@ -67,12 +67,12 @@ const handleChange = (e) => {
 
           {/* Social Buttons */}
           <div className="flex space-x-3 w-full max-w-sm mb-6 justify-center">
-            <a
+            {/* <a
               href="/auth/auth?authclient=facebook"
               className="flex items-center justify-center bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-800 transition w-32"
             >
               <FaFacebook className="mr-2" /> Facebook
-            </a>
+            </a> */}
             <GoogleLogin
               onSuccess={(credentialResponse) => {
                 if (credentialResponse.credential) {
@@ -112,12 +112,12 @@ const handleChange = (e) => {
               }}
               useOneTap
             />
-            <a
+            {/* <a
               href="/auth/auth?authclient=sso"
               className="flex items-center justify-center border border-gray-300 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-100 transition w-32"
             >
               <FaUser className="mr-2" /> SSO
-            </a>
+            </a> */}
           </div>
 
           {/* Login Form */}
