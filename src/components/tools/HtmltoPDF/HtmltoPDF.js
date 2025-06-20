@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../partials/Header.js';
-import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload } from 'react-icons/fa';
+import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle } from 'react-icons/fa';
 import Loader from '../../Loader.js';
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -135,7 +135,7 @@ const handleRemoveFile = (indexToRemove) => {
                     onClick={() => handleRemoveFile(index)}
                     title="Remove file"
                   >
-                    ✕
+                    <FaTimesCircle />
                   </button>
                   <div className="file_canvas">
                     <canvas width="127" height="180" className="html"></canvas>

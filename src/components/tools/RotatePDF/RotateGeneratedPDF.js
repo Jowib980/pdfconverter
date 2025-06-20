@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../partials/Header.js';
-import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaCheck, FaTimesCircle } from 'react-icons/fa';
+import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle } from 'react-icons/fa';
 import Loader from '../../Loader.js';
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 
-function CompressedPDF({ files = [] }) {
+function RotateGeneratedPDF({ files = [] }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [conversionStatus, setConversionStatus] = useState([]);
   const [isConverting, setIsConverting] = useState(false);
@@ -30,7 +30,7 @@ function CompressedPDF({ files = [] }) {
 
   const Convert = async () => {
     if (!selectedFiles.length) {
-      alert("Please add at least one .html file.");
+      alert("Please add at least one .pdf file.");
       return;
     }
 
@@ -41,13 +41,13 @@ function CompressedPDF({ files = [] }) {
     setConversionStatus(updatedStatus);
 
     const formData = new FormData();
+
     selectedFiles.forEach((file) => {
       formData.append("pdf_file", file);
     });
 
-
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}compress-pdf`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}split-pdf`, {
         method: "POST",
         body: formData,
       });
@@ -71,11 +71,11 @@ function CompressedPDF({ files = [] }) {
 
   };
 
+
 const handleRemoveFile = (indexToRemove) => {
   setSelectedFiles((prev) => prev.filter((_, i) => i !== indexToRemove));
   setConversionStatus((prev) => prev.filter((_, i) => i !== indexToRemove));
 };
-
 
 
   return (
@@ -106,13 +106,11 @@ const handleRemoveFile = (indexToRemove) => {
               </div>
             </div>
 
+           
             <div className="flex flex-wrap justify-center gap-4 mt-6">
               {selectedFiles.map((file, index) => (
-                <div key={index} 
-                  className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center w-40 relative group"
-                   title={`Size: ${(file.size / 1024).toFixed(2)} KB`}
-                  >
-                  <button
+                <div key={index} className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center w-40 relative group">
+                <button
                     className="absolute top-2 right-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => handleRemoveFile(index)}
                     title="Remove file"
@@ -131,15 +129,18 @@ const handleRemoveFile = (indexToRemove) => {
 
           <div className="w-[350px] bg-white border-l border-gray-200 flex flex-col justify-between">
             <div className="p-6 text-center border-b">
-              <h1 className="tool-heading text-xl font-semibold">Compress PDF</h1>
+              <h1 className="tool-heading text-xl font-semibold">Rotate PDF</h1>
             </div>
-            
+           <div className="p-6">
+            <button>Left</button>
+            <button>Right</button>
+           </div>
             <div className="p-6">
               <button
                 className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
                 onClick={Convert}
               >
-                <span className="convert-button">Compress PDF</span>
+                <span className="convert-button">Rotate PDF</span>
                 <span className="arrow-icon ml-2">
                   <FaArrowCircleRight />
                 </span>
@@ -162,4 +163,4 @@ const handleRemoveFile = (indexToRemove) => {
   );
 }
 
-export default CompressedPDF;
+export default RotateGeneratedPDF;

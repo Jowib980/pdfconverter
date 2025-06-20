@@ -19,7 +19,7 @@ function Header() {
   }
 
   const navItems = [
-    { title: "MERGE PDF", url: "/" },
+    { title: "MERGE PDF", url: "/merge-pdf" },
     { title: "SPLIT PDF", url: "/split-pdf" },
     { title: "COMPRESS PDF", url: "/compress-pdf" },
     {
@@ -94,7 +94,7 @@ function Header() {
         {
           title: "Edit PDF",
           tools: [
-            { title: "Rotate PDF", url: "/rotate_pdf", icon: "ico--rotate" },
+            { title: "Rotate PDF", url: "/rotate-pdf", icon: "ico--rotate" },
             { title: "Add page numbers", url: "/add_pdf_page_number", icon: "ico--pagenumber" },
             { title: "Add watermark", url: "/pdf_add_watermark", icon: "ico--watermark" },
             { title: "Crop PDF", url: "/crop-pdf", icon: "ico--pdfcrop" },

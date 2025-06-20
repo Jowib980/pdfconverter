@@ -71,11 +71,17 @@ function Tools() {
 			    	icon: "ico--split",
 			    	link: "split-pdf",
 			    },
-			     {
+			    {
 			    	title: "Compress PDF",
 			    	description: "Reduce file size while optimizing for maximal PDF quality.",
 			    	icon: "ico--compress",
 			    	link: "compress-pdf",
+			    },
+			    {
+			    	title: "Rotate PDF",
+			    	description: "Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!",
+			    	icon: "ico--rotate",
+			    	link: "rotate-pdf",
 			    },
 			  ].map((tool, index) => (
 			    <a href={tool.link}><div

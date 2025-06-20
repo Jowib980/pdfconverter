@@ -13,6 +13,7 @@ import HtmlFile from "./components/tools/HtmltoPDF/HtmlFile";
 import MergePDF from "./components/tools/MergePDF/MergePDF";
 import SplitPDF from "./components/tools/SplitPDF/SplitPDF";
 import CompressPDF from "./components/tools/CompressPDF/CompressPDF";
+import RotatePDF from "./components/tools/RotatePDF/RotatePDF";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/merge-pdf" element={<MergePDF />} />
           <Route path="/split-pdf" element={<SplitPDF />} />
           <Route path="/compress-pdf" element={<CompressPDF />} />
+          <Route path="/rotate-pdf" element={<RotatePDF />} />
 
           <Route path="/download/:token" element={<DownloadPdf />} />
 
