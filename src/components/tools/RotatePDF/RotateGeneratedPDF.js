@@ -131,10 +131,6 @@ const handleRemoveFile = (indexToRemove) => {
             <div className="p-6 text-center border-b">
               <h1 className="tool-heading text-xl font-semibold">Rotate PDF</h1>
             </div>
-           <div className="p-6">
-            <button>Left</button>
-            <button>Right</button>
-           </div>
             <div className="p-6">
               <button
                 className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
