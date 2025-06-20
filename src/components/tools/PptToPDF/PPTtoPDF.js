@@ -95,7 +95,7 @@ const handleRemoveFile = (indexToRemove) => {
                   </div>
                   <input
                     type="file"
-                    accept=".pdf"
+                    accept=".ppt, .pptx"
                     multiple
                     className="hidden"
                     onChange={handleFileChange}
@@ -115,7 +115,7 @@ const handleRemoveFile = (indexToRemove) => {
                   </div>
                   <input
                     type="file"
-                    accept=".pdf"
+                    accept=".ppt, .pptx"
                     multiple
                     className="hidden"
                     onChange={handleFileChange}
