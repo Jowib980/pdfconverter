@@ -6,6 +6,7 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 function WordtoPdf({ files = [] }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -15,7 +16,10 @@ function WordtoPdf({ files = [] }) {
   const [convertedUrls, setConvertedUrls] = useState([]);
   const token = uuidv4();
   const navigate = useNavigate();
-
+  const userString = localStorage.getItem("user");
+  const user = userString ? JSON.parse(userString) : null;
+  const user_id = user?.id ?? null;
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (files.length) {
@@ -44,7 +48,10 @@ const Convert = async () => {
 
   selectedFiles.forEach((file) => {
     formData.append("word_file[]", file);
+  
   });
+
+  formData.append('user_id', user_id);
 
   try {
     const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}convert/word-to-pdf`, {
@@ -53,17 +60,19 @@ const Convert = async () => {
     });
 
     const result = await response.json();
-    console.log(result.token);
 
     if (result && result.token) {
       setConversionStatus('Done');
       navigate(`/download/${result.token}`);
     } else {
       setConversionStatus(selectedFiles.map(() => "❌ Failed"));
+      toast.error('Failed conversion, Please try agian later');
+      setError(true);
     }
   } catch (error) {
-    console.error("Conversion error:", error);
     setConversionStatus(selectedFiles.map(() => "❌ Error"));
+    toast.error('Failed conversion, Please try agian later'); 
+    setError(true);
   }
 
   setIsConverting(false);
@@ -80,6 +89,17 @@ const handleRemoveFile = (indexToRemove) => {
   return (
     <div className="content">
       <Header />
+       <ToastContainer />
+       
+      {error && (
+        <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+          <div className="flex-1 flex justify-center items-center px-4">
+            <a href="/">
+              <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-4 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Go to Home</button>
+            </a>
+          </div>
+        </div>
+      )}
 
       {/* Selected Files Section */}
       {!isConverting && !conversionDone && (

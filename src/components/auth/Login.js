@@ -4,6 +4,7 @@ import { FaFacebook, FaGoogle, FaUser, FaEnvelope, FaLock } from 'react-icons/fa
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Login() {
   const [user, setUser] = useState(null);
@@ -11,6 +12,13 @@ function Login() {
   const [form, setForm] = useState({
     email: '',
     password: '',
+  });
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if(token) {
+      localStorage.clear();
+    }
   });
 
 const handleChange = (e) => {
@@ -42,22 +50,24 @@ const handleChange = (e) => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Login successfully!");
+        toast.success("Login successfully!");
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("user", JSON.stringify(data.user));
         navigate('/');
       } else {
-        alert(data.message || "Login failed.");
-        console.error(data.errors);
+        toast.error(data.message || "Login failed.");
       }
     } catch (error) {
-      console.error("Login error:", error);
+      toast.error("Login error:", error);
     }
   }
 
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
+
+      <ToastContainer />
+
       <div className="grid grid-cols-1 md:grid-cols-12 w-full max-w-6xl bg-white shadow-lg rounded-lg overflow-hidden">
         
         {/* Left Panel - Form (7/12) */}
