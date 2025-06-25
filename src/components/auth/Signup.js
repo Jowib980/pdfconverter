@@ -5,9 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
+import Loader from '../Loader.js';
+import { Helmet } from 'react-helmet-async';
 
 function Signup() {
 const navigate = useNavigate();
+const [loading, setLoading] = useState(false);
 const [form, setForm] = useState({
     name: '',
     email: '',
@@ -29,6 +32,7 @@ const token = localStorage.getItem("token");
   };
 
   const handleSignup = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     if (form.password !== form.confirm_password) {
@@ -54,22 +58,36 @@ const token = localStorage.getItem("token");
       const data = await response.json();
 
       if (response.ok) {
+        setLoading(false);
         toast.success("Registered successfully!");
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("user", JSON.stringify(data.user));
         navigate('/');
       } else {
+        setLoading(false);
         toast.error(data.message || "Registration failed.");
       }
     } catch (error) {
       toast.error("Signup error:", error);
+      setLoading(false);
     }
   };
 
   return (
+    <>
+
+       <Helmet>
+        <title>Signup | My PDF Tools</title>
+      </Helmet>
+
     <div className="min-h-screen flex items-center justify-center bg-white">
 
     <ToastContainer />
+
+    {loading ? (
+
+      <Loader />
+      ): (
 
       <div className="grid grid-cols-1 md:grid-cols-12 w-full max-w-6xl bg-white shadow-lg rounded-lg overflow-hidden">
         
@@ -215,7 +233,10 @@ const token = localStorage.getItem("token");
           <a href="#" className="text-sm text-blue-600 hover:underline mt-4">See all tools</a>
         </div>
       </div>
+      )}
+
     </div>
+    </>
   );
 }
 

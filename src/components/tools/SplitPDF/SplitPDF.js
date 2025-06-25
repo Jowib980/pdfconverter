@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive } from 'react-icons/fa';
 import SplitGeneratedPDF from './SplitGeneratedPDF';
+import { Helmet } from 'react-helmet-async';
 
 function SplitPDF() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,6 +14,12 @@ function SplitPDF() {
   };
 
   return (
+    <>
+
+     <Helmet>
+        <title>Split PDF | My PDF Tools</title>
+      </Helmet>
+
     <div className="content">
       <Header />
 
@@ -43,6 +50,8 @@ function SplitPDF() {
         </div>
       )}
     </div>
+
+    </>
   );
 }
 

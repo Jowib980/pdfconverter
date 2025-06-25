@@ -4,11 +4,16 @@ import Tools from "./Tools.js";
 import iso from '../../assets/images/iso.svg';
 import ssl from '../../assets/images/ssl.svg';
 import pdf from '../../assets/images/pdf.svg';
-
+import { Helmet } from 'react-helmet-async';
 
 function Home() {
 
 	return (
+		<>
+		 <Helmet>
+	        <title>Home | My PDF Tools</title>
+	        <meta name="description" content="Welcome to the Home Page." />
+	      </Helmet>
 		<Main>
 		    <Tools />
 
@@ -79,6 +84,7 @@ function Home() {
 		    	</div>
 		    </div>
 		</Main>
+		</>
 	);	
 }
 

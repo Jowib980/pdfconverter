@@ -5,10 +5,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
+import Loader from '../Loader.js';
+import { Helmet } from 'react-helmet-async';
 
 function Login() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -27,6 +30,7 @@ const handleChange = (e) => {
 
 
   const handleLogin = async(e) => {
+    setLoading(true);
     e.preventDefault();
 
     if (!form.email && !form.password) {
@@ -50,23 +54,41 @@ const handleChange = (e) => {
       const data = await response.json();
 
       if (response.ok) {
+        setLoading(false);
         toast.success("Login successfully!");
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        navigate('/');
+
+          navigate('/');
+        
       } else {
+        setLoading(false);
         toast.error(data.message || "Login failed.");
       }
     } catch (error) {
       toast.error("Login error:", error);
+      setLoading(false);
     }
   }
 
 
+
+
   return (
+    <>
+    <Helmet>
+        <title>Login | My PDF Tools</title>
+        <meta name="description" content="Welcome to the Login" />
+      </Helmet>
     <div className="min-h-screen flex items-center justify-center bg-white">
 
       <ToastContainer />
+
+
+      { loading ? (
+
+        <Loader />
+        ) : (
 
       <div className="grid grid-cols-1 md:grid-cols-12 w-full max-w-6xl bg-white shadow-lg rounded-lg overflow-hidden">
         
@@ -199,7 +221,10 @@ const handleChange = (e) => {
           <a href="#" className="text-sm text-blue-600 hover:underline mt-4">See all tools</a>
         </div>
       </div>
+ )}
+
     </div>
+    </>
   );
 }
 

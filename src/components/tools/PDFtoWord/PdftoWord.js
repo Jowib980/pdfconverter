@@ -7,6 +7,7 @@ import { saveAs } from "file-saver";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { Helmet } from 'react-helmet-async';
 
 function PdftoWord({ files = [] }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -85,6 +86,12 @@ function PdftoWord({ files = [] }) {
 
 
   return (
+    <>
+
+     <Helmet>
+        <title>PDF to Word | My PDF Tools</title>
+      </Helmet>
+
     <div className="content">
       <Header />
 
@@ -185,8 +192,9 @@ function PdftoWord({ files = [] }) {
         </div>
       )}
 
-      
     </div>
+
+    </>
   );
 }
 

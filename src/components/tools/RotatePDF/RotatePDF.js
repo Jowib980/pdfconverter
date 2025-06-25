@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive } from 'react-icons/fa';
 import RotateGeneratedPDF from './RotateGeneratedPDF';
+import { Helmet } from 'react-helmet-async';
 
 function RotatePDF() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,6 +14,12 @@ function RotatePDF() {
   };
 
   return (
+    <>
+
+     <Helmet>
+        <title>Rotate PDF | My PDF Tools</title>
+      </Helmet>
+
     <div className="content">
       <Header />
 
@@ -43,6 +50,8 @@ function RotatePDF() {
         </div>
       )}
     </div>
+
+    </>
   );
 }
 

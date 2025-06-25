@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive } from 'react-icons/fa';
 import MergedPDF from './MergedPDF';
+import { Helmet } from 'react-helmet-async';
 
 function MergePDF() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,6 +14,12 @@ function MergePDF() {
   };
 
   return (
+    <>
+
+     <Helmet>
+        <title>Merge PDF | My PDF Tools</title>
+      </Helmet>
+
     <div className="content">
       <Header />
 
@@ -43,6 +50,8 @@ function MergePDF() {
         </div>
       )}
     </div>
+
+    </>
   );
 }
 

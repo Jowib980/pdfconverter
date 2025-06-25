@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive } from 'react-icons/fa';
 import ExceltoPDF from './ExceltoPDF';
+import { Helmet } from 'react-helmet-async';
 
 function ExcelFile() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,6 +14,12 @@ function ExcelFile() {
   };
 
   return (
+    <>
+
+     <Helmet>
+        <title>Excel to PDF | My PDF Tools</title>
+      </Helmet>
+
     <div className="content">
       <Header />
 
@@ -48,6 +55,8 @@ function ExcelFile() {
         </div>
       )}
     </div>
+
+    </>
   );
 }
 

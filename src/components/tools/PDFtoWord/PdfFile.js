@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive } from 'react-icons/fa';
 import PdftoWord from './PdftoWord';
+import { Helmet } from 'react-helmet-async';
 
 function PdfFile() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,6 +14,12 @@ function PdfFile() {
   };
 
   return (
+    <>
+
+     <Helmet>
+        <title>PDF to Word | My PDF Tools</title>
+      </Helmet>
+
     <div className="content">
       <Header />
 
@@ -48,6 +55,8 @@ function PdfFile() {
         </div>
       )}
     </div>
+
+    </>
   );
 }
 

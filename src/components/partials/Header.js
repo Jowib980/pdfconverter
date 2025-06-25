@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logo from '../../assets/images/logo.png';
 
 function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,6 +11,11 @@ function Header() {
     user = JSON.parse(userString);
   }
   const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
 
   useEffect(() => {
     if(token) {
@@ -126,7 +132,7 @@ function Header() {
         
         {/* Logo */}
         <div className="text-xl font-bold text-red-600">
-          <Link to="/">PDFTools</Link>
+          <Link to="/"><img src={logo} alt="PDFTools" className="w-20" /></Link>
         </div>
 
         {/* Navigation */}
@@ -183,17 +189,51 @@ function Header() {
         </nav>
 
         {/* Auth Buttons */}
-        <div className="flex space-x-2">
+        {/* <div className="flex space-x-2">
         {isAuthenticated ? (
-            <>
-              <p className="rounded-lg px-3 py-2 text-slate-700 font-medium">{user ? user.name : 'Guest'}</p>
+             <>
+          <button
+            onClick={toggleDropdown}
+            className="relative flex items-center space-x-2 px-4 py-2 "
+          >
+            <span className="text-slate-700 font-medium">{user ? user.name : 'Guest'}</span>
+            <svg
+              className="w-4 h-4 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+              {user?.roles?.some(role => role.name === 'admin') ? (
+                <a
+                  href={`${process.env.REACT_APP_BACKEND_URL}/auth/token-login?token=${token}`}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Admin Dashboard
+                </a>
+              ) : (
+                <a
+                  href={`${process.env.REACT_APP_BACKEND_URL}/auth/token-login?token=${token}`}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  User Dashboard
+                </a>
+              )}
               <button
                 onClick={handleLogout}
-                className="text-sm px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50"
+                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
               >
                 Logout
               </button>
-            </>
+            </div>
+          )}
+        </>
+
           ) : (
             <>
               <Link
@@ -212,6 +252,7 @@ function Header() {
           )}
           
         </div>
+      */}
       </div>
     </header>
   );

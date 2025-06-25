@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { FaDownload, FaArrowLeft } from 'react-icons/fa';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
+import { Helmet } from 'react-helmet-async';
 
 function DownloadPdf() {
   const [urls, setUrls] = useState([]);
@@ -31,6 +32,11 @@ function DownloadPdf() {
   }
 
   return (
+    <>
+     <Helmet>
+        <title>Download PDF | My PDF Tools</title>
+      </Helmet>
+
     <div className="content">
       <Header />
       <div className="download-section min-h-screen flex flex-col items-center justify-center text-center px-4 bg-gray-50 mt-4 py-20">
@@ -51,6 +57,8 @@ function DownloadPdf() {
         </div>
       </div>
     </div>
+
+    </>
   );
 }
 

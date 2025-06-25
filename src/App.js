@@ -15,13 +15,16 @@ import MergePDF from "./components/tools/MergePDF/MergePDF";
 import SplitPDF from "./components/tools/SplitPDF/SplitPDF";
 import CompressPDF from "./components/tools/CompressPDF/CompressPDF";
 import RotatePDF from "./components/tools/RotatePDF/RotatePDF";
+import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
   return (
+    <HelmetProvider>
+
     <Router>
       <div className="app">
         <Routes>
-
+         
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
@@ -35,96 +38,97 @@ function App() {
           <Route 
             path="/word-to-pdf"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <WordConverter />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } 
           />
 
           <Route 
             path="/pdf-to-word"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <PdfFile />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } 
           />
 
           <Route
             path="/ppt-to-pdf"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <PPTFile />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             } 
           />
 
           <Route 
             path="/excel-to-pdf"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <ExcelFile />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
 
           <Route 
             path="/html-to-pdf"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <HtmlFile />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
 
           <Route
             path="/merge-pdf"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <MergePDF />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
 
           <Route
             path="/split-pdf"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <SplitPDF />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
 
           <Route
             path="/compress-pdf"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <CompressPDF />
-                </ProtectedRoute>
+                // </ProtectedRoute>
               }
             />
 
           <Route
             path="/rotate-pdf"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <RotatePDF />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
 
           <Route
             path="/download/:token"
             element={
-              <ProtectedRoute>
+              // <ProtectedRoute>
                 <DownloadPdf />
-              </ProtectedRoute>
+              // </ProtectedRoute>
             }
           />
-
+        
         </Routes>
       </div>
     </Router>
+    </HelmetProvider>
   );
 }
 export default App;

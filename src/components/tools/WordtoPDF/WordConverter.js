@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive } from 'react-icons/fa';
 import WordtoPdf from './WordtoPdf';
+import { Helmet } from 'react-helmet-async';
 
 function WordConverter() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,6 +14,13 @@ function WordConverter() {
   };
 
   return (
+    <>
+
+      <Helmet>
+        <title>Word to PDF | My PDF Tools</title>
+      </Helmet>
+
+
     <div className="content">
       <Header />
 
@@ -48,6 +56,8 @@ function WordConverter() {
         </div>
       )}
     </div>
+
+    </>
   );
 }
 

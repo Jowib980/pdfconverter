@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive } from 'react-icons/fa';
 import CompressedPDF from './CompressedPDF';
+import { Helmet } from 'react-helmet-async';
 
 function CompressPDF() {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,6 +14,12 @@ function CompressPDF() {
   };
 
   return (
+    <>
+
+     <Helmet>
+        <title>Compress PDF | My PDF Tools</title>
+      </Helmet>
+
     <div className="content">
       <Header />
 
@@ -43,6 +50,8 @@ function CompressPDF() {
         </div>
       )}
     </div>
+
+    </>
   );
 }
 

@@ -7,6 +7,7 @@ import { saveAs } from "file-saver";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { Helmet } from 'react-helmet-async';
 
 function HtmltoPDF({ files = [] }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -89,6 +90,12 @@ const handleRemoveFile = (indexToRemove) => {
 };
 
   return (
+    <>
+
+     <Helmet>
+        <title>HTML to PDF | My PDF Tools</title>
+      </Helmet>
+
     <div className="content">
       <Header />
 
@@ -196,8 +203,9 @@ const handleRemoveFile = (indexToRemove) => {
         </div>
       )}
 
-      
     </div>
+
+    </>
   );
 }
 
