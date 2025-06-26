@@ -1,5 +1,7 @@
 import React from 'react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaGlobe, FaTiktok } from 'react-icons/fa';
+import GooglePlayStore from '../../assets/images/google_play.svg';
+import appStoreImage from '../../assets/images/app_store.svg';
 
 function Footer() {
   return (
@@ -58,8 +60,8 @@ function Footer() {
           </div>
 
           <div className="flex space-x-3 mt-4 md:mt-0">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" className="h-10" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Download_on_the_App_Store_Badge.svg" alt="App Store" className="h-10" />
+            <img src={GooglePlayStore} alt="Google Play" className="h-10" />
+            <img src={appStoreImage} alt="App Store" className="h-10" />
           </div>
         </div>
 
