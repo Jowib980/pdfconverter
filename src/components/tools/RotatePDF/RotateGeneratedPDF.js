@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle } from 'react-icons/fa';
 import Loader from '../../Loader.js';
@@ -8,6 +8,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+
 
 function RotateGeneratedPDF({ files = [] }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -22,12 +27,72 @@ function RotateGeneratedPDF({ files = [] }) {
   const userString = localStorage.getItem("user");
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
+  const rotationOptions = [
+    { value: '0', label: 'No Rotation' },
+    { value: '90', label: 'Rotate Right 90°' },
+    { value: '180', label: 'Rotate 180° (Upside Down)' },
+    { value: '270', label: 'Rotate Left 90°' },
+  ];
+
+  const [angle, setAngle] = useState('0');
+
+  const canvasRefs = useRef({});
+
 
   useEffect(() => {
     if (files.length) {
       setSelectedFiles(files);
     }
+
   }, [files]);
+
+  useEffect(() => {
+    selectedFiles.forEach((file, index) => {
+      const canvas = canvasRefs.current[index];
+      if (canvas) {
+        renderPdfThumbnail(file, canvas, angle);
+      }
+    });
+  }, [angle, selectedFiles]);
+
+
+const renderPdfThumbnail = async (file, canvas, angle) => {
+  if (!file || !canvas) return;
+
+  const context = canvas.getContext("2d");
+  context.clearRect(0, 0, canvas.width, canvas.height); // Clear before rendering
+
+  const fileReader = new FileReader();
+
+  fileReader.onload = async function () {
+    const typedarray = new Uint8Array(this.result);
+
+    try {
+      const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+      const page = await pdf.getPage(1); // preview first page only
+
+      const rotation = parseInt(angle, 10);
+      const viewport = page.getViewport({ scale: 0.5, rotation });
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      const renderContext = {
+        canvasContext: context,
+        viewport,
+      };
+
+      // Wait for render to complete
+      const renderTask = page.render(renderContext);
+      await renderTask.promise;
+    } catch (error) {
+      console.error("Failed to render PDF preview", error);
+    }
+  };
+
+  fileReader.readAsArrayBuffer(file);
+};
+
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
@@ -54,6 +119,7 @@ function RotateGeneratedPDF({ files = [] }) {
     });
 
     formData.append('user_id', user_id);
+    formData.append('angle', angle);
 
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}rotate-pdf`, {
@@ -140,28 +206,69 @@ const handleRemoveFile = (indexToRemove) => {
            
             <div className="flex flex-wrap justify-center gap-4 mt-6">
               {selectedFiles.map((file, index) => (
-                <div key={index} className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center w-40 relative group">
-                <button
-                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+
+
+                <div key={index} className="bg-white p-4 rounded-xl shadow-lg w-[180px]">
+                  <button
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                     onClick={() => handleRemoveFile(index)}
                     title="Remove file"
                   >
                     <FaTimesCircle />
                   </button>
-                  <div className="file_canvas">
-                    <canvas width="127" height="180" className="pdf"></canvas>
+                   <div className="file_canvas">
+                   <>
+                   {renderPdfThumbnail ? (
+
+                  <canvas
+                    ref={(ref) => {
+                      if (ref) {
+                        canvasRefs.current[index] = ref;
+                      }
+                    }}
+                    className="w-full border"
+                  />
+
+                    ): (
+                     <canvas width="127" height="180" className="pdf"></canvas>
+
+                    )}
+                   
+                  </>
                   </div>
                   <p className="text-xs text-gray-700 mt-2 text-center break-words">{file.name}</p>
                   <p className="text-xs text-blue-500 mt-1">{conversionStatus[index]}</p>
                 </div>
+
               ))}
             </div>
           </div>
+
 
           <div className="w-[350px] bg-white border-l border-gray-200 flex flex-col justify-between">
             <div className="p-6 text-center border-b">
               <h1 className="tool-heading text-xl font-semibold">Rotate PDF</h1>
             </div>
+            <div className="p-6">
+              <label className="block font-medium text-gray-700 mb-2"> Rotatie Pages:</label>
+                <div className="flex flex-col gap-2">
+                  {rotationOptions.map(({ value, label }) => (
+                    <label key={value} className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="angle"
+                        value={value}
+                        checked={angle === value}
+                        onChange={(e) => setAngle(e.target.value)}
+                        className="form-radio text-blue-600"
+                      />
+                      <span className="ml-2">{label}</span>
+                    </label>
+                  ))}
+                </div>
+
+            </div>
+
             <div className="p-6">
               <button
                 className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"

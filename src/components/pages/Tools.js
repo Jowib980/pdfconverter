@@ -48,6 +48,12 @@ function Tools() {
       icon: "ico--compress",
       link: "compress-pdf",
     },
+    {
+      title: "Rotate PDF",
+      description: "Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!",
+      icon: "ico--rotate",
+      link: "rotate-pdf",
+    },
   ];
 
   useEffect(() => {

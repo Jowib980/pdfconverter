@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle } from 'react-icons/fa';
 import Loader from '../../Loader.js';
@@ -8,6 +8,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 function SplitGeneratedPDF({ files = [] }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -22,6 +26,7 @@ function SplitGeneratedPDF({ files = [] }) {
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
   const [error, setError] = useState(false);
+  const canvasRefs = useRef({});
 
   useEffect(() => {
     if (files.length) {
@@ -29,15 +34,57 @@ function SplitGeneratedPDF({ files = [] }) {
     }
   }, [files]);
 
+  useEffect(() => {
+    selectedFiles.forEach((file, index) => {
+      const canvas = canvasRefs.current[index];
+      if (canvas) {
+        renderPdfThumbnail(file, canvas);
+      }
+    });
+  }, [selectedFiles]);
+
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
     setSelectedFiles((prev) => [...prev, ...newFiles]);
-    setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
+    setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("\u23F3 Pending")]);
+  };
+
+  const renderPdfThumbnail = async (file, canvas) => {
+    if (!file || !canvas) return;
+
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    const fileReader = new FileReader();
+
+    fileReader.onload = async function () {
+      const typedarray = new Uint8Array(this.result);
+
+      try {
+        const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 0.5 });
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        const renderContext = {
+          canvasContext: context,
+          viewport,
+        };
+
+        await page.render(renderContext).promise;
+      } catch (error) {
+        console.error("Failed to render PDF preview", error);
+      }
+    };
+
+    fileReader.readAsArrayBuffer(file);
   };
 
   const Convert = async () => {
     if (!selectedFiles.length) {
-      alert("Please add at least one .html file.");
+      alert("Please add at least one .pdf file.");
       return;
     }
 
@@ -48,12 +95,11 @@ function SplitGeneratedPDF({ files = [] }) {
     setConversionStatus(updatedStatus);
 
     const formData = new FormData();
-
     selectedFiles.forEach((file) => {
       formData.append("pdf_file", file);
     });
+    formData.append('user_id', user_id);
 
-  formData.append('user_id', user_id);
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}split-pdf`, {
         method: "POST",
@@ -66,56 +112,50 @@ function SplitGeneratedPDF({ files = [] }) {
         setConversionStatus('Done');
         navigate(`/download/${result.token}`);
       } else {
-        setConversionStatus(selectedFiles.map(() => "❌ Failed"));
-        toast.error('Failed conversion, Please try agian later');
+        setConversionStatus(selectedFiles.map(() => "\u274C Failed"));
+        toast.error('Failed conversion, Please try again later');
         setError(true);
       }
     } catch (error) {
-      setConversionStatus(selectedFiles.map(() => "❌ Error"));
-      toast.error('Failed conversion, Please try agian later');
+      setConversionStatus(selectedFiles.map(() => "\u274C Error"));
+      toast.error('Failed conversion, Please try again later');
       setError(true);
     }
 
     setIsConverting(false);
     setConversionDone(true);
-
   };
 
-
-const handleRemoveFile = (indexToRemove) => {
-  setSelectedFiles((prev) => prev.filter((_, i) => i !== indexToRemove));
-  setConversionStatus((prev) => prev.filter((_, i) => i !== indexToRemove));
-};
-
+  const handleRemoveFile = (indexToRemove) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== indexToRemove));
+    setConversionStatus((prev) => prev.filter((_, i) => i !== indexToRemove));
+  };
 
   return (
     <>
-
-     <Helmet>
+      <Helmet>
         <title>Split PDF | My PDF Tools</title>
       </Helmet>
+      <div className="content">
+        <Header />
+        <ToastContainer />
 
-    <div className="content">
-      <Header />
-
-      <ToastContainer />
-       
-      {error && (
-        <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
-          <div className="flex-1 flex justify-center items-center px-4">
-            <a href="/">
-              <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-4 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Go to Home</button>
-            </a>
+        {error && (
+          <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+            <div className="flex-1 flex justify-center items-center px-4">
+              <a href="/">
+                <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-4 me-2 mb-2">
+                  Go to Home
+                </button>
+              </a>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Selected Files Section */}
-      {!isConverting && !conversionDone && (
-        <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
-          <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
-            <div className="sidetool absolute -top-4 -right-4 z-20">
-              <div className="relative">
+        {!isConverting && !conversionDone && (
+          <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+            <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
+              <div className="sidetool absolute -top-4 -right-4 z-20">
                 <label className="relative cursor-pointer">
                   <div className="bg-red-500 text-white rounded-full w-10 h-10 text-xl font-semibold shadow-lg hover:bg-red-600 flex items-center justify-center">
                     +
@@ -132,60 +172,57 @@ const handleRemoveFile = (indexToRemove) => {
                   {selectedFiles.length}
                 </span>
               </div>
-            </div>
 
-           
-
-            <div className="flex flex-wrap justify-center gap-4 mt-6">
-              {selectedFiles.map((file, index) => (
-                <div key={index} className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center w-40 relative group">
-                <button
-                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={() => handleRemoveFile(index)}
-                    title="Remove file"
-                  >
-                    <FaTimesCircle />
-                  </button>
-                  <div className="file_canvas">
-                    <canvas width="127" height="180" className="pdf"></canvas>
+              <div className="flex flex-wrap justify-center gap-4 mt-6">
+                {selectedFiles.map((file, index) => (
+                  <div key={index} className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center w-40 relative group">
+                    <button
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={() => handleRemoveFile(index)}
+                      title="Remove file"
+                    >
+                      <FaTimesCircle />
+                    </button>
+                    <canvas
+                      ref={(ref) => {
+                        if (ref) canvasRefs.current[index] = ref;
+                      }}
+                      className="w-full border"
+                    />
+                    <p className="text-xs text-gray-700 mt-2 text-center break-words">{file.name}</p>
+                    <p className="text-xs text-blue-500 mt-1">{conversionStatus[index]}</p>
                   </div>
-                  <p className="text-xs text-gray-700 mt-2 text-center break-words">{file.name}</p>
-                  <p className="text-xs text-blue-500 mt-1">{conversionStatus[index]}</p>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            <div className="w-[350px] bg-white border-l border-gray-200 flex flex-col justify-between">
+              <div className="p-6 text-center border-b">
+                <h1 className="tool-heading text-xl font-semibold">Split</h1>
+              </div>
+              <div className="p-6">
+                <button
+                  className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
+                  onClick={Convert}
+                >
+                  <span className="convert-button">Split PDF</span>
+                  <span className="arrow-icon ml-2">
+                    <FaArrowCircleRight />
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
+        )}
 
-          <div className="w-[350px] bg-white border-l border-gray-200 flex flex-col justify-between">
-            <div className="p-6 text-center border-b">
-              <h1 className="tool-heading text-xl font-semibold">Split</h1>
-            </div>
-            <div className="p-6">
-              <button
-                className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
-                onClick={Convert}
-              >
-                <span className="convert-button">Split PDF</span>
-                <span className="arrow-icon ml-2">
-                  <FaArrowCircleRight />
-                </span>
-              </button>
-            </div>
+        {isConverting && (
+          <div className="conversion-section min-h-screen bg-gray-50 mt-4 py-20 flex flex-col items-center justify-center">
+            <h1 className="section-title">Split PDF</h1>
+            <h2 className="text-2xl font-semibold mb-4">Splitting PDF file...</h2>
+            <Loader />
           </div>
-        </div>
-      )}
-
-      {/* Conversion Loader Section */}
-      {isConverting && (
-        <div className="conversion-section min-h-screen bg-gray-50 mt-4 py-20 flex flex-col items-center justify-center">
-        <h1 className="section-title">Split PDF</h1>
-          <h2 className="text-2xl font-semibold mb-4">Spliting PDF file...</h2>
-          <Loader />
-        </div>
-      )}
-
-    </div>
-
+        )}
+      </div>
     </>
   );
 }

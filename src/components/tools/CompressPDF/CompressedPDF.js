@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '../../partials/Header.js';
 import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaCheck, FaTimesCircle } from 'react-icons/fa';
 import Loader from '../../Loader.js';
@@ -8,6 +8,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+
 
 function CompressedPDF({ files = [] }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -21,6 +24,7 @@ function CompressedPDF({ files = [] }) {
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
   const [error, setError] = useState(false);
+  const canvasRefs = useRef({});
 
   useEffect(() => {
     if (files.length) {
@@ -28,11 +32,58 @@ function CompressedPDF({ files = [] }) {
     }
   }, [files]);
 
+
+  useEffect(() => {
+    selectedFiles.forEach((file, index) => {
+      const canvas = canvasRefs.current[index];
+      if (canvas) {
+        renderPdfThumbnail(file, canvas);
+      }
+    });
+  }, [selectedFiles]);
+
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
     setSelectedFiles((prev) => [...prev, ...newFiles]);
     setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
   };
+
+
+const renderPdfThumbnail = async (file, canvas) => {
+  if (!file || !canvas) return;
+
+  const context = canvas.getContext("2d");
+  context.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+
+  const fileReader = new FileReader();
+
+  fileReader.onload = async function () {
+    const typedarray = new Uint8Array(this.result);
+
+    try {
+      const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+      const page = await pdf.getPage(1); // Only first page
+
+      const viewport = page.getViewport({ scale: 0.5 });
+
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      const renderContext = {
+        canvasContext: context,
+        viewport,
+      };
+
+      const renderTask = page.render(renderContext);
+      await renderTask.promise;
+    } catch (error) {
+      console.error("Failed to render PDF preview", error);
+    }
+  };
+
+  fileReader.readAsArrayBuffer(file);
+};
+
 
   const Convert = async () => {
     if (!selectedFiles.length) {
@@ -147,8 +198,26 @@ const handleRemoveFile = (indexToRemove) => {
                   >
                     <FaTimesCircle />
                   </button>
-                  <div className="file_canvas">
-                    <canvas width="127" height="180" className="pdf"></canvas>
+                   <div className="file_canvas">
+                   
+                  <>
+                   {renderPdfThumbnail ? (
+
+                  <canvas
+                    ref={(ref) => {
+                      if (ref) {
+                        canvasRefs.current[index] = ref;
+                      }
+                    }}
+                    className="w-full border"
+                  />
+
+                    ): (
+                     <canvas width="127" height="180" className="pdf"></canvas>
+
+                    )}
+                   
+                  </>
                   </div>
                   <p className="text-xs text-gray-700 mt-2 text-center break-words">{file.name}</p>
                   <p className="text-xs text-blue-500 mt-1">{conversionStatus[index]}</p>
@@ -180,8 +249,8 @@ const handleRemoveFile = (indexToRemove) => {
       {/* Conversion Loader Section */}
       {isConverting && (
         <div className="conversion-section min-h-screen bg-gray-50 mt-4 py-20 flex flex-col items-center justify-center">
-        <h1 className="section-title">Split PDF</h1>
-          <h2 className="text-2xl font-semibold mb-4">Spliting PDF file...</h2>
+        <h1 className="section-title">Compress PDF</h1>
+          <h2 className="text-2xl font-semibold mb-4">Compressed PDF file...</h2>
           <Loader />
         </div>
       )}
