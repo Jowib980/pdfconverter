@@ -52,7 +52,7 @@ function DownloadPdf() {
 	            <FaDownload /> Download PDF{urls.length > 1 ? "s (ZIP)" : ""}
 	          </button>
 	        ) : (
-	          <p>Invalid or expired token.</p>
+	          <p className="text-red-600 font-semibold">This download link has expired.</p>
 	        )}
         </div>
       </div>

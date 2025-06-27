@@ -32,7 +32,7 @@ function WordConverter() {
             Convert <span className="text-red-600">WORD</span> to PDF
           </h1>
           <h2 className="tool-subtitle text-gray-600 mb-6">
-            Make DOC and DOCX files easy to read by converting them to PDF.
+            Make DOCX file easy to read by converting them to PDF.
           </h2>
 
           <div className="flex items-center space-x-4 mb-2">
@@ -41,7 +41,7 @@ function WordConverter() {
               <input
                 type="file"
                 accept=".doc,.docx"
-                multiple
+                
                 onChange={handleFileChange}
                 className="hidden"
               />

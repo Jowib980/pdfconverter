@@ -40,7 +40,7 @@ function ExcelFile() {
               <input
                 type="file"
                 accept=".xls,.xlsx"
-                multiple
+                
                 onChange={handleFileChange}
                 className="hidden"
               />

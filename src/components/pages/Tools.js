@@ -12,12 +12,12 @@ function Tools() {
       icon: "ico--wordpdf",
       link: "/word-to-pdf",
     },
-    {
-      title: "PowerPoint to PDF",
-      description: "Make PPT and PPTX slideshows easy to view by converting them to PDF.",
-      icon: "ico--powerpointpdf",
-      link: "ppt-to-pdf",
-    },
+    // {
+    //   title: "PowerPoint to PDF",
+    //   description: "Make PPT and PPTX slideshows easy to view by converting them to PDF.",
+    //   icon: "ico--powerpointpdf",
+    //   link: "ppt-to-pdf",
+    // },
     {
       title: "Excel to PDF",
       description: "Make EXCEL spreadsheets easy to read by converting them to PDF.",
@@ -30,30 +30,30 @@ function Tools() {
       icon: "ico--htmlpdf",
       link: "html-to-pdf",
     },
-    {
-      title: "Merge PDF",
-      description: "Combine PDFs in the order you want.",
-      icon: "ico--merge",
-      link: "merge-pdf",
-    },
-    {
-      title: "Split PDF",
-      description: "Separate pages into individual PDF files.",
-      icon: "ico--split",
-      link: "split-pdf",
-    },
-    {
-      title: "Compress PDF",
-      description: "Reduce PDF file size while retaining quality.",
-      icon: "ico--compress",
-      link: "compress-pdf",
-    },
-    {
-      title: "Rotate PDF",
-      description: "Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!",
-      icon: "ico--rotate",
-      link: "rotate-pdf",
-    },
+    // {
+    //   title: "Merge PDF",
+    //   description: "Combine PDFs in the order you want.",
+    //   icon: "ico--merge",
+    //   link: "merge-pdf",
+    // },
+    // {
+    //   title: "Split PDF",
+    //   description: "Separate pages into individual PDF files.",
+    //   icon: "ico--split",
+    //   link: "split-pdf",
+    // },
+    // {
+    //   title: "Compress PDF",
+    //   description: "Reduce PDF file size while retaining quality.",
+    //   icon: "ico--compress",
+    //   link: "compress-pdf",
+    // },
+    // {
+    //   title: "Rotate PDF",
+    //   description: "Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!",
+    //   icon: "ico--rotate",
+    //   link: "rotate-pdf",
+    // },
   ];
 
   useEffect(() => {

@@ -50,28 +50,35 @@ function ExceltoPDF({ files = [] }) {
     const formData = new FormData();
 
     selectedFiles.forEach((file) => {
-      formData.append("excel_file[]", file);
+      formData.append("file", file);
     });
 
     formData.append('user_id', user_id);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}convert/excel-to-pdf`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}convert-excel`, {
         method: "POST",
         body: formData,
       });
 
       const result = await response.json();
-      console.log(result.token);
+      console.log(result.url);
 
-      if (result && result.token) {
-        setConversionStatus('Done');
-        navigate(`/download/${result.token}`);
+      if(result && result.url) {
+       navigate(`/download/${result.token}`);
+        // window.open(result.url, '_blank');
       } else {
-        setConversionStatus(selectedFiles.map(() => "❌ Failed"));
         toast.error('Failed conversion, Please try agian later');
-        setError(true);
       }
+
+      // if (result && result.token) {
+      //   setConversionStatus('Done');
+      //   navigate(`/download/${result.token}`);
+      // } else {
+      //   setConversionStatus(selectedFiles.map(() => "❌ Failed"));
+      //   toast.error('Failed conversion, Please try agian later');
+      //   setError(true);
+      // }
     } catch (error) {
       setConversionStatus(selectedFiles.map(() => "❌ Error"));
       toast.error('Failed conversion, Please try agian later');
@@ -116,6 +123,7 @@ const handleRemoveFile = (indexToRemove) => {
       {!isConverting && !conversionDone && (
         <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
+            {selectedFiles.length < 1 && 
             <div className="sidetool absolute -top-4 -right-4 z-20">
               <div className="relative">
                 <label className="relative cursor-pointer">
@@ -135,7 +143,8 @@ const handleRemoveFile = (indexToRemove) => {
                 </span>
               </div>
             </div>
-
+          }
+            {/*
             <div className="upload-extra absolute mt-2 right-0 hidden group-hover:flex flex-col gap-2 z-10">
               <div className="relative">
                 <label className="relative cursor-pointer">
@@ -155,6 +164,7 @@ const handleRemoveFile = (indexToRemove) => {
                 <FaGoogleDrive />
               </button>
             </div>
+          */}
 
             <div className="flex flex-wrap justify-center gap-4 mt-6">
               {selectedFiles.map((file, index) => (
@@ -180,10 +190,25 @@ const handleRemoveFile = (indexToRemove) => {
             <div className="p-6 text-center border-b">
               <h1 className="tool-heading text-xl font-semibold">Excel to PDF</h1>
             </div>
+
+            {selectedFiles.length < 1 && 
+              <div className="p-6">
+                <p className="rounded bg-sky-50 text-lg p-4 font-semibold text-gray-700">
+                  Please select a file to proceed with the PDF conversion.
+                </p>
+              </div>
+            }
+
+
             <div className="p-6">
               <button
-                className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
+                className={`flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 ${
+                  selectedFiles.length < 1
+                    ? 'bg-gray-400 text-white cursor-not-allowed'
+                    : 'bg-red-600 text-white hover:bg-red-700'
+                }`}
                 onClick={Convert}
+                disabled={selectedFiles.length < 1}
               >
                 <span className="convert-button">Convert to PDF</span>
                 <span className="arrow-icon ml-2">

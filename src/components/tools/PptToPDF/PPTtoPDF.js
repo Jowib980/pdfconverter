@@ -49,27 +49,35 @@ function PPTtoPDF({ files = [] }) {
     const formData = new FormData();
 
     selectedFiles.forEach((file) => {
-      formData.append("ppt_file[]", file);
+      formData.append("file", file);
     });
 
     formData.append('user_id', user_id);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}convert/ppt-to-pdf`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}convert-ppt`, {
         method: "POST",
         body: formData,
       });
 
       const result = await response.json();
+      console.log(result.url);
 
-      if (result && result.token) {
-        setConversionStatus('Done');
-        navigate(`/download/${result.token}`);
+      if(result && result.url) {
+       navigate(`/download/${result.token}`);
+        // window.open(result.url, '_blank');
       } else {
-        setConversionStatus(selectedFiles.map(() => "❌ Failed"));
         toast.error('Failed conversion, Please try agian later');
-        setError(true);
       }
+
+      // if (result && result.token) {
+      //   setConversionStatus('Done');
+      //   navigate(`/download/${result.token}`);
+      // } else {
+      //   setConversionStatus(selectedFiles.map(() => "❌ Failed"));
+      //   toast.error('Failed conversion, Please try agian later');
+      //   setError(true);
+      // }
     } catch (error) {
       setConversionStatus(selectedFiles.map(() => "❌ Error"));
       toast.error('Failed conversion, Please try agian later');
