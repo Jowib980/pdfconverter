@@ -40,15 +40,17 @@ function ExcelFile() {
               <input
                 type="file"
                 accept=".xls,.xlsx"
-                
+                multiple
                 onChange={handleFileChange}
                 className="hidden"
               />
             </label>
 
-            <button className="bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition">
+            {/*
+              <button className="bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition">
               <FaGoogleDrive />
             </button>
+          */}
           </div>
 
           <p className="text-sm text-gray-500">or drop Excel spreadsheets here</p>

@@ -40,8 +40,8 @@ function WordConverter() {
               Select WORD files
               <input
                 type="file"
-                accept=".doc,.docx"
-                
+                accept=".docx"
+                multiple
                 onChange={handleFileChange}
                 className="hidden"
               />

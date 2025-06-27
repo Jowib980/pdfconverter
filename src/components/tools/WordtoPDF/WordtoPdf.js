@@ -48,7 +48,7 @@ const Convert = async () => {
   const formData = new FormData();
 
   selectedFiles.forEach((file) => {
-    formData.append("file", file);
+    formData.append("file[]", file);
   
   });
 
@@ -61,23 +61,15 @@ const Convert = async () => {
     });
 
     const result = await response.json(); 
-    console.log(result.url);
+    console.log(result.urls);
 
-    if(result && result.url) {
-     navigate(`/download/${result.token}`);
-      // window.open(result.url, '_blank');
+    if(result && result.urls && result.token) {
+      setConversionStatus('Done');
+      navigate(`/download/${result.token}`);
     } else {
       toast.error('Failed conversion, Please try agian later');
     }
 
-    // if (result && result.token) {
-    //   setConversionStatus('Done');
-    //   navigate(`/download/${result.token}`);
-    // } else {
-    //   setConversionStatus(selectedFiles.map(() => "❌ Failed"));
-    //   toast.error('Failed conversion, Please try agian later');
-    //   setError(true);
-    // }
   } catch (error) {
     setConversionStatus(selectedFiles.map(() => "❌ Error"));
     toast.error('Failed conversion, Please try agian later'); 
@@ -119,8 +111,7 @@ const handleRemoveFile = (indexToRemove) => {
       {!isConverting && !conversionDone && (
         <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
-            {selectedFiles.length < 1 && 
-
+            
             <div className="sidetool absolute -top-4 -right-4 z-20">
               <div className="relative">
                 <label className="relative cursor-pointer">
@@ -129,8 +120,8 @@ const handleRemoveFile = (indexToRemove) => {
                   </div>
                   <input
                     type="file"
-                    accept=".doc,.docx"
-                    
+                    accept=".docx"
+                    multiple
                     className="hidden"
                     onChange={handleFileChange}
                   />
@@ -140,8 +131,8 @@ const handleRemoveFile = (indexToRemove) => {
                 </span>
               </div>
             </div>
-          }
-{/* 
+          
+ 
             <div className="upload-extra absolute mt-2 right-0 hidden group-hover:flex flex-col gap-2 z-10">
               <div className="relative">
                 <label className="relative cursor-pointer">
@@ -150,18 +141,18 @@ const handleRemoveFile = (indexToRemove) => {
                   </div>
                   <input
                     type="file"
-                    accept=".doc,.docx"
+                    accept=".docx"
                     multiple
                     className="hidden"
                     onChange={handleFileChange}
                   />
                 </label>
               </div>
-              <button className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition" title="Upload from Google Drive">
+              {/*<button className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition" title="Upload from Google Drive">
                 <FaGoogleDrive />
-              </button>
+              </button>*/}
             </div>
-          */}
+          
 
             <div className="flex flex-wrap justify-center gap-4 mt-6">
               {selectedFiles.map((file, index) => (

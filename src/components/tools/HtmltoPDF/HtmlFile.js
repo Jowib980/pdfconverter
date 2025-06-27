@@ -40,7 +40,7 @@ function HtmlFile() {
               <input
                 type="file"
                 accept=".html"
-                
+                multiple
                 onChange={handleFileChange}
                 className="hidden"
               />

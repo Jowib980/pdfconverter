@@ -50,7 +50,7 @@ function ExceltoPDF({ files = [] }) {
     const formData = new FormData();
 
     selectedFiles.forEach((file) => {
-      formData.append("file", file);
+      formData.append("file[]", file);
     });
 
     formData.append('user_id', user_id);
@@ -62,23 +62,15 @@ function ExceltoPDF({ files = [] }) {
       });
 
       const result = await response.json();
-      console.log(result.url);
+      console.log(result.urls);
 
-      if(result && result.url) {
+      if(result && result.urls && result.token) {
        navigate(`/download/${result.token}`);
         // window.open(result.url, '_blank');
       } else {
         toast.error('Failed conversion, Please try agian later');
       }
 
-      // if (result && result.token) {
-      //   setConversionStatus('Done');
-      //   navigate(`/download/${result.token}`);
-      // } else {
-      //   setConversionStatus(selectedFiles.map(() => "❌ Failed"));
-      //   toast.error('Failed conversion, Please try agian later');
-      //   setError(true);
-      // }
     } catch (error) {
       setConversionStatus(selectedFiles.map(() => "❌ Error"));
       toast.error('Failed conversion, Please try agian later');
@@ -123,7 +115,7 @@ const handleRemoveFile = (indexToRemove) => {
       {!isConverting && !conversionDone && (
         <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
-            {selectedFiles.length < 1 && 
+            
             <div className="sidetool absolute -top-4 -right-4 z-20">
               <div className="relative">
                 <label className="relative cursor-pointer">
@@ -143,8 +135,8 @@ const handleRemoveFile = (indexToRemove) => {
                 </span>
               </div>
             </div>
-          }
-            {/*
+          
+            
             <div className="upload-extra absolute mt-2 right-0 hidden group-hover:flex flex-col gap-2 z-10">
               <div className="relative">
                 <label className="relative cursor-pointer">
@@ -164,7 +156,7 @@ const handleRemoveFile = (indexToRemove) => {
                 <FaGoogleDrive />
               </button>
             </div>
-          */}
+          
 
             <div className="flex flex-wrap justify-center gap-4 mt-6">
               {selectedFiles.map((file, index) => (
