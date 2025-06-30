@@ -163,7 +163,6 @@ function SplitGeneratedPDF({ files = [] }) {
                   <input
                     type="file"
                     accept=".pdf"
-                    multiple
                     className="hidden"
                     onChange={handleFileChange}
                   />

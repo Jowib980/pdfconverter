@@ -15,6 +15,7 @@ import MergePDF from "./components/tools/MergePDF/MergePDF";
 import SplitPDF from "./components/tools/SplitPDF/SplitPDF";
 import CompressPDF from "./components/tools/CompressPDF/CompressPDF";
 import RotatePDF from "./components/tools/RotatePDF/RotatePDF";
+import JpgFile from "./components/tools/JPGtoPDF/JpgFile";
 import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
@@ -121,6 +122,15 @@ function App() {
             element={
               // <ProtectedRoute>
                 <DownloadPdf />
+              // </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/jpg-to-pdf"
+            element={
+              // <ProtectedRoute>
+                <JpgFile />
               // </ProtectedRoute>
             }
           />

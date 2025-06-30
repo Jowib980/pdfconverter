@@ -36,7 +36,7 @@ function Tools() {
     //   icon: "ico--merge",
     //   link: "merge-pdf",
     // },
-    // {
+    // { 
     //   title: "Split PDF",
     //   description: "Separate pages into individual PDF files.",
     //   icon: "ico--split",
@@ -54,6 +54,12 @@ function Tools() {
     //   icon: "ico--rotate",
     //   link: "rotate-pdf",
     // },
+       {
+         title: "JPG to PDF",
+         description: "Convert JPG images to PDF in seconds. Easily adjust orientation and margins.",
+         icon: "ico--jpgpdf",
+         link: "jpg-to-pdf",
+       },
   ];
 
   useEffect(() => {
