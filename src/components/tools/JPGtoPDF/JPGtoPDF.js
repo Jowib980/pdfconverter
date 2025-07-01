@@ -267,17 +267,11 @@ const handleRemoveFile = (indexToRemove) => {
           </div>
 
           <div className="w-[350px] bg-white border-l border-gray-200 flex flex-col justify-between">
+            {selectedFiles.length > 0 ? (
+              <>
             <div className="p-6 text-center border-b">
               <h1 className="tool-heading text-xl font-semibold">Image to PDF options</h1>
             </div>
-
-            {selectedFiles.length < 1 && 
-              <div className="p-6">
-                <p className="rounded bg-sky-50 text-lg p-4 font-semibold text-gray-700">
-                  Please select a file to proceed with the PDF conversion.
-                </p>
-              </div>
-            }
 
             <div className="p-6">
               <label className="inline-flex items-center font-semibold text-lg mb-2">Page Orientation</label>
@@ -334,13 +328,8 @@ const handleRemoveFile = (indexToRemove) => {
 
             <div className="p-6">
               <button
-                className={`flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 ${
-                  selectedFiles.length < 1
-                    ? 'bg-gray-400 text-white cursor-not-allowed'
-                    : 'bg-red-600 text-white hover:bg-red-700'
-                }`}
+                className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300"
                 onClick={Convert}
-                disabled={selectedFiles.length < 1}
               >
                 <span className="convert-button">Convert to PDF</span>
                 <span className="arrow-icon ml-2">
@@ -348,6 +337,32 @@ const handleRemoveFile = (indexToRemove) => {
                 </span>
               </button>
             </div>
+            </>
+            ) : (
+              <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-gray-500">
+                {/* Background faded content (same as full sidebar with lower opacity) */}
+                <div className="absolute inset-0 p-6 opacity-20 pointer-events-none">
+                  <h1 className="text-xl font-semibold text-center tool-heading">JPG to PDF</h1>
+                  <div className="mt-4 text-center  bg-sky-50 p-4 rounded text-sm">
+                    Please, select more PDF files by clicking again on ‘Select PDF files’.<br />
+                    Select multiple files by maintaining pressed ‘Ctrl’
+                  </div>
+                  
+                </div>
+
+                {/* Overlay arrow + message */}
+                <div className="relative z-10 text-center text-white">
+                  <p className="font-semibold text-sm mb-2">No file selected.</p>
+                  <div className="flex justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="75" height="66" viewBox="0 0 150 132">
+                      <path fill="white" d="M0,0 C0,18.75 28.125,56.25 93.75,56.25 L93.75,18.75 L150,75 L93.75,131.25 L93.75,93.75 C42.0594727,93.75 0,51.6905273 0,0 Z" transform="rotate(-180 75 66)" />
+                    </svg>
+                  </div>
+                  <p className="mt-2 text-white text-sm">Please add a file to activate options</p>
+                </div>
+              </div>
+
+            )}
           </div>
         </div>
       )}

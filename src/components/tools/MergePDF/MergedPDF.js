@@ -109,7 +109,7 @@ const renderPdfThumbnail = async (file, canvas) => {
     formData.append('user_id', user_id);
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}merge-pdf`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}merge`, {
         method: "POST",
         body: formData,
       });
@@ -248,7 +248,6 @@ return (
                 </div>
                 <div className="p-6">
                   <div className="option__panel__content">
-                    <div className="info drag hidden">To change the order of your PDFs, drag and drop the files as you want.</div>
                     <div className="info multiple bg-sky-100 p-4 rounded text-sm text-gray-600">
                       Please, select more PDF files by clicking again on ‘Select PDF files’.<br />
                       Select multiple files by maintaining pressed ‘Ctrl’

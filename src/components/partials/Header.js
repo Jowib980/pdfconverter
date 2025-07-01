@@ -139,12 +139,12 @@ function Header() {
         <nav className="hidden sm:flex space-x-4 relative">
           {navItems.map(({ title, url, dropdown, dropdownGrouped }) => (
             <div key={url} className="group relative">
-              <Link
-                to={url}
+              <a
+                href={url}
                 className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:text-red-600"
               >
                 {title}
-              </Link>
+              </a>
 
               {/* Basic Dropdown */}
               {dropdown && (

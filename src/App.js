@@ -16,6 +16,7 @@ import SplitPDF from "./components/tools/SplitPDF/SplitPDF";
 import CompressPDF from "./components/tools/CompressPDF/CompressPDF";
 import RotatePDF from "./components/tools/RotatePDF/RotatePDF";
 import JpgFile from "./components/tools/JPGtoPDF/JpgFile";
+import WatermarkFile from "./components/tools/Watermark/WatermarkFile";
 import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
@@ -131,6 +132,15 @@ function App() {
             element={
               // <ProtectedRoute>
                 <JpgFile />
+              // </ProtectedRoute>
+            }
+          />
+
+           <Route
+            path="/watermark"
+            element={
+              // <ProtectedRoute>
+                <WatermarkFile />
               // </ProtectedRoute>
             }
           />

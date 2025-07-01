@@ -30,36 +30,42 @@ function Tools() {
       icon: "ico--htmlpdf",
       link: "html-to-pdf",
     },
-    // {
-    //   title: "Merge PDF",
-    //   description: "Combine PDFs in the order you want.",
-    //   icon: "ico--merge",
-    //   link: "merge-pdf",
-    // },
-    // { 
-    //   title: "Split PDF",
-    //   description: "Separate pages into individual PDF files.",
-    //   icon: "ico--split",
-    //   link: "split-pdf",
-    // },
+    {
+      title: "Merge PDF",
+      description: "Combine PDFs in the order you want.",
+      icon: "ico--merge",
+      link: "merge-pdf",
+    },
+    { 
+      title: "Split PDF",
+      description: "Separate pages into individual PDF files.",
+      icon: "ico--split",
+      link: "split-pdf",
+    },
     // {
     //   title: "Compress PDF",
     //   description: "Reduce PDF file size while retaining quality.",
     //   icon: "ico--compress",
     //   link: "compress-pdf",
     // },
-    // {
-    //   title: "Rotate PDF",
-    //   description: "Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!",
-    //   icon: "ico--rotate",
-    //   link: "rotate-pdf",
-    // },
-       {
-         title: "JPG to PDF",
-         description: "Convert JPG images to PDF in seconds. Easily adjust orientation and margins.",
-         icon: "ico--jpgpdf",
-         link: "jpg-to-pdf",
-       },
+    {
+      title: "Rotate PDF",
+      description: "Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!",
+      icon: "ico--rotate",
+      link: "rotate-pdf",
+    },
+    {
+      title: "JPG to PDF",
+      description: "Convert JPG images to PDF in seconds. Easily adjust orientation and margins.",
+      icon: "ico--jpgpdf",
+      link: "jpg-to-pdf",
+    },
+    {
+      title: "Watermark",
+      description: "Stamp an image or text over your PDF in seconds. Choose the typography, transparency and position.",
+      icon: "ico--watermark",
+      link: "watermark",
+    },
   ];
 
   useEffect(() => {
