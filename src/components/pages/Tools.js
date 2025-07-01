@@ -120,8 +120,35 @@ function Tools() {
       setShowModal(false);
       window.location.href = selectedTool.link;
     } else {
-      console.error("Registration failed:", data);
-      alert("Registration failed: " + (data.message || "Unknown error"));
+       const emailError = data?.email?.[0];
+        if (emailError === "The email has already been taken.") {
+          const response = await fetch(` ${process.env.REACT_APP_BACKEND_API_URL}login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json'
+          },
+          body: JSON.stringify({
+            email: email,
+            password: '12345678',
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          
+          console.log("Login successfully!");
+          localStorage.setItem("token", data.access_token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          localStorage.setItem("user_email", email);
+          setShowModal(false);
+          window.location.href = selectedTool.link;
+          
+        } else {
+          console.log(data.message || "Login failed.");
+        }
+      }
     }
   } catch (error) {
     console.error("Registration error:", error);
