@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 function Tools() {
   const [showModal, setShowModal] = useState(false);
@@ -69,7 +70,7 @@ function Tools() {
   ];
 
   useEffect(() => {
-    const savedEmail = localStorage.getItem("user_email");
+    const savedEmail = Cookies.get("user_email");
     if (savedEmail) {
       setEmail(savedEmail);
     }
@@ -112,9 +113,9 @@ function Tools() {
 
     if (response.ok) {
       
-      localStorage.setItem("user", JSON.stringify(data.user));
-      localStorage.setItem("access_token", data.access_token);
-      localStorage.setItem("user_email", email);
+      Cookies.set("user", JSON.stringify(data.user), { expires: 30 });
+      Cookies.set("access_token", data.access_token, { expires: 30 });
+      Cookies.set("user_email", email, { expires: 30 });
       
       console.log('Registered successfully:', data.user);
       setShowModal(false);
@@ -139,9 +140,9 @@ function Tools() {
         if (response.ok) {
           
           console.log("Login successfully!");
-          localStorage.setItem("token", data.access_token);
-          localStorage.setItem("user", JSON.stringify(data.user));
-          localStorage.setItem("user_email", email);
+          Cookies.set("token", data.access_token, { expires: 30 });
+          Cookies.set("user", JSON.stringify(data.user), { expires: 30 });
+          Cookies.set("user_email", email, { expires: 30 });
           setShowModal(false);
           window.location.href = selectedTool.link;
           
