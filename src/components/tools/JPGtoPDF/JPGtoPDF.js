@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../../partials/Header.js';
-import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle } from 'react-icons/fa';
+import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle, FaArrowLeft } from 'react-icons/fa';
 import Loader from '../../Loader.js';
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
+import Cookies from 'js-cookie';
 
 function JPGtoPDF({ files = [] }) {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -17,7 +18,7 @@ function JPGtoPDF({ files = [] }) {
   const [convertedUrls, setConvertedUrls] = useState([]);
   const token = uuidv4();
   const navigate = useNavigate();
-  const userString = localStorage.getItem("user");
+  const userString = Cookies.get("user");
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
   const [error, setError] = useState(false);
@@ -83,13 +84,15 @@ function JPGtoPDF({ files = [] }) {
 
         if (pageOrientation === 'landscape') {
           // rotate canvas for landscape
-          canvas.width = 180;
-          canvas.height = 127;
+          canvas.width = 127;  // Height becomes width after rotation
+          canvas.height = 180; // Width becomes height after rotation
+
           ctx.save();
           ctx.translate(canvas.width / 2, canvas.height / 2);
-          ctx.rotate(-Math.PI / 2);
-          ctx.drawImage(img, -drawHeight / 2, -drawWidth / 2, drawHeight, drawWidth);
+          ctx.rotate(Math.PI / 2);  // Rotate 90 degrees clockwise
+          ctx.drawImage(img, -drawWidth / 2, -drawHeight / 2, drawWidth, drawHeight);
           ctx.restore();
+
         } else {
           // normal portrait
           canvas.width = 127;
@@ -185,7 +188,7 @@ const handleRemoveFile = (indexToRemove) => {
         <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
           <div className="flex-1 flex justify-center items-center px-4">
             <a href="/">
-              <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-4 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Go to Home</button>
+              <button className="flex items-center gap-2 bg-red-600 text-white px-8 py-8 rounded-lg font-semibold shadow-md hover:bg-red-700 transition"><FaArrowLeft /> Go to Home</button>
             </a>
           </div>
         </div>
@@ -328,7 +331,7 @@ const handleRemoveFile = (indexToRemove) => {
 
             <div className="p-6">
               <button
-                className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300"
+                className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
                 onClick={Convert}
               >
                 <span className="convert-button">Convert to PDF</span>

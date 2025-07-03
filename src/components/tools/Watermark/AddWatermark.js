@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../../partials/Header.js';
-import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle, FaTrash } from 'react-icons/fa';
+import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle, FaTrash, FaArrowLeft } from 'react-icons/fa';
 import Loader from '../../Loader.js';
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+import Cookies from 'js-cookie';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -24,7 +25,7 @@ function AddWatermark({ files = [] }) {
   const navigate = useNavigate();
   const [error, setError] = useState(false);
   
-  const userString = localStorage.getItem("user");
+  const userString = Cookies.get("user");
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
   const watermarkOptions = [
@@ -262,7 +263,7 @@ const handleRemoveFile = (indexToRemove) => {
         <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
           <div className="flex-1 flex justify-center items-center px-4">
             <a href="/">
-              <button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-4 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Go to Home</button>
+              <button className="flex items-center gap-2 bg-red-600 text-white px-8 py-8 rounded-lg font-semibold shadow-md hover:bg-red-700 transition"><FaArrowLeft /> Go to Home</button>
             </a>
           </div>
         </div>
@@ -589,8 +590,7 @@ const handleRemoveFile = (indexToRemove) => {
       {/* Conversion Loader Section */}
       {isConverting && (
         <div className="conversion-section min-h-screen bg-gray-50 mt-4 py-20 flex flex-col items-center justify-center">
-        <h1 className="section-title">Rotate PDF</h1>
-          <h2 className="text-2xl font-semibold mb-4">Rotating PDF file...</h2>
+        <h1 className="section-title">Adding Watermark...</h1>
           <Loader />
         </div>
       )}
