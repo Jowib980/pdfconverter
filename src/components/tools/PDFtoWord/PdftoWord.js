@@ -147,9 +147,10 @@ function PdftoWord({ files = [] }) {
                   />
                 </label>
               </div>
-              <button className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition" title="Upload from Google Drive">
+              {/* <button className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition" title="Upload from Google Drive">
                 <FaGoogleDrive />
               </button>
+            */}
             </div>
 
             <div className="flex flex-wrap justify-center gap-4 mt-6">

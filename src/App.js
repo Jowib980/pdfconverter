@@ -17,12 +17,15 @@ import CompressPDF from "./components/tools/CompressPDF/CompressPDF";
 import RotatePDF from "./components/tools/RotatePDF/RotatePDF";
 import JpgFile from "./components/tools/JPGtoPDF/JpgFile";
 import WatermarkFile from "./components/tools/Watermark/WatermarkFile";
+import Plans from "./components/pages/Plans";
+import Contact from "./components/pages/Contact";
+import PaypalPayment from './components/pages/PaypalPayment';
 import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
   return (
     <HelmetProvider>
-
+   
     <Router>
       <div className="app">
         <Routes>
@@ -144,6 +147,35 @@ function App() {
               // </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/plans"
+            element={
+              // <ProtectedRoute>
+                <Plans />
+              // </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/contact"
+            element={
+              // <ProtectedRoute>
+                <Contact />
+              // </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/payment"
+            element={
+              // <ProtectedRoute>
+                <PaypalPayment />
+              // </ProtectedRoute>
+            }
+          />
+          
+            }
         
         </Routes>
       </div>

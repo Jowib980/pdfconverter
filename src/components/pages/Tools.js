@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import Loader from '../Loader.js';
+import { ToastContainer, toast } from 'react-toastify';
 
 function Tools() {
   const [showModal, setShowModal] = useState(false);
   const [selectedTool, setSelectedTool] = useState(null);
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const tools = [
     {
@@ -92,6 +95,8 @@ function Tools() {
   };
 
   const handleSubmit = async () => {
+    setShowModal(false);
+    setLoading(true);
   if (!email.trim()) return;
 
   try {
@@ -119,8 +124,10 @@ function Tools() {
       
       console.log('Registered successfully:', data.user);
       setShowModal(false);
+      setLoading(false);
       window.location.href = selectedTool.link;
     } else {
+      setLoading(true);
        const emailError = data?.email?.[0];
         if (emailError === "The email has already been taken.") {
           const response = await fetch(` ${process.env.REACT_APP_BACKEND_API_URL}login`, {
@@ -144,21 +151,33 @@ function Tools() {
           Cookies.set("user", JSON.stringify(data.user), { expires: 30 });
           Cookies.set("user_email", email, { expires: 30 });
           setShowModal(false);
+          setLoading(false);
           window.location.href = selectedTool.link;
           
         } else {
+          setLoading(false);
+          toast.error("An error occurred. Please try again later.");
           console.log(data.message || "Login failed.");
         }
       }
     }
   } catch (error) {
     console.error("Registration error:", error);
-    alert("An error occurred during registration.");
+    toast.error("An error occurred during registration.");
   }
 };
 
   return (
     <div className="content">
+    <ToastContainer />
+
+    {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
+          <Loader />
+        </div>
+    )}
+
+
       <div className="p-4">
         <h1 className="home-title text-center font-bold py-4">
           Every tool you need to work with PDFs in one place

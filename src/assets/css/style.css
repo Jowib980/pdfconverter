@@ -418,3 +418,9 @@ canvas.jpg {
     display: block;
     align-items: center;
 }
+
+.contact-title {
+    font-size: 55px;
+    font-weight: 800;
+    color: #252424;
+}

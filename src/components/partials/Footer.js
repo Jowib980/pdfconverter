@@ -14,7 +14,7 @@ function Footer() {
             <h4 className="text-red-600 font-bold mb-3">PDFTOOLS</h4>
             <ul className="space-y-1">
               <li>Home</li>
-              <li>Pricing</li>
+              <a href="/plans" ><li>Pricing</li></a>
               <li>Security</li>
               <li>Tools</li>
               <li>FAQ</li>
@@ -47,7 +47,7 @@ function Footer() {
               <li>Blog</li>
               <li>Press</li>
               <li>Legal & Privacy</li>
-              <li>Contact</li>
+              <a href="/contact" ><li>Contact</li></a>
             </ul>
           </div>
         </div>

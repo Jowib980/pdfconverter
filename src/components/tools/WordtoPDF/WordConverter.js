@@ -47,9 +47,10 @@ function WordConverter() {
               />
             </label>
 
-            <button className="bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition">
+            {/* <button className="bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition">
               <FaGoogleDrive />
             </button>
+          */}
           </div>
 
           <p className="text-sm text-gray-500">or drop WORD documents here</p>
