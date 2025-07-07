@@ -9,26 +9,14 @@ function Footer() {
       <div className="container mx-auto px-6">
 
         {/* Top: Footer Links */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 border-b pb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 border-b pb-8">
           <div>
             <h4 className="text-red-600 font-bold mb-3">PDFTOOLS</h4>
             <ul className="space-y-1">
-              <li>Home</li>
+              <a href="/"><li>Home</li></a>
               <a href="/plans" ><li>Pricing</li></a>
-              <li>Security</li>
-              <li>Tools</li>
-              <li>FAQ</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-red-600 font-bold mb-3">PRODUCT</h4>
-            <ul className="space-y-1">
-              <li>PDFTools Desktop</li>
-              <li>PDFTools Mobile</li>
-              <li>Developers</li>
-              <li>Features</li>
-              <li>iloveimg.com</li>
+              <a href="/tools"><li>Tools</li></a>
+              <a href="/faq"><li>FAQ</li></a>
             </ul>
           </div>
 
@@ -46,7 +34,7 @@ function Footer() {
               <li>Our Story</li>
               <li>Blog</li>
               <li>Press</li>
-              <li>Legal & Privacy</li>
+              <a href="/legal"><li>Legal & Privacy</li></a>
               <a href="/contact" ><li>Contact</li></a>
             </ul>
           </div>

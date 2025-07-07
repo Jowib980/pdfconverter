@@ -8,7 +8,8 @@ function Main({children}) {
 			<Header />
 				<main className="flex-grow w-full mt-4 py-6 bg-gray-100">
 			        {children}
-			      </main>
+			     </main>
+			     <div className="bg-white p-1"></div>
 			<Footer />
 		</div>
 		);

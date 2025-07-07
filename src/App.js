@@ -20,6 +20,9 @@ import WatermarkFile from "./components/tools/Watermark/WatermarkFile";
 import Plans from "./components/pages/Plans";
 import Contact from "./components/pages/Contact";
 import PaypalPayment from './components/pages/PaypalPayment';
+import Legal from './components/pages/Legal';
+import FAQ from './components/pages/FAQ';
+import ToolsDescription from './components/pages/ToolsDescription';
 import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
@@ -171,6 +174,34 @@ function App() {
             element={
               // <ProtectedRoute>
                 <PaypalPayment />
+              // </ProtectedRoute>
+            }
+          />
+          
+
+          <Route
+            path="/legal"
+            element={
+              // <ProtectedRoute>
+                <Legal />
+              // </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/faq"
+            element={
+              // <ProtectedRoute>
+                <FAQ />
+              // </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/tools"
+            element={
+              // <ProtectedRoute>
+                <ToolsDescription />
               // </ProtectedRoute>
             }
           />

@@ -10,6 +10,8 @@ function Contact() {
   const userString = Cookies.get("user");
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [submittedName, setSubmittedName] = useState(null);
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -67,6 +69,7 @@ function Contact() {
       const data = await response.json();
 
        if (response.ok) {
+        setSubmittedName(form.name);
          setForm({
           name: '',
           email: '',
@@ -75,6 +78,7 @@ function Contact() {
         });
         setLoading(false);
         toast.success("Sent message successfully!");
+        setShowSuccessMessage(true);
       } else {
         setLoading(false);
         toast.error(data.message || "Error occured, Please try again later.");
@@ -111,7 +115,8 @@ function Contact() {
           </div>
 
           {/* Right Section: Contact Form */}
-          <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-lg shadow-md p-8">
+          {!showSuccessMessage && (
+            <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-lg shadow-md p-8">
               
               {/* Name and Email */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -175,8 +180,22 @@ function Contact() {
               <button type="submit" onClick={SendMessage} className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-4 rounded-lg transition">
                 Send message
               </button>
-            
+
           </div>
+          )}
+
+              {showSuccessMessage && (
+
+                <div className="w-full max-w-xl bg-white border border-gray-200 rounded-lg shadow-md p-8">
+                  <div className="block mb-1 text-md font-medium text-gray-700">
+                    <p><b className="text-xl">Dear {submittedName},</b><br></br>
+                      Thank you for contacting us, your message has been submitted. We will get back to you as soon as possible!</p>
+                  </div>
+                </div>
+
+              )}
+            
+
         </div>
       </Main>
     </>
