@@ -6,12 +6,12 @@ import appStoreImage from '../../assets/images/app_store.svg';
 function Footer() {
   return (
     <footer className="bg-gray-100 text-sm text-slate-600 pt-10">
-      <div className="container mx-auto px-6">
+      <div className="max-w-6xl container mx-auto px-8">
 
         {/* Top: Footer Links */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6 border-b pb-8">
           <div>
-            <h4 className="text-red-600 font-bold mb-3">PDFTOOLS</h4>
+            <h4 className="text-red-600 font-bold mb-3 text-xl">PDFTOOLS</h4>
             <ul className="space-y-1">
               <a href="/"><li>Home</li></a>
               <a href="/plans" ><li>Pricing</li></a>
@@ -21,7 +21,7 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="text-red-600 font-bold mb-3">SOLUTIONS</h4>
+            <h4 className="text-red-600 font-bold mb-3 text-xl">SOLUTIONS</h4>
             <ul className="space-y-1">
               <li>Business</li>
               <li>Education</li>
@@ -29,11 +29,9 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="text-red-600 font-bold mb-3">COMPANY</h4>
+            <h4 className="text-red-600 font-bold mb-3 text-xl">COMPANY</h4>
             <ul className="space-y-1">
-              <li>Our Story</li>
-              <li>Blog</li>
-              <li>Press</li>
+              <a href="/blog"><li>Blog</li></a>
               <a href="/legal"><li>Legal & Privacy</li></a>
               <a href="/contact" ><li>Contact</li></a>
             </ul>

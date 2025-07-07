@@ -124,6 +124,8 @@ function Header() {
         },
       ],
     },
+    { title: "PRICING", url: "/plans" },
+    { title: "CONTACT", url: "/contact" },
   ];
 
   return (

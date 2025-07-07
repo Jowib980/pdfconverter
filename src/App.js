@@ -23,6 +23,7 @@ import PaypalPayment from './components/pages/PaypalPayment';
 import Legal from './components/pages/Legal';
 import FAQ from './components/pages/FAQ';
 import ToolsDescription from './components/pages/ToolsDescription';
+import Blog from './components/pages/Blog';
 import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
@@ -202,6 +203,15 @@ function App() {
             element={
               // <ProtectedRoute>
                 <ToolsDescription />
+              // </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/blog"
+            element={
+              // <ProtectedRoute>
+                <Blog />
               // </ProtectedRoute>
             }
           />
