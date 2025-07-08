@@ -35,6 +35,12 @@ function Tools() {
       link: "html-to-pdf",
     },
     {
+      title: "JPG to PDF",
+      description: "Convert JPG images to PDF in seconds. Easily adjust orientation and margins.",
+      icon: "ico--jpgpdf",
+      link: "jpg-to-pdf",
+    },
+    {
       title: "Merge PDF",
       description: "Combine PDFs in the order you want.",
       icon: "ico--merge",
@@ -57,12 +63,6 @@ function Tools() {
       description: "Rotate your PDFs the way you need them. You can even rotate multiple PDFs at once!",
       icon: "ico--rotate",
       link: "rotate-pdf",
-    },
-    {
-      title: "JPG to PDF",
-      description: "Convert JPG images to PDF in seconds. Easily adjust orientation and margins.",
-      icon: "ico--jpgpdf",
-      link: "jpg-to-pdf",
     },
     {
       title: "Watermark",

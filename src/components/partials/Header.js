@@ -36,96 +36,50 @@ function Header() {
   const navItems = [
     { title: "MERGE PDF", url: "/merge-pdf" },
     { title: "SPLIT PDF", url: "/split-pdf" },
-    { title: "COMPRESS PDF", url: "/compress-pdf" },
     {
       title: "CONVERT PDF",
-      url: "/convert-pdf",
+      url: "/",
       dropdownGrouped: [
         {
           title: "CONVERT TO PDF",
           tools: [
             { title: "JPG to PDF", url: "/jpg-to-pdf", icon: "ico--jpgpdf" },
             { title: "WORD to PDF", url: "/word-to-pdf", icon: "ico--wordpdf" },
-            { title: "POWERPOINT to PDF", url: "/powerpoint-to-pdf", icon: "ico--powerpointpdf" },
+            // { title: "POWERPOINT to PDF", url: "/powerpoint-to-pdf", icon: "ico--powerpointpdf" },
             { title: "EXCEL to PDF", url: "/excel-to-pdf", icon: "ico--excelpdf" },
             { title: "HTML to PDF", url: "/html-to-pdf", icon: "ico--htmlpdf" },
           ],
         },
-        {
-          title: "CONVERT FROM PDF",
-          tools: [
-            { title: "PDF to JPG", url: "/pdf-to-jpg", icon: "ico--pdfjpg" },
-            { title: "PDF to WORD", url: "/pdf-to-word", icon: "ico--pdfword" },
-            { title: "PDF to POWERPOINT", url: "/pdf-to-powerpoint", icon: "ico--pdfpowerpoint" },
-            { title: "PDF to EXCEL", url: "/pdf-to-excel", icon: "ico--pdfexcel" },
-            { title: "PDF to PDF", url: "/pdf-to-html", icon: "ico--pdfa" },
-          ],
-        }
       ],
     },
     {
       title: "ALL PDF TOOL",
-      url: "/all-pdf",
+      url: "/",
       dropdownGrouped: [
         {
           title: "Organize PDF",
           tools: [
-            { title: "Merge PDF", url: "/merge_pdf", icon: "ico--merge" },
-            { title: "Split PDF", url: "/split_pdf", icon: "ico--split" },
-            { title: "Remove pages", url: "/remove-pages", icon: "ico--remove" },
-            { title: "Extract pages", url: "/split_pdf#split,extract", icon: "ico--extract" },
-            { title: "Organize PDF", url: "/organize-pdf", icon: "ico--organize" },
-            { title: "Scan to PDF", url: "/scan-pdf", icon: "ico--scan" },
-          ],
-        },
-        {
-          title: "Optimize PDF",
-          tools: [
-            { title: "Compress PDF", url: "/compress_pdf", icon: "ico--compress" },
-            { title: "Repair PDF", url: "/repair-pdf", icon: "ico--repair" },
-            { title: "OCR PDF", url: "/ocr-pdf", icon: "ico--pdfocr" },
+            { title: "Merge PDF", url: "/merge-pdf", icon: "ico--merge" },
+            { title: "Split PDF", url: "/split-pdf", icon: "ico--split" },
           ],
         },
         {
           title: "Convert to PDF",
           tools: [
-            { title: "JPG to PDF", url: "/jpg_to_pdf", icon: "ico--jpgpdf" },
+            { title: "JPG to PDF", url: "/jpg-to-pdf", icon: "ico--jpgpdf" },
             { title: "Word to PDF", url: "/word-to-pdf", icon: "ico--wordpdf" },
-            { title: "PowerPoint to PDF", url: "/powerpoint_to_pdf", icon: "ico--powerpointpdf" },
-            { title: "Excel to PDF", url: "/excel_to_pdf", icon: "ico--excelpdf" },
+            { title: "Excel to PDF", url: "/excel-to-pdf", icon: "ico--excelpdf" },
             { title: "HTML to PDF", url: "/html-to-pdf", icon: "ico--htmlpdf" },
-          ],
-        },
-        {
-          title: "Convert from PDF",
-          tools: [
-            { title: "PDF to JPG", url: "/pdf_to_jpg", icon: "ico--pdfjpg" },
-            { title: "PDF to Word", url: "/pdf-to-word", icon: "ico--pdfword" },
-            { title: "PDF to PowerPoint", url: "/pdf_to_powerpoint", icon: "ico--pdfpowerpoint" },
-            { title: "PDF to Excel", url: "/pdf_to_excel", icon: "ico--pdfexcel" },
-            { title: "PDF to PDF/A", url: "/convert-pdf-to-pdfa", icon: "ico--pdfa" },
           ],
         },
         {
           title: "Edit PDF",
           tools: [
             { title: "Rotate PDF", url: "/rotate-pdf", icon: "ico--rotate" },
-            { title: "Add page numbers", url: "/add_pdf_page_number", icon: "ico--pagenumber" },
-            { title: "Add watermark", url: "/pdf_add_watermark", icon: "ico--watermark" },
-            { title: "Crop PDF", url: "/crop-pdf", icon: "ico--pdfcrop" },
-            { title: "Edit PDF", url: "/edit-pdf", icon: "ico--editpdf" },
+            { title: "Add watermark", url: "/watermark", icon: "ico--watermark" },
           ],
         },
-        {
-          title: "PDF Security",
-          tools: [
-            { title: "Unlock PDF", url: "/unlock_pdf", icon: "ico--unlock" },
-            { title: "Protect PDF", url: "/protect-pdf", icon: "ico--protect" },
-            { title: "Sign PDF", url: "/sign-pdf", icon: "ico--sign" },
-            { title: "Redact PDF", url: "/redact-pdf", icon: "ico--redact" },
-            { title: "Compare PDF", url: "/compare-pdf", icon: "ico--pdfcompare" },
-          ],
-        },
+        
       ],
     },
     { title: "PRICING", url: "/plans" },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import Main from "../partials/Main.js";
@@ -18,6 +18,31 @@ function PaypalPayment() {
   const [loading, setLoading] = useState(false);
   const [paymentGateway, setPaymentGateway] = useState(null);
   const navigate = useNavigate();
+  const apiCalledRef = useRef(false);
+  const [gateways, setGateways] = useState([]);
+
+  const fetchPaymentGateway = async () => {
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}gateways`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+      });
+
+      const result = await response.json();
+      console.log("Result", result.data.data);
+      setGateways(result?.data?.data);
+    } catch (err) {
+      console.log("Error occurred", err);
+    }
+  };
+
+  const razorpayEnabled = gateways.find(gw => gw.name.toLowerCase() === 'razorpay' && gw.is_enabled);
+  const paypalEnabled = gateways.find(gw => gw.name.toLowerCase() === 'paypal' && gw.is_enabled);
+
 
 
  useEffect(() => {
@@ -25,9 +50,16 @@ function PaypalPayment() {
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
     document.body.appendChild(script);
+    
+    if(!apiCalledRef.current) {
+      apiCalledRef.current = true;
+      fetchPaymentGateway();
+    }
+
     return () => {
       document.body.removeChild(script);
     };
+
   }, []);
 
 
@@ -50,7 +82,7 @@ function PaypalPayment() {
       });
 
       const result = await response.json();
-      console.log("Saved to DB:", result);
+      
       toast.success("Payment successful.");
       navigate('/plans');
     } catch (err) {
@@ -229,69 +261,82 @@ function PaypalPayment() {
 
           <div className="grid md:grid-cols-2 gap-6">
             {/* PayPal Integration */}
-            <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow">
-              <h3 className="text-xl font-semibold text-gray-700 mb-4">Pay with PayPal</h3>
-              <PayPalButtons
-                style={{ layout: "vertical", color: "blue", shape: "pill", label: "pay" }}
-                onClick={(data, actions) => {
-                  const userString = Cookies.get("user");
-                  const user = userString ? JSON.parse(userString) : null;
 
-                  if (!user) {
-                    setPaymentGateway("paypal");
-                    setShowModal(true);
-                    return actions.reject();
-                  }
+            {paypalEnabled && (
+              <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow">
+                <h3 className="text-xl font-semibold text-gray-700 mb-4">Pay with PayPal</h3>
+                <PayPalButtons
+                  style={{ layout: "vertical", color: "blue", shape: "pill", label: "pay" }}
+                  onClick={(data, actions) => {
+                    const userString = Cookies.get("user");
+                    const user = userString ? JSON.parse(userString) : null;
 
-                  return actions.resolve();
-                }}
+                    if (!user) {
+                      setPaymentGateway("paypal");
+                      setShowModal(true);
+                      return actions.reject();
+                    }
 
-                createOrder={(data, actions) => {
-                  return actions.order.create({
-                    purchase_units: [{
-                      amount: { value: plan.price },
-                      description: `${plan.title} Plan`
-                    }]
-                  });
-                }}
-                onApprove={(data, actions) => {
-                  return actions.order.capture().then(details => {
-                    const paymentPayload = {
-                      user_id: user_id,
-                      payer_email: details.payer.email_address,
-                      plan_type: plan.title,
-                      plan_amount: plan.price,
-                      transaction_id: details.id,
-                      transaction_status: details.status,
-                      payment_date: details.update_time,
-                      payer_id: details.payer.payer_id,
-                      payer_name: `${details.payer.name.given_name} ${details.payer.name.surname}`,
-                      gateway: "paypal",
-                      currency: details.purchase_units[0].amount.currency_code,
-                      raw_response: JSON.stringify(details)
-                    };
-                    savePayment(paymentPayload);
-                  });
-                }}
-              />
-            </div>
+                    return actions.resolve();
+                  }}
+
+                  createOrder={(data, actions) => {
+                    return actions.order.create({
+                      purchase_units: [{
+                        amount: { value: plan.price },
+                        description: `${plan.title} Plan`
+                      }]
+                    });
+                  }}
+                  onApprove={(data, actions) => {
+                    return actions.order.capture().then(details => {
+                      const paymentPayload = {
+                        user_id: user_id,
+                        payer_email: details.payer.email_address,
+                        plan_type: plan.title,
+                        plan_amount: plan.price,
+                        transaction_id: details.id,
+                        transaction_status: details.status,
+                        payment_date: details.update_time,
+                        payer_id: details.payer.payer_id,
+                        payer_name: `${details.payer.name.given_name} ${details.payer.name.surname}`,
+                        gateway: "paypal",
+                        currency: details.purchase_units[0].amount.currency_code,
+                        raw_response: JSON.stringify(details)
+                      };
+                      savePayment(paymentPayload);
+                    });
+                  }}
+                />
+              </div>
+            )}
 
             {/* Razorpay Integration */}
-            <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow flex flex-col justify-between">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-700 mb-4">Pay with Razorpay</h3>
-                <p className="text-gray-500 mb-4">Secure payment via Razorpay gateway.</p>
+
+            {razorpayEnabled && (
+              <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-4">Pay with Razorpay</h3>
+                  <p className="text-gray-500 mb-4">Secure payment via Razorpay gateway.</p>
+                </div>
+                <button
+                  onClick={handleRazorpayPayment}
+                  className="mt-auto w-full px-6 py-3 bg-indigo-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-700 transition duration-200"
+                >
+                  Pay with Razorpay
+                </button>
               </div>
-              <button
-                onClick={handleRazorpayPayment}
-                className="mt-auto w-full px-6 py-3 bg-indigo-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-700 transition duration-200"
-              >
-                Pay with Razorpay
-              </button>
-            </div>
+            )}
+
+
+      {!razorpayEnabled && !paypalEnabled && (
+  <div className="text-center text-red-500">No payment gateways are enabled at the moment.</div>
+)}
           </div>
         </div>
       </div>
+
+
 
 
       {showModal && (

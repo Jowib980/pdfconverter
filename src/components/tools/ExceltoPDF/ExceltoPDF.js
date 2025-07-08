@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../../partials/Header.js';
-import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle, FaArrowLeft } from 'react-icons/fa';
+import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle, FaArrowLeft, FaCog } from 'react-icons/fa';
 import Loader from '../../Loader.js';
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -22,6 +22,7 @@ function ExceltoPDF({ files = [] }) {
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
   const [error, setError] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
 
 
   useEffect(() => {
@@ -118,6 +119,7 @@ const handleRemoveFile = (indexToRemove) => {
         <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
             
+            {!showSidebar && (
             <div className="sidetool absolute -top-4 -right-4 z-20">
               <div className="relative">
                 <label className="relative cursor-pointer">
@@ -137,9 +139,9 @@ const handleRemoveFile = (indexToRemove) => {
                 </span>
               </div>
             </div>
-          
+          )}
             
-            <div className="upload-extra absolute mt-2 right-0 hidden group-hover:flex flex-col gap-2 z-10">
+            <div className={`upload-extra absolute mt-2 right-0 ${showSidebar ? 'hide-menu' : 'group-hover:flex'} flex-col gap-2 z-10`}>
               <div className="relative">
                 <label className="relative cursor-pointer">
                   <div className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition" title="Upload from device">
@@ -154,6 +156,16 @@ const handleRemoveFile = (indexToRemove) => {
                   />
                 </label>
               </div>
+
+
+               <button
+                className="sm:hidden bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-red-700"
+                title="Settings"
+                onClick={() => setShowSidebar(true)}
+              >
+                <FaCog />
+              </button>
+
               {/* <button className="flex items-center justify-center w-10 h-10 bg-red-500 text-white rounded-full hover:bg-red-600 transition" title="Upload from Google Drive">
                 <FaGoogleDrive />
               </button>
@@ -181,7 +193,24 @@ const handleRemoveFile = (indexToRemove) => {
             </div>
           </div>
 
-          <div className="w-[350px] bg-white border-l border-gray-200 flex flex-col justify-between">
+          
+        {/* sidebar */}
+          <div
+              className={`
+                bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
+                w-[300px] sm:w-[350px]
+                fixed top-0 right-0 h-screen z-50
+                ${showSidebar ? 'translate-x-0' : 'translate-x-full'}
+                sm:relative sm:translate-x-0 sm:flex
+              `}
+            >
+              {/* Close Button for Mobile */}
+              <div className="sm:hidden p-4 flex justify-end">
+                <button onClick={() => setShowSidebar(false)}>
+                  <FaTimesCircle className="text-red-500 text-2xl" />
+                </button>
+              </div>
+
             {selectedFiles.length > 0 ? (
               <>
             <div className="p-6 text-center border-b">
@@ -228,7 +257,7 @@ const handleRemoveFile = (indexToRemove) => {
           </div>
         </div>
 
-        <div className="selected-section flex bg-gray-50 p-6 mobile-button">
+        <div className={`selected-section flex bg-gray-50 p-6 mobile-button ${showSidebar ? 'hide-menu' : ''}`}>
               <button
                 className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
                 onClick={Convert}

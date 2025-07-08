@@ -103,7 +103,7 @@ img.tooltip.tooltip--top {
     transform: translateX(-50%);
     padding-top: 16px;
     cursor: auto;
-    min-width: 500px;
+    /*min-width: 500px;*/
     max-width: 90vw;
     width: max-content;
 }
@@ -449,6 +449,10 @@ canvas.jpg {
 
 .mobile-button {
     display: none;        
+}
+
+.hide-menu {
+    display: none !important;
 }
 
 

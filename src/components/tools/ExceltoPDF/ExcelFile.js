@@ -53,7 +53,7 @@ function ExcelFile() {
           */}
           </div>
 
-          <p className="text-sm text-gray-500">or drop Excel spreadsheets here</p>
+         
         </div>
       )}
     </div>

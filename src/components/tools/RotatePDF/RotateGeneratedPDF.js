@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Header from '../../partials/Header.js';
-import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle, FaArrowLeft } from 'react-icons/fa';
+import { FaGoogleDrive, FaArrowCircleRight, FaLaptop, FaDownload, FaTimesCircle, FaArrowLeft, FaCog } from 'react-icons/fa';
 import Loader from '../../Loader.js';
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -38,6 +38,7 @@ function RotateGeneratedPDF({ files = [] }) {
   const [angle, setAngle] = useState('0');
 
   const canvasRefs = useRef({});
+  const [showSidebar, setShowSidebar] = useState(false);
 
 
   useEffect(() => {
@@ -187,6 +188,7 @@ const handleRemoveFile = (indexToRemove) => {
         <>
         <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
+           {!showSidebar && (
             <div className="sidetool absolute -top-4 -right-4 z-20">
               <div className="relative">
                 <label className="relative cursor-pointer">
@@ -205,7 +207,19 @@ const handleRemoveFile = (indexToRemove) => {
                   {selectedFiles.length}
                 </span>
               </div>
+
             </div>
+            )}
+
+            <div className={`upload-extra absolute mt-2 right-0 ${showSidebar ? 'hide-menu' : 'group-hover:flex'} flex-col gap-2 z-10`}>
+              <button
+                className="sm:hidden bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-red-700"
+                title="Settings"
+                onClick={() => setShowSidebar(true)}
+              >
+                <FaCog />
+              </button>
+              </div>
 
            
             <div className="flex flex-wrap justify-center gap-4 mt-6">
@@ -249,8 +263,23 @@ const handleRemoveFile = (indexToRemove) => {
           </div>
 
 
-          <div className="w-[350px] bg-white border-l border-gray-200 flex flex-col justify-between">
-            {selectedFiles.length > 0 ? (
+          {/* sidebar*/}
+          <div
+            className={`
+              bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
+              w-[300px] sm:w-[350px]
+              fixed top-0 right-0 h-screen z-50
+              ${showSidebar ? 'translate-x-0' : 'translate-x-full'}
+              sm:relative sm:translate-x-0 sm:flex
+            `}
+          >
+            {/* Close Button for Mobile */}
+            <div className="sm:hidden p-4 flex justify-end">
+              <button onClick={() => setShowSidebar(false)}>
+                <FaTimesCircle className="text-red-500 text-2xl" />
+              </button>
+            </div>
+              {selectedFiles.length > 0 ? (
               <>
             <div className="p-6 text-center border-b">
               <h1 className="tool-heading text-xl font-semibold">Rotate PDF</h1>
@@ -316,12 +345,12 @@ const handleRemoveFile = (indexToRemove) => {
         </div>
 
 
-        <div className="selected-section flex bg-gray-50 p-6 mobile-button">
+        <div className={`selected-section flex bg-gray-50 p-6 mobile-button ${showSidebar ? 'hide-menu' : ''}`}>
           <button
             className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
             onClick={Convert}
           >
-            <span className="convert-button">Split PDF</span>
+            <span className="convert-button">Rotate PDF</span>
             <span className="arrow-icon ml-2">
               <FaArrowCircleRight />
             </span>

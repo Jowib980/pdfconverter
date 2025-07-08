@@ -53,7 +53,7 @@ function JpgFile() {
             */}
           </div>
 
-           {/* <p className="text-sm text-gray-500">or drop WORD documents here</p> */}
+           
         </div>
       )}
     </div>
