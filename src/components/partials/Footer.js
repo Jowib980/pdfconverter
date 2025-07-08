@@ -60,7 +60,7 @@ function Footer() {
         <hr className="my-6 border-gray-200" />
 
         {/* Bottom Row */}
-        <div className="flex flex-col sm:flex-row justify-between items-center">
+        <div className="text-center">
           <span className="text-sm text-gray-500">© 2025 PDFTOOLS. All rights reserved.</span>
           
         </div>
