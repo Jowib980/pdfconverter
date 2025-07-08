@@ -169,6 +169,7 @@ return (
 
       {/* File Selection + Preview */}
       {!isConverting && !conversionDone && (
+        <>
         <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
           {/* Left Section */}
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
@@ -295,6 +296,21 @@ return (
             )}
           </div>
         </div>
+
+
+        <div className="selected-section flex bg-gray-50 p-6 mobile-button">
+          <button
+            className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
+            onClick={Convert}
+          >
+            <span className="convert-button">Merge PDF</span>
+            <span className="arrow-icon ml-2">
+              <FaArrowCircleRight />
+            </span>
+          </button>
+        </div>
+        
+        </>
       )}
 
       {/* Loading State */}

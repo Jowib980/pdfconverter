@@ -272,6 +272,7 @@ const handleRemoveFile = (indexToRemove) => {
       {/* Selected Files Section */}
       {
         !isConverting && !conversionDone && (
+          <>
           <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
             <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
               <div className="sidetool absolute -top-4 -right-4 z-20">
@@ -298,7 +299,7 @@ const handleRemoveFile = (indexToRemove) => {
                 <div className="flex justify-between bg-white p-2 rounded-xl shadow-lg">
                   <select
                     name="file_name"
-                    className="flex-1"
+                    className="w-full max-w-[250px] truncate text-ellipsis whitespace-nowrap overflow-hidden text-sm text-gray-700 bg-transparent focus:outline-none"
                     value={selectedFileIndex}
                     onChange={(e) => setSelectedFileIndex(Number(e.target.value))}
                   >
@@ -465,7 +466,7 @@ const handleRemoveFile = (indexToRemove) => {
                   {/* transparency & rotation section */}
 
                   <div className="p-6 flex justify-between">
-                    <div className="left-section">
+                    {/*<div className="left-section">
                       <label className="block font-semibold mb-2">
                         Transparency:
                       </label>
@@ -483,7 +484,7 @@ const handleRemoveFile = (indexToRemove) => {
                             ))}
                           </select>
                         </div>
-                    </div>
+                    </div>*/}
 
                       <div className="right-section">
                         <label className="block font-semibold mb-2">Rotation:</label>
@@ -583,6 +584,21 @@ const handleRemoveFile = (indexToRemove) => {
               )}
             </div>
           </div>
+
+
+        <div className="selected-section flex bg-gray-50 p-6 mobile-button">
+          <button
+            className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
+            onClick={Convert}
+          >
+            <span className="convert-button">Add Watermark</span>
+            <span className="arrow-icon ml-2">
+              <FaArrowCircleRight />
+            </span>
+          </button>
+        </div>
+        
+        </>
         )
       }
 

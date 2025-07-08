@@ -445,3 +445,56 @@ canvas.jpg {
     margin-bottom: 4px;
     max-width: 1100px;
 }
+
+
+.mobile-button {
+    display: none;        
+}
+
+
+@media (min-width: 250px) and (max-width:  911px)
+{
+    .premium-section {
+        background-color: #47474f;
+        color: white;
+        padding: 10px !important;
+    }
+
+    .row.flex.align-items-center.justify-content-center.d-lg-flex {
+        display: block;
+    }
+
+    .w-\[350px\].bg-white.border-l.border-gray-200.flex.flex-col.justify-between {
+        display: none;
+    }
+
+
+    .sidetool {
+        position: fixed;
+        right: 20px;
+        display: flex;
+        z-index: 99;
+        align-items: center;
+        top: 112px;
+    }
+
+    .file-count {
+        border: 2px solid rgb(239 68 68 / var(--tw-bg-opacity));
+    }
+
+    .upload-extra {
+        position: fixed;
+        right: 20px;
+        display: flex;
+        z-index: 99;
+        align-items: center;
+        top: 146px;
+        margin-top: 12px;
+    }
+
+    .mobile-button {
+        display: block;        
+    }
+
+
+}

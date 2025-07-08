@@ -34,53 +34,54 @@ function WordtoPdf({ files = [] }) {
     setSelectedFiles((prev) => [...prev, ...newFiles]);
     setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
   };
-const Convert = async () => {
-  if (!selectedFiles.length) {
-    alert("Please add at least one .doc/.docx file.");
-    return;
-  }
 
-  setIsConverting(true);
-  setConversionDone(false);
-
-  const updatedStatus = new Array(selectedFiles.length).fill("Converting...");
-  setConversionStatus(updatedStatus);
-
-  const formData = new FormData();
-
-  selectedFiles.forEach((file) => {
-    formData.append("file[]", file);
-  
-  });
-
-  formData.append('user_id', user_id);
-
-  try {
-    const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}convert-word`, {
-      method: "POST",
-      body: formData,
-    });
-
-    const result = await response.json(); 
-    console.log(result.urls);
-
-    if(result && result.urls && result.token) {
-      setConversionStatus('Done');
-      navigate(`/download/${result.token}`);
-    } else {
-      toast.error('Failed conversion, Please try agian later');
+  const Convert = async () => {
+    if (!selectedFiles.length) {
+      alert("Please add at least one .doc/.docx file.");
+      return;
     }
 
-  } catch (error) {
-    setConversionStatus(selectedFiles.map(() => "❌ Error"));
-    toast.error('Failed conversion, Please try agian later'); 
-    setError(true);
-  }
+    setIsConverting(true);
+    setConversionDone(false);
 
-  setIsConverting(false);
-  setConversionDone(true);
+    const updatedStatus = new Array(selectedFiles.length).fill("Converting...");
+    setConversionStatus(updatedStatus);
 
-};
+    const formData = new FormData();
+
+    selectedFiles.forEach((file) => {
+      formData.append("file[]", file);
+    
+    });
+
+    formData.append('user_id', user_id);
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}convert-word`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json(); 
+      console.log(result.urls);
+
+      if(result && result.urls && result.token) {
+        setConversionStatus('Done');
+        navigate(`/download/${result.token}`);
+      } else {
+        toast.error('Failed conversion, Please try agian later');
+      }
+
+    } catch (error) {
+      setConversionStatus(selectedFiles.map(() => "❌ Error"));
+      toast.error('Failed conversion, Please try agian later'); 
+      setError(true);
+    }
+
+    setIsConverting(false);
+    setConversionDone(true);
+
+  };
 
 
 const handleRemoveFile = (indexToRemove) => {
@@ -110,6 +111,7 @@ const handleRemoveFile = (indexToRemove) => {
 
       {/* Selected Files Section */}
       {!isConverting && !conversionDone && (
+        <>
         <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
             
@@ -221,6 +223,20 @@ const handleRemoveFile = (indexToRemove) => {
             )}
           </div>
         </div>
+
+         <div className="selected-section flex bg-gray-50 p-6 mobile-button">
+              <button
+                className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
+                onClick={Convert}
+              >
+                <span className="convert-button">Convert to PDF</span>
+                <span className="arrow-icon ml-2">
+                  <FaArrowCircleRight />
+                </span>
+              </button>
+            </div>
+
+          </>
       )}
 
       {/* Conversion Loader Section */}

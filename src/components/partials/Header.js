@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from '../../assets/images/logo.png';
+import { FaBars, FaTimes } from 'react-icons/fa';
 
 function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,6 +13,9 @@ function Header() {
   }
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -131,20 +135,25 @@ function Header() {
   return (
     <header className="header bg-white shadow fixed top-0 left-0 w-full z-50">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        
         {/* Logo */}
         <div className="text-xl font-bold text-red-600">
-          <Link to="/"><img src={logo} alt="PDFTools" className="w-20" /></Link>
+          <Link to="/">
+            <img src={logo} alt="PDFTools" className="w-20" />
+          </Link>
         </div>
 
-        {/* Navigation */}
+        {/* Hamburger Icon for Mobile */}
+        <div className="sm:hidden">
+          <button onClick={toggleMobileMenu} className="text-2xl text-gray-700 focus:outline-none">
+            {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+          </button>
+        </div>
+
+        {/* Navigation Desktop */}
         <nav className="hidden sm:flex space-x-4 relative">
           {navItems.map(({ title, url, dropdown, dropdownGrouped }) => (
             <div key={url} className="group relative">
-              <a
-                href={url}
-                className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:text-red-600"
-              >
+              <a href={url} className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:text-red-600">
                 {title}
               </a>
 
@@ -189,73 +198,64 @@ function Header() {
             </div>
           ))}
         </nav>
-
-        {/* Auth Buttons */}
-        {/* <div className="flex space-x-2">
-        {isAuthenticated ? (
-             <>
-          <button
-            onClick={toggleDropdown}
-            className="relative flex items-center space-x-2 px-4 py-2 "
-          >
-            <span className="text-slate-700 font-medium">{user ? user.name : 'Guest'}</span>
-            <svg
-              className="w-4 h-4 text-gray-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          {dropdownOpen && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-              {user?.roles?.some(role => role.name === 'admin') ? (
-                <a
-                  href={`${process.env.REACT_APP_BACKEND_URL}/auth/token-login?token=${token}`}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  Admin Dashboard
-                </a>
-              ) : (
-                <a
-                  href={`${process.env.REACT_APP_BACKEND_URL}/auth/token-login?token=${token}`}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                >
-                  User Dashboard
-                </a>
-              )}
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-              >
-                Logout
-              </button>
-            </div>
-          )}
-        </>
-
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="text-sm px-4 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50"
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="text-sm px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
-          
-        </div>
-      */}
       </div>
+
+      {/* Mobile Nav Panel */}
+      {mobileMenuOpen && (
+        <div className="sm:hidden bg-white shadow-md px-4 pb-4">
+          {navItems.map(({ title, url, dropdown, dropdownGrouped }) => (
+            <div key={url} className="py-2">
+              <Link
+                to={url}
+                className="block px-2 py-2 text-slate-700 font-medium hover:text-red-600"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {title}
+              </Link>
+
+              {/* Basic Dropdown on Mobile */}
+              {dropdown && (
+                <div className="pl-4 mt-1 space-y-1">
+                  {dropdown.map((item) => (
+                    <Link
+                      key={item.url}
+                      to={item.url}
+                      className="block text-sm text-slate-600 hover:text-red-600"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.title}
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              {/* Grouped Dropdown on Mobile */}
+              {dropdownGrouped && (
+                <div className="pl-4 mt-1">
+                  {dropdownGrouped.map((group, idx) => (
+                    <div key={idx} className="mb-2">
+                      <div className="text-gray-800 text-sm font-semibold">{group.title}</div>
+                      <ul className="pl-2 space-y-1">
+                        {group.tools.map((tool) => (
+                          <li key={tool.url}>
+                            <Link
+                              to={tool.url}
+                              className="text-sm text-slate-600 hover:text-red-600"
+                              onClick={() => setMobileMenuOpen(false)}
+                            >
+                              {tool.title}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </header>
   );
 }

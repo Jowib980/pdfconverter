@@ -81,7 +81,7 @@ function Plans() {
       </Helmet>
 
       <Main>
-        <div className="py-12 bg-white">
+        <div className="py-12">
           <div className="text-center mb-8">
             <h2 className="text-4xl font-bold text-gray-800">Plans & Pricing</h2>
           </div>
