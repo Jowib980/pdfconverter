@@ -34,6 +34,7 @@ function JPGtoPDF({ files = [] }) {
   const [pageOrientation, setPageOrientation] = useState('portrait');
   const [pageMargin, setPageMargin] = useState('0');
   const [merge, setMerge] = useState(true);
+  const [mergePage, setMergePage] = useState(true);
 
   const canvasRefs = useRef({});
   const [showSidebar, setShowSidebar] = useState(false);
@@ -140,6 +141,7 @@ const Convert = async () => {
   formData.append('orientation', pageOrientation);
   formData.append('margin', pageMargin);
   formData.append('merge', merge ? '1' : '0');
+  formData.append('mergePage', mergePage ? '1' : '0');
 
 
   try {
@@ -356,6 +358,20 @@ const handleRemoveFile = (indexToRemove) => {
                 </div>
             </div>
 
+              <div className="p-6">
+                <div className="flex gap-2">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        name="merge_page"
+                        checked={mergePage}
+                        onChange={(e) => setMergePage(e.target.checked)}
+                        className="form-radio text-blue-600"
+                      />
+                      <span className="ml-2">Merge all images in one Page</span>
+                    </label>
+                </div>
+            </div>
             <div className="p-6">
               <button
                 className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"

@@ -17,11 +17,11 @@ function Home() {
 		<Main>
 		    <Tools />
 
-		    <div className="py-6 bg-white">
-		    	<div className="section-heading py-6">
+		    <div className="bg-white">
+		    	<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 section-heading py-6">
 		    		<h2 className="home-title py-6">Looking for another solution?</h2>
 		    	</div>
-		    	<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4 m-4">
+		    	<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-4 m-4">
 		    		<div className="col-md-4">
 		    			<div className="flex flex-col p-4 mb-2">
 		    				<div className="section-title">PDFTools Desktop</div>
@@ -43,7 +43,7 @@ function Home() {
 		    	</div>
 		    </div>
 
-		    <div className="p-6 bg-gray">
+		    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 		    	<div className="section-heading py-6">
 		    		<h2 className="home-title py-6">The PDF software trusted by millions of users</h2>
 		    		<h3 className="home-subtitle text-center">iLovePDF is your number one web app for editing PDF with ease. Enjoy all the tools you need to work efficiently with your digital documents while keeping your data safe and secure.</h3>
@@ -68,7 +68,7 @@ function Home() {
 		    </div>
 
 		    <div className="premium-section p-2">
-		    	<div className="premium-block">
+		    	<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 premium-block">
 		    		<div className="row flex align-items-center justify-content-center d-lg-flex">
 		    			<div className="col-lg-7 col-md-12 section__item m-4">
 		    				<div className="premium-title">Get more with Premium</div>

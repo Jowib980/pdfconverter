@@ -168,7 +168,7 @@ function Tools() {
 };
 
   return (
-    <div className="content">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <ToastContainer />
 
     {loading && (
@@ -187,17 +187,17 @@ function Tools() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 p-4 m-4">
         {tools.map((tool, index) => (
-          <a href="#" ><div
-            key={index}
-            onClick={() => openTool(tool)}
-            className="tool-div bg-white rounded-xl shadow-md hover:shadow-lg p-6 transition-all duration-300"
-          >
-            <div className="text-4xl mb-3">
-              <i className={`ico ${tool.icon}`}></i>
+          <a href="#" key={index}>
+            <div
+              onClick={() => openTool(tool)}
+              className="tool-div bg-white rounded-xl shadow-md hover:shadow-lg p-6 transition-all duration-300 h-full min-h-[220px]  flex flex-col justify-between"
+            >
+              <div className="text-4xl mb-3">
+                <i className={`ico ${tool.icon}`}></i>
+              </div>
+              <h3 className="font-bold text-xl text-slate-800 mb-2">{tool.title}</h3>
+              <p className="text-sm text-slate-600">{tool.description}</p>
             </div>
-            <h3 className="font-bold text-xl text-slate-800 mb-2">{tool.title}</h3>
-            <p className="text-sm text-slate-600">{tool.description}</p>
-          </div>
           </a>
         ))}
       </div>

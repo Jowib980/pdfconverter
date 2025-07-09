@@ -101,7 +101,7 @@ const handleRemoveFile = (indexToRemove) => {
        <ToastContainer />
        
       {error && (
-        <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex items-center justify-between selected-section min-h-screen mt-6 py-6">
           <div className="flex-1 flex justify-center items-center px-4">
             <a href="/">
               <button className="flex items-center gap-2 bg-red-600 text-white px-8 py-8 rounded-lg font-semibold shadow-md hover:bg-red-700 transition"><FaArrowLeft /> Go to Home</button>
