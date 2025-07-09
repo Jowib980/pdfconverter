@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logo from '../../assets/images/logo.png';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { FaBars, FaTimes, FaCaretDown } from 'react-icons/fa';
+import Cookies from 'js-cookie';
 
 function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const token = localStorage.getItem("token");
-  const userString = localStorage.getItem("user");
+  const token = Cookies.get("access_token");
+  const userString = Cookies.get("user");
   let user = null;
   if (userString) {
     user = JSON.parse(userString);
+
   }
+  const role = user?.roles[0]?.name ?? null;
+  
+
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,15 +33,14 @@ function Header() {
   }, [token]);
 
   const handleLogout = () => {
-    localStorage.clear();
+    Cookies.remove('access_token');
+    Cookies.remove('user');
     setIsAuthenticated(false);
     navigate('/login');
   }
 
   const navItems = [
-    { title: "MERGE PDF", url: "/merge-pdf" },
-    { title: "SPLIT PDF", url: "/split-pdf" },
-    {
+      {
       title: "CONVERT PDF",
       url: "/",
       dropdownGrouped: [
@@ -87,7 +91,7 @@ function Header() {
   ];
 
   return (
-    <header className="header bg-white shadow fixed top-0 left-0 w-full z-50">
+    <header className="header bg-white shadow fixed top-0 left-0 w-full z-50 relative">
       <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
         <div className="text-xl font-bold text-red-600">
@@ -151,6 +155,55 @@ function Header() {
               )}
             </div>
           ))}
+
+        <div className="nav-actions">
+          {!isAuthenticated ? (
+            <>
+              <a
+                data-rel="user-action"
+                href="/login"
+                className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:text-red-600"
+              >
+                Login
+              </a>
+              <a
+                data-rel="user-action"
+                href="/signup"
+                className="rounded-lg px-3 py-2 text-white bg-red-600 font-medium hover:text-white hover:bg-red-700"
+              >
+                Sign up
+              </a>
+            </>
+          ) : (
+            <div className="relative inline-block">
+              <div className="flex items-center">
+                <button className="rounded-lg px-3 text-slate-700 font-medium hover:text-red-600">
+                  {user?.name} 
+                </button>
+                <FaCaretDown  onClick={toggleDropdown} />
+              </div>
+              {dropdownOpen && (
+
+              <div className="absolute right-0 z-10 bg-white shadow-md rounded-lg mt-2 w-48">
+                {/*<a
+                  href={role === 'admin' ? '/admin/dashboard' : '/dashboard'}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  {role === 'admin' ? 'Admin Dashboard' : 'User Dashboard'}
+                </a>*/}
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </div>
+              )}
+            </div>
+          )}
+        </div>
+
+
         </nav>
       </div>
 

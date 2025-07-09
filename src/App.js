@@ -24,6 +24,7 @@ import Legal from './components/pages/Legal';
 import FAQ from './components/pages/FAQ';
 import ToolsDescription from './components/pages/ToolsDescription';
 import Blog from './components/pages/Blog';
+import VerifyOtp from './components/auth/VerifyOtp';
 import { HelmetProvider } from 'react-helmet-async';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
          
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/verify-otp" element={<VerifyOtp />} />
 
           <Route
             path="/"

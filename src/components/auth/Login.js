@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from '../Loader.js';
 import { Helmet } from 'react-helmet-async';
+import Cookies from 'js-cookie';
 
 function Login() {
   const [user, setUser] = useState(null);
@@ -16,11 +17,12 @@ function Login() {
     email: '',
     password: '',
   });
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("access_token");
 
   useEffect(() => {
     if(token) {
-      localStorage.clear();
+      Cookies.remove('access_token');
+      Cookies.remove('user');
     }
   });
 
@@ -56,10 +58,10 @@ const handleChange = (e) => {
       if (response.ok) {
         setLoading(false);
         toast.success("Login successfully!");
-        localStorage.setItem("token", data.access_token);
-        localStorage.setItem("user", JSON.stringify(data.user));
+        Cookies.set("access_token", data.access_token);
+        Cookies.set("user", JSON.stringify(data.user));
 
-          navigate('/');
+        navigate('/');
         
       } else {
         setLoading(false);

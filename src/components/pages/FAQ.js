@@ -53,39 +53,41 @@ function FAQ() {
           </div>
         )}
 
-        <div className="min-h-screen bg-grey flex justify-center items-center px-6 md:px-16 py-12">
-          <div className="max-w-4xl w-full bg-white border border-gray-200 rounded-lg shadow-md px-6 md:px-12 py-10 space-y-8">
-            <h2 className="text-4xl font-bold text-gray-900 text-center">❓ Frequently Asked Questions (FAQs)</h2>
-            <dl className="space-y-4">
-              {faqData.map((item, index) => (
-                <div key={index} className="border rounded-lg">
-                  <dt>
-                    <button
-                      type="button"
-                      onClick={() => toggleFAQ(index)}
-                      className="w-full flex justify-between items-center px-4 py-3 text-left font-medium text-gray-800 bg-gray-100 hover:bg-gray-200"
-                    >
-                      <span>{item.question}</span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className={`w-5 h-5 transition-transform duration-200 ${
-                          activeIndex === index ? 'rotate-180' : ''
-                        }`}
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 ">
+          <div className="min-h-screen bg-grey flex justify-center items-center px-6 md:px-16 py-12">
+            <div className="max-w-4xl w-full bg-white border border-gray-200 rounded-lg shadow-md px-6 md:px-12 py-10 space-y-8">
+              <h2 className="text-4xl font-bold text-gray-900 text-center">❓ Frequently Asked Questions (FAQs)</h2>
+              <dl className="space-y-4">
+                {faqData.map((item, index) => (
+                  <div key={index} className="border rounded-lg">
+                    <dt>
+                      <button
+                        type="button"
+                        onClick={() => toggleFAQ(index)}
+                        className="w-full flex justify-between items-center px-4 py-3 text-left font-medium text-gray-800 bg-gray-100 hover:bg-gray-200"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                      </svg>
-                    </button>
-                  </dt>
-                  {activeIndex === index && (
-                    <dd className="px-4 py-3 bg-white text-gray-700 border-t">{item.answer}</dd>
-                  )}
-                </div>
-              ))}
-            </dl>
+                        <span>{item.question}</span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className={`w-5 h-5 transition-transform duration-200 ${
+                            activeIndex === index ? 'rotate-180' : ''
+                          }`}
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                      </button>
+                    </dt>
+                    {activeIndex === index && (
+                      <dd className="px-4 py-3 bg-white text-gray-700 border-t">{item.answer}</dd>
+                    )}
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
         </div>
       </Main>

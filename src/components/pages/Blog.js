@@ -48,59 +48,62 @@ function Blog() {
 
 		<div className="content">
 		  <Main>
-		    <div className="min-h-screen bg-gray-100 flex justify-center items-start px-6 md:px-12 py-12">
-		      <div className="w-full max-w-5xl bg-white border border-gray-200 rounded-2xl shadow-xl p-8 md:p-16 space-y-12">
-		        
-		        {/* Blog Header */}
-		        <div className="text-center space-y-4">
-		          <h1 className="text-4xl font-bold text-gray-800">📝 Welcome to the PDFTools Blog</h1>
-		          <p className="text-lg text-gray-600">
-		            Discover the latest updates, tips, and guides on all things PDF. Whether you're converting Word documents, merging files, or adding watermarks, our tools are here to make your workflow faster and simpler.
-		          </p>
-		        </div>
 
-		        {/* Convert Section */}
-		        <section className="space-y-6">
-		          <h2 className="text-2xl font-semibold text-blue-600 border-b border-blue-300 pb-2">🔄 Convert with Ease</h2>
-		          {conversion.map((item, index) => (
-		            <div
-		              key={index}
-		              className="bg-blue-50 p-6 rounded-lg shadow hover:shadow-md transition-all duration-200"
-		            >
-		              <h3 className="text-xl font-semibold text-blue-800">{item.title}</h3>
-		              <p className="text-gray-700 mt-2">{item.description}</p>
-		            </div>
-		          ))}
-		        </section>
+		  	<div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 ">
+			    <div className="min-h-screen bg-gray-100 flex justify-center items-start px-6 md:px-12 py-12">
+			      <div className="w-full max-w-5xl bg-white border border-gray-200 rounded-2xl shadow-xl p-8 md:p-16 space-y-12">
+			        
+			        {/* Blog Header */}
+			        <div className="text-center space-y-4">
+			          <h1 className="text-4xl font-bold text-gray-800">📝 Welcome to the PDFTools Blog</h1>
+			          <p className="text-lg text-gray-600">
+			            Discover the latest updates, tips, and guides on all things PDF. Whether you're converting Word documents, merging files, or adding watermarks, our tools are here to make your workflow faster and simpler.
+			          </p>
+			        </div>
 
-		        {/* Organize Section */}
-		        <section className="space-y-6">
-		          <h2 className="text-2xl font-semibold text-green-600 border-b border-green-300 pb-2">🧰 Organize Your PDFs</h2>
-		          {organize.map((item, index) => (
-		            <div
-		              key={index}
-		              className="bg-green-50 p-6 rounded-lg shadow hover:shadow-md transition-all duration-200"
-		            >
-		              <h3 className="text-xl font-semibold text-green-800">{item.title}</h3>
-		              <p className="text-gray-700 mt-2">{item.description}</p>
-		            </div>
-		          ))}
-		        </section>
+			        {/* Convert Section */}
+			        <section className="space-y-6">
+			          <h2 className="text-2xl font-semibold text-blue-600 border-b border-blue-300 pb-2">🔄 Convert with Ease</h2>
+			          {conversion.map((item, index) => (
+			            <div
+			              key={index}
+			              className="bg-blue-50 p-6 rounded-lg shadow hover:shadow-md transition-all duration-200"
+			            >
+			              <h3 className="text-xl font-semibold text-blue-800">{item.title}</h3>
+			              <p className="text-gray-700 mt-2">{item.description}</p>
+			            </div>
+			          ))}
+			        </section>
 
-		        {/* Protect Section */}
-		        <section className="space-y-6">
-		          <h2 className="text-2xl font-semibold text-purple-600 border-b border-purple-300 pb-2">💧 Add Protection & Branding</h2>
-		          {protect.map((item, index) => (
-		            <div
-		              key={index}
-		              className="bg-purple-50 p-6 rounded-lg shadow hover:shadow-md transition-all duration-200"
-		            >
-		              <h3 className="text-xl font-semibold text-purple-800">{item.title}</h3>
-		              <p className="text-gray-700 mt-2">{item.description}</p>
-		            </div>
-		          ))}
-		        </section>
-		      </div>
+			        {/* Organize Section */}
+			        <section className="space-y-6">
+			          <h2 className="text-2xl font-semibold text-green-600 border-b border-green-300 pb-2">🧰 Organize Your PDFs</h2>
+			          {organize.map((item, index) => (
+			            <div
+			              key={index}
+			              className="bg-green-50 p-6 rounded-lg shadow hover:shadow-md transition-all duration-200"
+			            >
+			              <h3 className="text-xl font-semibold text-green-800">{item.title}</h3>
+			              <p className="text-gray-700 mt-2">{item.description}</p>
+			            </div>
+			          ))}
+			        </section>
+
+			        {/* Protect Section */}
+			        <section className="space-y-6">
+			          <h2 className="text-2xl font-semibold text-purple-600 border-b border-purple-300 pb-2">💧 Add Protection & Branding</h2>
+			          {protect.map((item, index) => (
+			            <div
+			              key={index}
+			              className="bg-purple-50 p-6 rounded-lg shadow hover:shadow-md transition-all duration-200"
+			            >
+			              <h3 className="text-xl font-semibold text-purple-800">{item.title}</h3>
+			              <p className="text-gray-700 mt-2">{item.description}</p>
+			            </div>
+			          ))}
+			        </section>
+			      </div>
+			    </div>
 		    </div>
 		  </Main>
 		</div>

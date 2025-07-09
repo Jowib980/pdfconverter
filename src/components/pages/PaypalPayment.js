@@ -248,92 +248,94 @@ function PaypalPayment() {
         <Loader />
       )}
 
-       <div className="p-6 max-w-4xl mx-auto mt-6">
-        <div className="bg-white shadow-xl rounded-2xl p-8">
-          <div className="section-title text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-              Pay for <span className="text-indigo-600">{plan.title}</span> Plan
-            </h2>
-            <p className="text-lg text-gray-600">
-              Amount: <span className="font-semibold text-indigo-500 mb-6">${plan.price}</span>
-            </p>
-          </div>
+      <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 ">
+         <div className="p-6 max-w-4xl mx-auto mt-6">
+            <div className="bg-white shadow-xl rounded-2xl p-8">
+            <div className="section-title text-center mb-8">
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                Pay for <span className="text-indigo-600">{plan.title}</span> Plan
+              </h2>
+              <p className="text-lg text-gray-600">
+                Amount: <span className="font-semibold text-indigo-500 mb-6">${plan.price}</span>
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* PayPal Integration */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* PayPal Integration */}
 
-            {paypalEnabled && (
-              <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow">
-                <h3 className="text-xl font-semibold text-gray-700 mb-4">Pay with PayPal</h3>
-                <PayPalButtons
-                  style={{ layout: "vertical", color: "blue", shape: "pill", label: "pay" }}
-                  onClick={(data, actions) => {
-                    const userString = Cookies.get("user");
-                    const user = userString ? JSON.parse(userString) : null;
+              {paypalEnabled && (
+                <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow">
+                  <h3 className="text-xl font-semibold text-gray-700 mb-4">Pay with PayPal</h3>
+                  <PayPalButtons
+                    style={{ layout: "vertical", color: "blue", shape: "pill", label: "pay" }}
+                    onClick={(data, actions) => {
+                      const userString = Cookies.get("user");
+                      const user = userString ? JSON.parse(userString) : null;
 
-                    if (!user) {
-                      setPaymentGateway("paypal");
-                      setShowModal(true);
-                      return actions.reject();
-                    }
+                      if (!user) {
+                        setPaymentGateway("paypal");
+                        setShowModal(true);
+                        return actions.reject();
+                      }
 
-                    return actions.resolve();
-                  }}
+                      return actions.resolve();
+                    }}
 
-                  createOrder={(data, actions) => {
-                    return actions.order.create({
-                      purchase_units: [{
-                        amount: { value: plan.price },
-                        description: `${plan.title} Plan`
-                      }]
-                    });
-                  }}
-                  onApprove={(data, actions) => {
-                    return actions.order.capture().then(details => {
-                      const paymentPayload = {
-                        user_id: user_id,
-                        payer_email: details.payer.email_address,
-                        plan_type: plan.title,
-                        plan_amount: plan.price,
-                        transaction_id: details.id,
-                        transaction_status: details.status,
-                        payment_date: details.update_time,
-                        payer_id: details.payer.payer_id,
-                        payer_name: `${details.payer.name.given_name} ${details.payer.name.surname}`,
-                        gateway: "paypal",
-                        currency: details.purchase_units[0].amount.currency_code,
-                        raw_response: JSON.stringify(details)
-                      };
-                      savePayment(paymentPayload);
-                    });
-                  }}
-                />
-              </div>
-            )}
-
-            {/* Razorpay Integration */}
-
-            {razorpayEnabled && (
-              <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow flex flex-col justify-between">
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-4">Pay with Razorpay</h3>
-                  <p className="text-gray-500 mb-4">Secure payment via Razorpay gateway.</p>
+                    createOrder={(data, actions) => {
+                      return actions.order.create({
+                        purchase_units: [{
+                          amount: { value: plan.price },
+                          description: `${plan.title} Plan`
+                        }]
+                      });
+                    }}
+                    onApprove={(data, actions) => {
+                      return actions.order.capture().then(details => {
+                        const paymentPayload = {
+                          user_id: user_id,
+                          payer_email: details.payer.email_address,
+                          plan_type: plan.title,
+                          plan_amount: plan.price,
+                          transaction_id: details.id,
+                          transaction_status: details.status,
+                          payment_date: details.update_time,
+                          payer_id: details.payer.payer_id,
+                          payer_name: `${details.payer.name.given_name} ${details.payer.name.surname}`,
+                          gateway: "paypal",
+                          currency: details.purchase_units[0].amount.currency_code,
+                          raw_response: JSON.stringify(details)
+                        };
+                        savePayment(paymentPayload);
+                      });
+                    }}
+                  />
                 </div>
-                <button
-                  onClick={handleRazorpayPayment}
-                  className="mt-auto w-full px-6 py-3 bg-indigo-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-700 transition duration-200"
-                >
-                  Pay with Razorpay
-                </button>
-              </div>
-            )}
+              )}
+
+              {/* Razorpay Integration */}
+
+              {razorpayEnabled && (
+                <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow flex flex-col justify-between">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-700 mb-4">Pay with Razorpay</h3>
+                    <p className="text-gray-500 mb-4">Secure payment via Razorpay gateway.</p>
+                  </div>
+                  <button
+                    onClick={handleRazorpayPayment}
+                    className="mt-auto w-full px-6 py-3 bg-indigo-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-700 transition duration-200"
+                  >
+                    Pay with Razorpay
+                  </button>
+                </div>
+              )}
 
 
-      {!razorpayEnabled && !paypalEnabled && (
-  <div className="text-center text-red-500">No payment gateways are enabled at the moment.</div>
-)}
+              {!razorpayEnabled && !paypalEnabled && (
+                <div className="text-center text-red-500">No payment gateways are enabled at the moment.</div>
+              )}
+            </div>
+            </div>
           </div>
-        </div>
       </div>
 
 

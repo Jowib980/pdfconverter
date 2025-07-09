@@ -7,6 +7,7 @@ import { jwtDecode } from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from '../Loader.js';
 import { Helmet } from 'react-helmet-async';
+import Cookies from 'js-cookie';
 
 function Signup() {
 const navigate = useNavigate();
@@ -18,11 +19,12 @@ const [form, setForm] = useState({
     confirm_password: '',
   });
 
-const token = localStorage.getItem("token");
+const token = Cookies.get("access_token");
 
   useEffect(() => {
     if(token) {
-      localStorage.clear();
+      Cookies.remove('access_token');
+      Cookies.remove('user');
     }
   })
 
@@ -59,10 +61,9 @@ const token = localStorage.getItem("token");
 
       if (response.ok) {
         setLoading(false);
-        toast.success("Registered successfully!");
-        localStorage.setItem("token", data.access_token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        navigate('/');
+        toast.success("Otp Sent to your registered mail. Please verify to continue!");
+        const email =form.email;
+        navigate('/verify-otp', { state : { email } });
       } else {
         setLoading(false);
         toast.error(data.message || "Registration failed.");

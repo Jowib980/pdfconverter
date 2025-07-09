@@ -8,6 +8,12 @@ function Tools() {
   const [selectedTool, setSelectedTool] = useState(null);
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const userString = Cookies.get("user");
+  let user = null;
+  if (userString) {
+    user = JSON.parse(userString);
+  }
+  const user_email = user?.email ?? null;
 
   const tools = [
     {
@@ -73,15 +79,15 @@ function Tools() {
   ];
 
   useEffect(() => {
-    const savedEmail = Cookies.get("user_email");
-    if (savedEmail) {
-      setEmail(savedEmail);
+    if (user_email) {
+      setEmail(user_email);
     }
   }, []);
 
   const openTool = (tool) => {
     console.log(email);
     if (!email) {
+      window.location.href = tool.link;
       setSelectedTool(tool);
       setShowModal(true);
     } else {

@@ -96,8 +96,8 @@ const handleRemoveFile = (indexToRemove) => {
         <title>Word to PDF | My PDF Tools</title>
       </Helmet>
 
-    <div className="content">
-      <Header />
+    <div className="main">
+      
        <ToastContainer />
        
       {error && (

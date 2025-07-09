@@ -104,98 +104,98 @@ function Contact() {
         </div>
       )}
 
-        <div className="min-h-screen bg-grey flex flex-col md:flex-row justify-between items-center px-6 md:px-16 py-12">
-          
-          {/* Left Section */}
-          <div className="max-w-xl mb-10 md:mb-0 p-6">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4 contact-title">Contact</h2>
-            <p className="text-2xl text-gray-600">
-              Contact us to report a problem, clarify any doubts about PDF Tools, or just find out more.
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 ">
+          <div className="min-h-screen bg-grey flex flex-col md:flex-row justify-between items-center px-6 md:px-16 py-12">
+            
+            {/* Left Section */}
+            <div className="max-w-xl mb-10 md:mb-0 p-6">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4 contact-title">Contact</h2>
+              <p className="text-2xl text-gray-600">
+                Contact us to report a problem, clarify any doubts about PDF Tools, or just find out more.
+              </p>
+            </div>
 
-          {/* Right Section: Contact Form */}
-          {!showSuccessMessage && (
-            <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-lg shadow-md p-8">
-              
-              {/* Name and Email */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block mb-1 text-sm font-medium text-gray-700">Your Name*</label>
-                  <input 
-                    type="text" 
-                    name="name" 
-                    placeholder="Your Name" 
-                    value={form.name} 
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-blue-500 focus:border-blue-500" required />
-                </div>
-                <div>
-                  <label className="block mb-1 text-sm font-medium text-gray-700">Your Email*</label>
-                  <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="Your Email" 
-                    value={form.email} 
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-blue-500 focus:border-blue-500" required />
-                </div>
-              </div>
-
-              {/* Subject */}
-              <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">Subject*</label>
-                <select 
-                  name="subject"
-                  value={form.subject}
-                  onChange={handleChange}
-                  className="w-full border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                >
-                  <option value="">Choose a subject...</option>
-                  <option value="bug">Report a Problem</option>
-                  <option value="support">Technical Support</option>
-                  <option value="billing">Billing</option>
-                  <option value="feedback">General Feedback</option>
-                </select>
-
-              </div>
-
-              {/* Message */}
-              <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">Message*</label>
-                <textarea 
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  rows="4"
-                  placeholder="Write a message"
-                  className="w-full border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
-                  required
-                ></textarea>
-
-              </div>
-
-              {/* Submit */}
-              <button type="submit" onClick={SendMessage} className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-4 rounded-lg transition">
-                Send message
-              </button>
-
-          </div>
-          )}
-
-              {showSuccessMessage && (
-
-                <div className="w-full max-w-xl bg-white border border-gray-200 rounded-lg shadow-md p-8">
-                  <div className="block mb-1 text-md font-medium text-gray-700">
-                    <p><b className="text-xl">Dear {submittedName},</b><br></br>
-                      Thank you for contacting us, your message has been submitted. We will get back to you as soon as possible!</p>
+            {/* Right Section: Contact Form */}
+            {!showSuccessMessage && (
+              <div className="w-full max-w-2xl bg-white border border-gray-200 rounded-lg shadow-md p-8">
+                
+                {/* Name and Email */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-700">Your Name*</label>
+                    <input 
+                      type="text" 
+                      name="name" 
+                      placeholder="Your Name" 
+                      value={form.name} 
+                      onChange={handleChange}
+                      className="w-full border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-blue-500 focus:border-blue-500" required />
+                  </div>
+                  <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-700">Your Email*</label>
+                    <input 
+                      type="email" 
+                      name="email" 
+                      placeholder="Your Email" 
+                      value={form.email} 
+                      onChange={handleChange}
+                      className="w-full border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-blue-500 focus:border-blue-500" required />
                   </div>
                 </div>
 
-              )}
-            
+                {/* Subject */}
+                <div>
+                  <label className="block mb-1 text-sm font-medium text-gray-700">Subject*</label>
+                  <select 
+                    name="subject"
+                    value={form.subject}
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    required
+                  >
+                    <option value="">Choose a subject...</option>
+                    <option value="bug">Report a Problem</option>
+                    <option value="support">Technical Support</option>
+                    <option value="billing">Billing</option>
+                    <option value="feedback">General Feedback</option>
+                  </select>
 
+                </div>
+
+                {/* Message */}
+                <div>
+                  <label className="block mb-1 text-sm font-medium text-gray-700">Message*</label>
+                  <textarea 
+                    name="message"
+                    value={form.message}
+                    onChange={handleChange}
+                    rows="4"
+                    placeholder="Write a message"
+                    className="w-full border border-gray-300 rounded-lg p-2.5 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+                    required
+                  ></textarea>
+
+                </div>
+
+                {/* Submit */}
+                <button type="submit" onClick={SendMessage} className="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2.5 px-4 rounded-lg transition">
+                  Send message
+                </button>
+
+            </div>
+            )}
+
+                {showSuccessMessage && (
+
+                  <div className="w-full max-w-xl bg-white border border-gray-200 rounded-lg shadow-md p-8">
+                    <div className="block mb-1 text-md font-medium text-gray-700">
+                      <p><b className="text-xl">Dear {submittedName},</b><br></br>
+                        Thank you for contacting us, your message has been submitted. We will get back to you as soon as possible!</p>
+                    </div>
+                  </div>
+
+                )}
+          </div>
         </div>
       </Main>
     </>

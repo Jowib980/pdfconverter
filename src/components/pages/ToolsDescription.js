@@ -61,27 +61,29 @@ function ToolsDescription() {
           </div>
         )}
 
-        <div className="min-h-screen bg-grey flex justify-center items-center px-6 md:px-16 py-12">
-          <div className="max-w-4xl w-full bg-white border border-gray-200 rounded-lg shadow-md px-6 md:px-12 py-10 space-y-8">
-            <h2 className="text-4xl font-bold text-gray-900 text-center">Welcome to our user's guide</h2>
-            <h2 className="text-2xl text-gray-600 text-center">Although we have tried to make it really simple, here is a short guidance to help you through the editing process.</h2>
-            <dl className="space-y-4">
-              {ToolsData.map((item, index) => (
-                <div key={index} className="border rounded-lg">
-                  <dt>
-                    <button
-                      type="button"
-                      className="w-full flex justify-between items-center px-4 py-3 text-left font-medium text-gray-800 bg-gray-100 hover:bg-gray-200"
-                    >
-                      <span>{item.tool}</span>
-                      
-                    </button>
-                  </dt>
-                    <dd className="px-4 py-3 bg-white text-gray-700 border-t">{item.description}</dd>
-                  
-                </div>
-              ))}
-            </dl>
+        <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 ">
+          <div className="min-h-screen bg-grey flex justify-center items-center px-6 md:px-16 py-12">
+            <div className="max-w-4xl w-full bg-white border border-gray-200 rounded-lg shadow-md px-6 md:px-12 py-10 space-y-8">
+              <h2 className="text-4xl font-bold text-gray-900 text-center">Welcome to our user's guide</h2>
+              <h2 className="text-2xl text-gray-600 text-center">Although we have tried to make it really simple, here is a short guidance to help you through the editing process.</h2>
+              <dl className="space-y-4">
+                {ToolsData.map((item, index) => (
+                  <div key={index} className="border rounded-lg">
+                    <dt>
+                      <button
+                        type="button"
+                        className="w-full flex justify-between items-center px-4 py-3 text-left font-medium text-gray-800 bg-gray-100 hover:bg-gray-200"
+                      >
+                        <span>{item.tool}</span>
+                        
+                      </button>
+                    </dt>
+                      <dd className="px-4 py-3 bg-white text-gray-700 border-t">{item.description}</dd>
+                    
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
         </div>
       </Main>
