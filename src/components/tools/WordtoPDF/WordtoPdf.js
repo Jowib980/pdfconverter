@@ -113,7 +113,7 @@ const handleRemoveFile = (indexToRemove) => {
       {/* Selected Files Section */}
       {!isConverting && !conversionDone && (
         <>
-        <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+        <div className="selected-section flex min-h-screen bg-gray-50">
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
             
             {!showSidebar && (

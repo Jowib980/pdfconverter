@@ -89,7 +89,7 @@ function Tools() {
     if (!email) {
       window.location.href = tool.link;
       setSelectedTool(tool);
-      setShowModal(true);
+      // setShowModal(true);
     } else {
       window.location.href = tool.link;
     }

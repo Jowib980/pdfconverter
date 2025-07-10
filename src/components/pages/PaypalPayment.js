@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import Main from "../partials/Main.js";
@@ -6,6 +6,11 @@ import { Helmet } from 'react-helmet-async';
 import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from '../Loader';
+import { useConfig } from '../../ConfigContext';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+import SignupModal from '../auth/SignupModal';
+import LoginModal from '../auth/LoginModal';
 
 function PaypalPayment() {
   const location = useLocation();
@@ -14,32 +19,22 @@ function PaypalPayment() {
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
   const [showModal, setShowModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [paymentGateway, setPaymentGateway] = useState(null);
   const navigate = useNavigate();
-  const apiCalledRef = useRef(false);
-  const [gateways, setGateways] = useState([]);
+  const context = useConfig();
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirm_password: '',
+  });
 
-  const fetchPaymentGateway = async () => {
+  const gateways = context?.gateways ?? JSON.parse(localStorage.getItem("gateway") || "[]");
 
-    try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}gateways`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-      });
-
-      const result = await response.json();
-      console.log("Result", result.data.data);
-      setGateways(result?.data?.data);
-    } catch (err) {
-      console.log("Error occurred", err);
-    }
-  };
-
+  
   const razorpayEnabled = gateways.find(gw => gw.name.toLowerCase() === 'razorpay' && gw.is_enabled);
   const paypalEnabled = gateways.find(gw => gw.name.toLowerCase() === 'paypal' && gw.is_enabled);
 
@@ -50,11 +45,6 @@ function PaypalPayment() {
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
     document.body.appendChild(script);
-    
-    if(!apiCalledRef.current) {
-      apiCalledRef.current = true;
-      fetchPaymentGateway();
-    }
 
     return () => {
       document.body.removeChild(script);
@@ -67,6 +57,12 @@ function PaypalPayment() {
     setShowModal(false);
     setEmail('');
   };
+
+  const closeLoginModal = () => {
+    setShowLoginModal(false);
+    setEmail('');
+  };
+
 
 
   const savePayment = async (payload) => {
@@ -146,10 +142,14 @@ function PaypalPayment() {
     rzp.open();
   };
 
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+
   const handleSubmit = async () => {
     setShowModal(false);
     setLoading(true);
-    if (!email.trim()) return;
 
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}register`, {
@@ -159,10 +159,10 @@ function PaypalPayment() {
           Accept: 'application/json'
         },
         body: JSON.stringify({
-          name: email,
-          email: email,
-          password: '12345678',
-          password_confirmation: '12345678',
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          password_confirmation: form.confirm_password,
         })
       });
 
@@ -181,9 +181,27 @@ function PaypalPayment() {
           window.location.reload();
         }
 
-      } else {
-        const emailError = data?.email?.[0];
-        if (emailError === "The email has already been taken.") {
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setLoading(false);
+      toast.error("An error occurred during registration.");
+    }
+  };
+
+  const handleLoginRedirect = () => {
+    setShowModal(false);
+    setShowLoginModal(true);
+  }
+
+  const handleSignupRedirect = () => {
+    setShowModal(true);
+    setShowLoginModal(false);
+  }
+
+  const handleLogin = async () => {
+    setShowLoginModal(false);
+    try {
           const loginResponse = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}login`, {
             method: 'POST',
             headers: {
@@ -191,8 +209,8 @@ function PaypalPayment() {
               Accept: 'application/json'
             },
             body: JSON.stringify({
-              email: email,
-              password: '12345678',
+              email: form.email,
+              password: form.password,
             })
           });
 
@@ -215,15 +233,12 @@ function PaypalPayment() {
             setLoading(false);
             toast.error("Login failed. Try again later.");
           }
-        }
-      }
-    } catch (error) {
-      console.error("Registration error:", error);
-      setLoading(false);
-      toast.error("An error occurred during registration.");
+      } catch (error) {
+        console.error("Registration error:", error);
+        setLoading(false);
+        toast.error("An error occurred during registration.");
     }
-  };
-
+  }
 
   if (!plan) {
     return (
@@ -339,43 +354,37 @@ function PaypalPayment() {
       </div>
 
 
-
-
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-            <button
-              className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-              onClick={closeModal}
-            >
-              &times;
-            </button>
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">
-              Enter your email for continue the payment
-            </h2>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={closeModal}
-                className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-        </div>
+        
+        <SignupModal
+          showModal={showModal}
+          closeModal={closeModal}
+          setForm={setForm}
+          form={form}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          handleLoginRedirect={handleLoginRedirect}
+          paymentGateway={paymentGateway}
+          startRazorpayPayment={startRazorpayPayment}
+        />
+
+
+      )}
+
+
+      {showLoginModal && (
+        <LoginModal
+          showLoginModal={showLoginModal}
+          closeLoginModal={closeLoginModal}
+          setForm={setForm}
+          form={form}
+          handleChange={handleChange}
+          handleLogin={handleLogin}
+          handleSignupRedirect={handleSignupRedirect}
+          paymentGateway={paymentGateway}
+          startRazorpayPayment={startRazorpayPayment}
+        />
+
       )}
 
       </Main>

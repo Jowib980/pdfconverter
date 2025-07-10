@@ -138,12 +138,11 @@ function SplitGeneratedPDF({ files = [] }) {
       <Helmet>
         <title>Split PDF | My PDF Tools</title>
       </Helmet>
-      <div className="content">
-        <Header />
+      <div className="main">
         <ToastContainer />
 
         {error && (
-          <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+          <div className="selected-section flex min-h-screen bg-gray-50">
             <div className="flex-1 flex justify-center items-center px-4">
               <a href="/">
                 <button className="flex items-center gap-2 bg-red-600 text-white px-8 py-8 rounded-lg font-semibold shadow-md hover:bg-red-700 transition">
@@ -156,7 +155,7 @@ function SplitGeneratedPDF({ files = [] }) {
 
         {!isConverting && !conversionDone && (
           <>
-          <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+          <div className="selected-section flex min-h-screen bg-gray-50">
             <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
               {!showSidebar && (
               <div className="sidetool absolute -top-4 -right-4 z-20">

@@ -84,12 +84,10 @@ function ExceltoPDF({ files = [] }) {
 
   };
 
-
-
-const handleRemoveFile = (indexToRemove) => {
-  setSelectedFiles((prev) => prev.filter((_, i) => i !== indexToRemove));
-  setConversionStatus((prev) => prev.filter((_, i) => i !== indexToRemove));
-};
+  const handleRemoveFile = (indexToRemove) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== indexToRemove));
+    setConversionStatus((prev) => prev.filter((_, i) => i !== indexToRemove));
+  };
 
   return (
     <>
@@ -98,13 +96,12 @@ const handleRemoveFile = (indexToRemove) => {
         <title>Excel to PDF | My PDF Tools</title>
       </Helmet>
 
-    <div className="content">
-      <Header />
+    <div className="main">
 
       <ToastContainer />
        
       {error && (
-        <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+        <div className="selected-section flex h-screen bg-gray-50">
           <div className="flex-1 flex justify-center items-center px-4">
             <a href="/">
               <button className="flex items-center gap-2 bg-red-600 text-white px-8 py-8 rounded-lg font-semibold shadow-md hover:bg-red-700 transition"><FaArrowLeft /> Go to Home</button>
@@ -116,7 +113,7 @@ const handleRemoveFile = (indexToRemove) => {
       {/* Selected Files Section */}
       {!isConverting && !conversionDone && (
         <>
-        <div className="selected-section flex min-h-screen bg-gray-50 mt-4 py-6">
+        <div className="selected-section flex h-screen bg-gray-50 overflow-y-auto max-h-screen scrollbar-red">
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
             
             {!showSidebar && (
@@ -202,6 +199,7 @@ const handleRemoveFile = (indexToRemove) => {
                 fixed top-0 right-0 h-screen z-50
                 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}
                 sm:relative sm:translate-x-0 sm:flex
+                 scrollbar-red
               `}
             >
               {/* Close Button for Mobile */}
