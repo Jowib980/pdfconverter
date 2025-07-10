@@ -21,23 +21,25 @@ function SignupModal({
 		<div className="content">
 			{showModal && (
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-		          <div className="relative bg-white rounded-lg shadow-lg p-6 w-full max-w-md scrollbar-red overflow-y-auto max-h-screen">
-		            <button
-		              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl font-bold"
-		              onClick={closeModal}
-		            >
-		              &times;
-		            </button>
+		          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl scrollbar-red overflow-y-auto max-h-screen">
+		            <div className='modal-header p-6'>
+			            <button
+			              className="absolute top-3 right-3 text-white hover:text-white text-4xl font-bold"
+			              onClick={closeModal}
+			            >
+			              &times;
+			            </button>
 
-		            <h2 className="text-lg font-semibold text-center text-yellow-600 mb-1">
-		              Upgrade to Premium
-		            </h2>
-		            <p className="text-center text-sm text-gray-700 mb-4">
-		              This tool is limited to <strong>1 file per task</strong><br />
-		              <span className="text-yellow-600 font-semibold">Premium</span> users can process up to <strong>10 files per task</strong>
-		            </p>
+			            <h2 className="text-4xl font-semibold text-center text-yellow-600 mb-1">
+			              Upgrade to Premium
+			            </h2>
+			            <p className="text-center text-xl text-white mb-4">
+			              This tool is limited to <strong>1 file per task</strong><br />
+			              <span className="text-yellow-600 font-semibold">Premium</span> users can process up to <strong>10 files per task</strong>
+			            </p>
+		            </div>
 
-		            <div className="flex flex-col gap-3 mb-4 items-center">
+		            <div className="flex flex-col gap-3 p-4 items-center">
 		              <GoogleLogin
 		                onSuccess={(credentialResponse) => {
 		                  const decoded = jwtDecode(credentialResponse.credential);
@@ -74,7 +76,7 @@ function SignupModal({
 		              />
 		            </div>
 
-		            <div className="space-y-3 mb-4">
+		            <div className="space-y-3 mb-4 p-6">
 		              <input
 		                type="text"
 		                name="name"
@@ -110,12 +112,14 @@ function SignupModal({
 		              />
 		            </div>
 
+		            <div className="p-4">
 		            <button
 		              onClick={handleSubmit}
 		              className="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 mb-3"
 		            >
 		              Sign up
 		            </button>
+		            </div>
 
 		            <p className="text-sm text-center text-gray-600">
 		              Already member?{' '}

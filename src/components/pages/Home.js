@@ -1,12 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Main from "../partials/Main.js";
 import Tools from "./Tools.js";
 import iso from '../../assets/images/iso.svg';
 import ssl from '../../assets/images/ssl.svg';
 import pdf from '../../assets/images/pdf.svg';
 import { Helmet } from 'react-helmet-async';
+import Cookies from 'js-cookie';
 
 function Home() {
+	const access_token = Cookies.get("access_token");
+	const apiCalledRef = useRef();
+
+	const fetchCurrentUser = async () => {
+
+	    const cachedUser = Cookies.get("current_user");
+	    if (cachedUser) {
+	      return JSON.parse(cachedUser);
+	    }
+
+	    try {
+	      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}current-user`, {
+	        method: "GET",
+	        headers: {
+	          Authorization: `Bearer ${access_token}`,
+	          Accept: "application/json",
+	        },
+	      });
+
+	      if (!response.ok) throw new Error("Unauthorized");
+
+	      const data = await response.json();
+
+	      Cookies.set("current_user", JSON.stringify(data.user), { expires: 1 });
+	    } catch (err) {
+	      console.error("Failed to fetch current user:", err);
+	      return null;
+	    }
+	}
+
+	useEffect(() => {
+		if(!apiCalledRef.current) {
+			apiCalledRef.current = true;
+			fetchCurrentUser();
+		}
+	},[]);
+
+
 
 	return (
 		<>

@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+// import { useNavigate } from 'react-router-dom';
 
 const ConfigContext = createContext();
 
@@ -11,6 +13,49 @@ export const ConfigProvider = ({ children }) => {
   const [gateways, setGateways] = useState([]);
   const apiCalledRef = useRef(false);
   const gatewayData = localStorage.getItem("gateway");
+  const [currentPlan, setCurrentPlan] = useState([]);
+  const userString = Cookies.get("user");
+  const user = userString ? JSON.parse(userString) : null;
+  const user_id = user?.id ?? null;
+  const [currentUser, setCurrentUser] = useState([]);
+  // const navigate = useNavigate();
+
+  const fetchCurrentUser = async () => {
+    const access_token = Cookies.get("access_token");
+
+    // Check if cached
+    const cachedUser = Cookies.get("current_user");
+    if (cachedUser) {
+      return JSON.parse(cachedUser);
+    }
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}current-user`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          Accept: "application/json",
+        },
+      });
+
+      const data = await response.json();
+      if (!response.ok || data?.message === "Invalid or expired token") {
+        throw new Error("Invalid or expired token");
+      }
+
+      Cookies.set("current_user", JSON.stringify(data.user), { expires: 1 });
+      setCurrentUser(data.user);
+    } catch (err) {
+      console.error("Failed to fetch current user:", err);
+      Cookies.remove("access_token");
+      Cookies.remove("user");
+      Cookies.remove("current_user");
+
+      // navigate("/login");
+      return null;
+    }
+  }
+
 
   const fetchPaymentGateway = async () => {
 
@@ -31,13 +76,14 @@ export const ConfigProvider = ({ children }) => {
     }
   };
 
-
   useEffect(() => {
 
     if (!apiCalledRef.current && gateways.length === 0) {
       apiCalledRef.current = true;
       fetchPaymentGateway();
     }
+
+    fetchCurrentUser();
 
     axios.get(`${process.env.REACT_APP_BACKEND_API_URL}config`)
       .then(response => {
@@ -53,7 +99,7 @@ export const ConfigProvider = ({ children }) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <ConfigContext.Provider value={{ config, gateways }}>
+    <ConfigContext.Provider value={{ config, gateways, currentUser }}>
       {children}
     </ConfigContext.Provider>
   );

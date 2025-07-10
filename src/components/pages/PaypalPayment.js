@@ -176,9 +176,9 @@ function PaypalPayment() {
       const data = await response.json();
 
       if (response.ok) {
-        Cookies.set("user", JSON.stringify(data.user), { expires: 30 });
-        Cookies.set("access_token", data.access_token, { expires: 30 });
-        Cookies.set("user_email", email, { expires: 30 });
+        Cookies.set("user", JSON.stringify(data?.user), { expires: 30 });
+        Cookies.set("access_token", data?.access_token, { expires: 30 });
+        Cookies.set("user_email", data?.user?.email, { expires: 30 });
 
         setLoading(false);
 

@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import { useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { useConfig } from '../../ConfigContext';
 
 function Plans() {
 	const navigate = useNavigate();
@@ -12,33 +13,55 @@ function Plans() {
   const user_id = user?.id ?? null;
   const [CurrentPlan, setCurrentPlan] = useState(null);
   const apiCalledRef = useRef(false);
-
-  const fetchCurrentPlan = async (payload) => {
-        try {
-          const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}current-plan/${user_id}`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-            },
-          });
-
-          const result = await response.json();
-          console.log("Result", result);
-          setCurrentPlan(result);
-        } catch (err) {
-          console.error("Error getting plan:", err);
-        }
-      };
+  const context = useConfig();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if(user_id) {
-      if (!apiCalledRef.current) {
-        apiCalledRef.current = true;
-        fetchCurrentPlan();
+    if (context?.currentUser?.payment_details?.length > 0) {
+      const latestPayment = [...context.currentUser.payment_details].sort(
+        (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+      )[0];
+
+      if (latestPayment?.transaction_status === 'completed') {
+        setCurrentPlan(latestPayment);
       }
     }
-  }, [user_id]);
+  }, [context]);
+
+  const savePayment = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}save-payment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user_id ?? '',
+          payer_email: user?.email ?? '',
+          plan_type: 'Free',
+          plan_amount: '0',
+          transaction_id: '',
+          transaction_status: '',
+          payment_date: '',
+          payer_id: '',
+          payer_name: '',
+          gateway: '',
+          currency: '',
+          raw_response: ''
+        })
+      });
+
+      const result = await response.json();
+      
+      navigate('/');
+    } catch (err) {
+      console.error("Error saving payment:", err);
+      navigate('/');
+    }
+  };
+
 
   const plans = [
     {
@@ -109,11 +132,11 @@ function Plans() {
                 </ul>
 
                 {plan.price === "0" ? (
-                  <a href="/" className="w-full block">
-                    <button className="w-full text-white bg-red-500 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5">
+                  
+                    <button onClick={savePayment} className="w-full text-white bg-red-500 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5">
                       Start for Free
                     </button>
-                  </a>
+                  
                 ) : CurrentPlan?.plan_type === plan.title && CurrentPlan?.transaction_status === 'completed' ? (
                   <button
                     disabled

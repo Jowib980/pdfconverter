@@ -227,6 +227,7 @@ input.input{
     background-image: url(../images/secure.svg);
 }
 
+
 .input--icon:before {
     top: 50%;
     left: 12px;
@@ -538,4 +539,10 @@ canvas.jpg {
 
 .scrollbar-red::-webkit-scrollbar-track {
   background-color: transparent;
+}
+
+
+.modal-header {
+    background-image: url(../images/header.svg);
+    background-size: cover;
 }
