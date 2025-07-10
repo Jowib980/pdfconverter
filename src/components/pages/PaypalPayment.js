@@ -11,6 +11,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import SignupModal from '../auth/SignupModal';
 import LoginModal from '../auth/LoginModal';
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 function PaypalPayment() {
   const location = useLocation();
@@ -34,10 +35,16 @@ function PaypalPayment() {
 
   const gateways = context?.gateways ?? JSON.parse(localStorage.getItem("gateway") || "[]");
 
+  const paypalGateway = context?.gateways.find(
+    (g) => g.name.toLowerCase() === 'paypal' && g.client_id
+  );
+
+  const paypalClientId = paypalGateway?.client_id ?? context?.config?.paypalClientId ?? '';
+
+  const hasPaypal = !!paypalClientId;
   
   const razorpayEnabled = gateways.find(gw => gw.name.toLowerCase() === 'razorpay' && gw.is_enabled);
   const paypalEnabled = gateways.find(gw => gw.name.toLowerCase() === 'paypal' && gw.is_enabled);
-
 
 
  useEffect(() => {
@@ -281,49 +288,51 @@ function PaypalPayment() {
               {paypalEnabled && (
                 <div className="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow">
                   <h3 className="text-xl font-semibold text-gray-700 mb-4">Pay with PayPal</h3>
-                  <PayPalButtons
-                    style={{ layout: "vertical", color: "blue", shape: "pill", label: "pay" }}
-                    onClick={(data, actions) => {
-                      const userString = Cookies.get("user");
-                      const user = userString ? JSON.parse(userString) : null;
+                  <PayPalScriptProvider options={{ 'client-id': paypalClientId }}>
+                    <PayPalButtons
+                      style={{ layout: "vertical", color: "blue", shape: "pill", label: "pay" }}
+                      onClick={(data, actions) => {
+                        const userString = Cookies.get("user");
+                        const user = userString ? JSON.parse(userString) : null;
 
-                      if (!user) {
-                        setPaymentGateway("paypal");
-                        setShowModal(true);
-                        return actions.reject();
-                      }
+                        if (!user) {
+                          setPaymentGateway("paypal");
+                          setShowModal(true);
+                          return actions.reject();
+                        }
 
-                      return actions.resolve();
-                    }}
+                        return actions.resolve();
+                      }}
 
-                    createOrder={(data, actions) => {
-                      return actions.order.create({
-                        purchase_units: [{
-                          amount: { value: plan.price },
-                          description: `${plan.title} Plan`
-                        }]
-                      });
-                    }}
-                    onApprove={(data, actions) => {
-                      return actions.order.capture().then(details => {
-                        const paymentPayload = {
-                          user_id: user_id,
-                          payer_email: details.payer.email_address,
-                          plan_type: plan.title,
-                          plan_amount: plan.price,
-                          transaction_id: details.id,
-                          transaction_status: details.status,
-                          payment_date: details.update_time,
-                          payer_id: details.payer.payer_id,
-                          payer_name: `${details.payer.name.given_name} ${details.payer.name.surname}`,
-                          gateway: "paypal",
-                          currency: details.purchase_units[0].amount.currency_code,
-                          raw_response: JSON.stringify(details)
-                        };
-                        savePayment(paymentPayload);
-                      });
-                    }}
-                  />
+                      createOrder={(data, actions) => {
+                        return actions.order.create({
+                          purchase_units: [{
+                            amount: { value: plan.price },
+                            description: `${plan.title} Plan`
+                          }]
+                        });
+                      }}
+                      onApprove={(data, actions) => {
+                        return actions.order.capture().then(details => {
+                          const paymentPayload = {
+                            user_id: user_id,
+                            payer_email: details.payer.email_address,
+                            plan_type: plan.title,
+                            plan_amount: plan.price,
+                            transaction_id: details.id,
+                            transaction_status: details.status,
+                            payment_date: details.update_time,
+                            payer_id: details.payer.payer_id,
+                            payer_name: `${details.payer.name.given_name} ${details.payer.name.surname}`,
+                            gateway: "paypal",
+                            currency: details.purchase_units[0].amount.currency_code,
+                            raw_response: JSON.stringify(details)
+                          };
+                          savePayment(paymentPayload);
+                        });
+                      }}
+                    />
+                  </PayPalScriptProvider>
                 </div>
               )}
 

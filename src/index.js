@@ -8,7 +8,6 @@ import reportWebVitals from './reportWebVitals';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from './AuthContext';
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { ConfigProvider, useConfig } from './ConfigContext';
 
 const WrappedApp = () => {
@@ -18,17 +17,11 @@ const WrappedApp = () => {
     (g) => g.name.toLowerCase() === 'google' && g.client_id
   );
 
-  const paypalGateway = gateways.find(
-    (g) => g.name.toLowerCase() === 'paypal' && g.client_id
-  );
-
   const googleClientId = googleGateway?.client_id ?? config?.googleClientId ?? '';
-  const paypalClientId = paypalGateway?.client_id ?? config?.paypalClientId ?? '';
 
   const hasGoogle = !!googleClientId;
-  const hasPaypal = !!paypalClientId;
 
-  if (!hasGoogle && !hasPaypal) {
+  if (!hasGoogle) {
     return <div>Missing gateway credentials.</div>;
   }
 
@@ -38,22 +31,16 @@ const WrappedApp = () => {
     </AuthProvider>
   );
 
-  if (hasGoogle && hasPaypal) {
+  if (hasGoogle) {
     return (
       <GoogleOAuthProvider clientId={googleClientId}>
-        <PayPalScriptProvider options={{ 'client-id': paypalClientId }}>
           {AppTree}
-        </PayPalScriptProvider>
       </GoogleOAuthProvider>
     );
   }
 
   if (hasGoogle) {
     return <GoogleOAuthProvider clientId={googleClientId}>{AppTree}</GoogleOAuthProvider>;
-  }
-
-  if (hasPaypal) {
-    return <PayPalScriptProvider options={{ 'client-id': paypalClientId }}>{AppTree}</PayPalScriptProvider>;
   }
 
   return AppTree;
