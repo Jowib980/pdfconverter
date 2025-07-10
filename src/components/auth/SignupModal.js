@@ -33,10 +33,7 @@ function SignupModal({
 			            <h2 className="text-4xl font-semibold text-center text-yellow-600 mb-1">
 			              Upgrade to Premium
 			            </h2>
-			            <p className="text-center text-xl text-white mb-4">
-			              This tool is limited to <strong>1 file per task</strong><br />
-			              <span className="text-yellow-600 font-semibold">Premium</span> users can process up to <strong>10 files per task</strong>
-			            </p>
+			           
 		            </div>
 
 		            <div className="flex flex-col gap-3 p-4 items-center">

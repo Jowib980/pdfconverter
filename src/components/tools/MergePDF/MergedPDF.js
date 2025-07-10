@@ -258,8 +258,9 @@ return (
                 bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
                 w-[300px] sm:w-[350px]
                 fixed top-0 right-0 h-screen z-50
-                ${showSidebar ? 'translate-x-0' : 'translate-x-full'}
+                ${showSidebar ? 'translate-x-0 mt-8 pt-6' : 'translate-x-full'}
                 sm:relative sm:translate-x-0 sm:flex
+                scrollbar-red overflow-y-auto max-h-screen
               `}
             >
               {/* Close Button for Mobile */}
@@ -283,7 +284,7 @@ return (
                 </div>
                 <div className="p-6">
                   <button
-                    className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
+                    className="flex justify-center w-full bg-red-600 text-white py-3 px-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
                     onClick={Convert}
                   >
                     <span className="convert-button">Merge PDF</span>

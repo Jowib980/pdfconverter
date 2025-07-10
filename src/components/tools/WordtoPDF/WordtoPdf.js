@@ -52,22 +52,28 @@ function WordtoPdf({ files = [] }) {
     if (files.length) {
       setSelectedFiles(files);
 
-    if (files.length > 1 && !access_token) {
-      setShowModal(true);
-    }
+      if (files.length > 1 && !access_token) {
+        setShowModal(true);
+      }
 
-    if (files.length > 1 && context?.currentUser?.payment_details?.length > 0) {
-      const latestPayment = [...context.currentUser.payment_details].sort(
-        (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
-      )[0];
+      if (files.length > 1) {
+      const paymentDetails = context?.currentUser?.payment_details;
 
-      if (latestPayment?.transaction_status === 'completed' && latestPayment?.plan_type != 'Free') {
-        setShowPaymentModal(false);
-      } else {
-        setShowPaymentModal(true);
+        if (!paymentDetails || paymentDetails.length === 0) {
+          setShowPaymentModal(true);
+        } else {
+          const latestPayment = [...paymentDetails].sort(
+            (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+          )[0];
+
+          if (latestPayment?.transaction_status === 'completed' && latestPayment?.plan_type !== 'Free') {
+            setShowPaymentModal(false);
+          } else {
+            setShowPaymentModal(true);
+          }
+        }
       }
     }
-  }
   }, [files, access_token]);
 
   const handleFileChange = (e) => {
@@ -81,17 +87,24 @@ function WordtoPdf({ files = [] }) {
     return;
   }
 
-  if (totalFiles > 1 && context?.currentUser?.payment_details?.length > 0) {
-    const latestPayment = [...context.currentUser.payment_details].sort(
-      (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
-    )[0];
+  if (totalFiles > 1) {
+  const paymentDetails = context?.currentUser?.payment_details;
 
-    if (latestPayment?.transaction_status === 'completed' && latestPayment?.plan_type != 'Free') {
-      setShowPaymentModal(false);
-    } else {
+    if (!paymentDetails || paymentDetails.length === 0) {
       setShowPaymentModal(true);
+    } else {
+      const latestPayment = [...paymentDetails].sort(
+        (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+      )[0];
+
+      if (latestPayment?.transaction_status === 'completed' && latestPayment?.plan_type !== 'Free') {
+        setShowPaymentModal(false);
+      } else {
+        setShowPaymentModal(true);
+      }
     }
   }
+
 
   setSelectedFiles((prev) => [...prev, ...newFiles]);
   setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
@@ -209,12 +222,16 @@ const handleChange = (e) => {
   }
 
   // If multiple files, check payment or show prompt
+  const paymentDetails = context?.currentUser?.payment_details;
+
+  const latestPayment =
+    Array.isArray(paymentDetails) && paymentDetails.length > 0
+      ? [...paymentDetails].sort((a, b) => new Date(b.payment_date) - new Date(a.payment_date))[0]
+      : null;
+
   const hasPayment =
-    context?.currentUser?.payment_details?.length > 0 &&
-    [...context.currentUser.payment_details].sort((a, b) => new Date(b.payment_date) - new Date(a.payment_date))[0]
-      ?.transaction_status === "completed" &&
-    [...context.currentUser.payment_details].sort((a, b) => new Date(b.payment_date) - new Date(a.payment_date))[0]
-      ?.plan_type !== "Free";
+    latestPayment?.transaction_status === "completed" &&
+    latestPayment?.plan_type !== "Free";
 
   if (hasPayment) {
     await convertFiles(); // Allow multi-file
@@ -281,7 +298,7 @@ const handleRemoveFile = (indexToRemove) => {
       
        <ToastContainer />
 
-        {showModal && (
+       {showModal && (
 
           <SignupModal
             showModal={showModal}
@@ -314,6 +331,7 @@ const handleRemoveFile = (indexToRemove) => {
           />
         )}
 
+        
         {showFileLimitPrompt && (
           <FileLimitPrompt
             showFileLimitPrompt={showFileLimitPrompt}
@@ -343,7 +361,7 @@ const handleRemoveFile = (indexToRemove) => {
       {!showFileLimitPrompt && !isConverting && !conversionDone && (
           <>
           <div className="selected-section flex min-h-screen bg-gray-50">
-            <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
+            <div className="flex-1 flex flex-col justify-center items-center px-4 relative group scrollbar-red overflow-y-auto max-h-screen">
               
               {!showSidebar && (
                 <div className="sidetool absolute -top-4 -right-4 z-20">
@@ -422,13 +440,7 @@ const handleRemoveFile = (indexToRemove) => {
 
           {/* sidebar*/}
             <div
-              className={`
-                bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
-                w-[300px] sm:w-[350px]
-                fixed top-0 right-0 h-screen z-50
-                ${showSidebar ? 'translate-x-0' : 'translate-x-full'}
-                sm:relative sm:translate-x-0 sm:flex
-              `}
+              className={`bg-white border-l border-gray-200 flex flex-col justify-between transition-transform scrollbar-red overflow-y-auto max-h-screen duration-300 ease-in-outw-[300px] sm:w-[350px] fixed top-0 right-0 h-screen z-50 ${showSidebar ? 'translate-x-0 mt-8 pt-6' : 'translate-x-full'} sm:relative sm:translate-x-0 sm:flex`}
             >
               {/* Close Button for Mobile */}
               <div className="sm:hidden p-4 flex justify-end">
@@ -445,7 +457,7 @@ const handleRemoveFile = (indexToRemove) => {
 
                   <div className="p-6">
                     <button
-                      className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
+                      className="flex justify-center w-full py-3 px-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
                       onClick={Convert}
                     >
                       <span className="convert-button">Convert to PDF</span>
@@ -482,7 +494,7 @@ const handleRemoveFile = (indexToRemove) => {
 
            <div className={`selected-section flex bg-gray-50 p-6 mobile-button ${showSidebar ? 'hide-menu' : ''}`}>
                 <button
-                  className="flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
+                  className="flex justify-center w-full py-3 px-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 bg-red-500 text-white"
                   onClick={Convert}
                 >
                   <span className="convert-button">Convert to PDF</span>
@@ -505,6 +517,8 @@ const handleRemoveFile = (indexToRemove) => {
         )}
       
     </div>
+
+        
     </>
   );
 }

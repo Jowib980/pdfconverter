@@ -35,10 +35,7 @@ function PaymentModal({
 			            <h2 className="text-4xl font-semibold text-center text-yellow-600 mb-1">
 			              Upgrade to Premium
 			            </h2>
-			            <p className="text-center text-xl text-white mb-4">
-			              This tool is limited to <strong>1 file per task</strong><br />
-			              <span className="text-yellow-600 font-semibold">Premium</span> users can process up to <strong>10 files per task</strong>
-			            </p>
+			            
 		            </div>
 
 		            <div className="space-y-3 mb-4 p-6">
@@ -55,13 +52,13 @@ function PaymentModal({
 											  }}
 											>
 											  <h5 className="text-md font-medium text-gray-600 mb-1">{plan.title}</h5>
-											  <span className="text-2xl font-bold text-gray-800">₹{plan.price}</span>
+											  <span className="text-2xl font-bold text-gray-800">${plan.price}/month</span>
 											</div>
 
 											<div className="p-4">
 					            	<button
 			                    onClick={() => navigate('/payment', { state: { plan } })}
-			                    className="w-full text-white bg-red-500 hover:bg-red-700 font-medium rounded-lg text-sm px-6 py-2.5"
+			                    className="w-full text-white bg-red-500 hover:bg-red-700 font-medium rounded-lg text-sm px-6 py-4"
 			                  >
 			                    Go Premium
 			                  </button>

@@ -184,6 +184,7 @@ function PaypalPayment() {
 
         if (paymentGateway === "razorpay") {
           await startRazorpayPayment(data.user);
+          window.location.reload();
         } else if (paymentGateway === "paypal") {
           window.location.reload();
         }
@@ -207,6 +208,7 @@ function PaypalPayment() {
   }
 
   const handleLogin = async () => {
+    setLoading(true);
     setShowLoginModal(false);
     try {
           const loginResponse = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}login`, {

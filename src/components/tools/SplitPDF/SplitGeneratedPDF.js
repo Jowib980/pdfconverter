@@ -157,25 +157,7 @@ function SplitGeneratedPDF({ files = [] }) {
           <>
           <div className="selected-section flex min-h-screen bg-gray-50">
             <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
-              {!showSidebar && (
-              <div className="sidetool absolute -top-4 -right-4 z-20">
-                <label className="relative cursor-pointer">
-                  <div className="bg-red-500 text-white rounded-full w-10 h-10 text-xl font-semibold shadow-lg hover:bg-red-600 flex items-center justify-center">
-                    +
-                  </div>
-                  <input
-                    type="file"
-                    accept=".pdf"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                </label>
-                <span className="file-count absolute -top-2 -left-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {selectedFiles.length}
-                </span>
-              </div>
-              )}
-
+              
               
                <div className={`upload-extra absolute mt-2 right-0 ${showSidebar ? 'hide-menu' : 'group-hover:flex'} flex-col gap-2 z-10`}>
               <button
@@ -217,8 +199,9 @@ function SplitGeneratedPDF({ files = [] }) {
                 bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
                 w-[300px] sm:w-[350px]
                 fixed top-0 right-0 h-screen z-50
-                ${showSidebar ? 'translate-x-0' : 'translate-x-full'}
+                ${showSidebar ? 'translate-x-0 mt-8 pt-6' : 'translate-x-full'}
                 sm:relative sm:translate-x-0 sm:flex
+                scrollbar-red overflow-y-auto max-h-screen
               `}
             >
               {/* Close Button for Mobile */}
@@ -234,7 +217,7 @@ function SplitGeneratedPDF({ files = [] }) {
               </div>
               <div className="p-6">
                 <button
-                  className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
+                  className="flex justify-center w-full bg-red-600 text-white py-3 px-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
                   onClick={Convert}
                 >
                   <span className="convert-button">Split PDF</span>

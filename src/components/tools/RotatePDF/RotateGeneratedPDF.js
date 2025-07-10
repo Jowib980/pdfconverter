@@ -11,6 +11,11 @@ import { Helmet } from 'react-helmet-async';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 import Cookies from 'js-cookie';
+import SignupModal from '../../auth/SignupModal';
+import LoginModal from '../../auth/LoginModal';
+import { useConfig } from '../../../ConfigContext';
+import PaymentModal from '../../auth/PaymentModal';
+import FileLimitPrompt from '../../auth/FileLimitPrompt';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -28,6 +33,7 @@ function RotateGeneratedPDF({ files = [] }) {
   const userString = Cookies.get("user");
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
+  const access_token = Cookies.get("access_token");
   const rotationOptions = [
     { value: '0', label: 'No Rotation' },
     { value: '90', label: 'Rotate Right 90°' },
@@ -40,13 +46,17 @@ function RotateGeneratedPDF({ files = [] }) {
   const canvasRefs = useRef({});
   const [showSidebar, setShowSidebar] = useState(false);
 
-
-  useEffect(() => {
-    if (files.length) {
-      setSelectedFiles(files);
-    }
-
-  }, [files]);
+  const [showModal, setShowModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showFileLimitPrompt, setShowFileLimitPrompt] = useState(false);
+  const [form, setForm] = useState({
+      name: '',
+      email: '',
+      password: '',
+      confirm_password: '',
+    });
+  const context = useConfig();
 
   useEffect(() => {
     selectedFiles.forEach((file, index) => {
@@ -96,22 +106,213 @@ const renderPdfThumbnail = async (file, canvas, angle) => {
 };
 
 
-  const handleFileChange = (e) => {
-    const newFiles = Array.from(e.target.files);
-    setSelectedFiles((prev) => [...prev, ...newFiles]);
-    setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
-  };
 
-  const Convert = async () => {
-    if (!selectedFiles.length) {
-      alert("Please add at least one .pdf file.");
-      return;
+
+  useEffect(() => {
+
+    if(context?.currentUser?.message === "Invalid or expired token") {
+      toast.error("Expired session. Please login to continue");
+      navigate('/login');
     }
 
-    setIsConverting(true);
-    setConversionDone(false);
+    if (files.length) {
+      setSelectedFiles(files);
 
-    const updatedStatus = new Array(selectedFiles.length).fill("Converting...");
+      if (files.length > 1 && !access_token) {
+        setShowModal(true);
+      }
+
+      if (files.length > 1 && access_token) {
+      const paymentDetails = context?.currentUser?.payment_details;
+
+        if (!paymentDetails || paymentDetails.length === 0) {
+          setShowPaymentModal(true);
+        } else {
+          const latestPayment = [...paymentDetails].sort(
+            (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+          )[0];
+
+          if (latestPayment?.transaction_status === 'completed' && latestPayment?.plan_type !== 'Free') {
+            setShowPaymentModal(false);
+          } else {
+            setShowPaymentModal(true);
+          }
+        }
+      }
+    }
+  }, [files, access_token]);
+
+  const handleFileChange = (e) => {
+  const newFiles = Array.from(e.target.files);
+
+  const totalFiles = selectedFiles.length + newFiles.length;
+
+  // If total exceeds 1 and user not logged in, block and show modal
+  if (totalFiles > 1 && !access_token) {
+    setShowModal(true);
+    return;
+  }
+
+  if (totalFiles > 1) {
+  const paymentDetails = context?.currentUser?.payment_details;
+
+    if (!paymentDetails || paymentDetails.length === 0) {
+      setShowPaymentModal(true);
+    } else {
+      const latestPayment = [...paymentDetails].sort(
+        (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+      )[0];
+
+      if (latestPayment?.transaction_status === 'completed' && latestPayment?.plan_type !== 'Free') {
+        setShowPaymentModal(false);
+      } else {
+        setShowPaymentModal(true);
+      }
+    }
+  }
+
+
+  setSelectedFiles((prev) => [...prev, ...newFiles]);
+  setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
+};
+
+const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const closeLoginModal = () => {
+    setShowLoginModal(false);
+  };
+
+  const closePaymentModal = () => {
+    setShowPaymentModal(false);
+  };
+
+  const closeFileLimitPrompt = () => {
+    setShowFileLimitPrompt(false);
+  };
+
+
+  const handleLoginRedirect = () => {
+    setShowModal(false);
+    setShowLoginModal(true);
+  }
+
+  const handleSignupRedirect = () => {
+    setShowModal(true);
+    setShowLoginModal(false);
+  }
+
+
+  const handleSubmit = async () => {
+    setShowModal(false);
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          password_confirmation: form.confirm_password,
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Cookies.set("user", JSON.stringify(data.user), { expires: 30 });
+        Cookies.set("access_token", data.access_token, { expires: 30 });
+        Cookies.set("user_email", data?.user?.email, { expires: 30 });
+
+
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      
+      toast.error("An error occurred during registration.");
+    }
+  };
+
+  const handleLogin = async () => {
+    setShowLoginModal(false);
+    try {
+          const loginResponse = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}login`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json'
+            },
+            body: JSON.stringify({
+              email: form.email,
+              password: form.password,
+            })
+          });
+
+          const loginData = await loginResponse.json();
+
+          if (loginResponse.ok) {
+            Cookies.set("user", JSON.stringify(loginData?.user), { expires: 30 });
+            Cookies.set("access_token", loginData?.access_token, { expires: 30 });
+            Cookies.set("user_email", loginData?.user?.email, { expires: 30 });
+
+          } else {
+            toast.error("Login failed. Try again later.");
+          }
+      } catch (error) {
+        console.error("Login error:", error);
+        toast.error("An error occurred during registration.");
+    }
+  }
+
+  const Convert = async () => {
+  if (!selectedFiles.length) {
+    alert("Please add at least one .doc/.docx file.");
+    return;
+  }
+
+  // Always allow 1 file without prompt
+  if (selectedFiles.length === 1) {
+    await convertFiles();
+    return;
+  }
+
+  // If multiple files, check payment or show prompt
+  const paymentDetails = context?.currentUser?.payment_details;
+
+  const latestPayment =
+    Array.isArray(paymentDetails) && paymentDetails.length > 0
+      ? [...paymentDetails].sort((a, b) => new Date(b.payment_date) - new Date(a.payment_date))[0]
+      : null;
+
+  const hasPayment =
+    latestPayment?.transaction_status === "completed" &&
+    latestPayment?.plan_type !== "Free";
+
+  if (hasPayment) {
+    await convertFiles(); // Allow multi-file
+  } else {
+    setShowFileLimitPrompt(true); // Show upgrade modal
+  }
+};
+
+
+const convertFiles = async () => {
+  setShowFileLimitPrompt(false);
+  setIsConverting(true);
+  setConversionDone(false);
+
+  const updatedStatus = new Array(selectedFiles.length).fill("Converting...");
     setConversionStatus(updatedStatus);
 
     const formData = new FormData();
@@ -149,10 +350,10 @@ const renderPdfThumbnail = async (file, canvas, angle) => {
       setError(true);
     }
 
-    setIsConverting(false);
-    setConversionDone(true);
+  setIsConverting(false);
+  setConversionDone(true);
+};
 
-  };
 
 
 const handleRemoveFile = (indexToRemove) => {
@@ -171,6 +372,57 @@ const handleRemoveFile = (indexToRemove) => {
     <div className="main">
 
       <ToastContainer />
+
+      {showModal && (
+
+          <SignupModal
+            showModal={showModal}
+            setForm={setForm}
+            form={form}
+            handleSubmit={handleSubmit}
+            handleChange={handleChange}
+            handleLoginRedirect={handleLoginRedirect}
+            closeModal={closeModal}
+          />
+        )}
+
+        {showLoginModal && (
+          <LoginModal
+            showLoginModal={showLoginModal}
+            setForm={setForm}
+            form={form}
+            handleLogin={handleLogin}
+            handleChange={handleChange}
+            handleSignupRedirect={handleSignupRedirect}
+            closeLoginModal={closeLoginModal}
+          />
+        )}
+
+
+        {showPaymentModal && (
+          <PaymentModal
+            showPaymentModal={showPaymentModal}
+            closePaymentModal={closePaymentModal}
+          />
+        )}
+
+        
+        {showFileLimitPrompt && (
+          <FileLimitPrompt
+            showFileLimitPrompt={showFileLimitPrompt}
+            closeFileLimitPrompt={closeFileLimitPrompt}
+            selectedFiles={selectedFiles}
+            onContinuePremium={() => {
+              closeFileLimitPrompt();
+              setShowPaymentModal(true);
+            }}
+            onContinueFree={() => {
+              closeFileLimitPrompt();
+              setSelectedFiles(selectedFiles.slice(0, 1)); // Keep only 1 file
+            }}
+          />
+        )}
+       
        
       {error && (
         <div className="selected-section flex min-h-screen bg-gray-50">
@@ -183,7 +435,7 @@ const handleRemoveFile = (indexToRemove) => {
       )}
 
       {/* Selected Files Section */}
-      {!isConverting && !conversionDone && (
+      {!showFileLimitPrompt && !isConverting && !conversionDone && (
         <>
         <div className="selected-section flex min-h-screen bg-gray-50">
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
@@ -268,8 +520,9 @@ const handleRemoveFile = (indexToRemove) => {
               bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
               w-[300px] sm:w-[350px]
               fixed top-0 right-0 h-screen z-50
-              ${showSidebar ? 'translate-x-0' : 'translate-x-full'}
+              ${showSidebar ? 'translate-x-0 mt-8 pt-6' : 'translate-x-full'}
               sm:relative sm:translate-x-0 sm:flex
+              scrollbar-red overflow-y-auto max-h-screen
             `}
           >
             {/* Close Button for Mobile */}
@@ -305,7 +558,7 @@ const handleRemoveFile = (indexToRemove) => {
 
             <div className="p-6">
               <button
-                className="flex justify-center w-full bg-red-600 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
+                className="flex justify-center w-full bg-red-600 text-white py-3 px-3 rounded-lg text-lg font-semibold shadow-md hover:bg-red-700 transition-all duration-300"
                 onClick={Convert}
               >
                 <span className="convert-button">Rotate PDF</span>

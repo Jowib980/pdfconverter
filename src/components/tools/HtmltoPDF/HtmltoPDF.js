@@ -200,8 +200,9 @@ const handleRemoveFile = (indexToRemove) => {
                 bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
                 w-[300px] sm:w-[350px]
                 fixed top-0 right-0 h-screen z-50
-                ${showSidebar ? 'translate-x-0' : 'translate-x-full'}
+                ${showSidebar ? 'translate-x-0  mt-8 pt-6' : 'translate-x-full'}
                 sm:relative sm:translate-x-0 sm:flex
+                scrollbar-red overflow-y-auto max-h-screen
               `}
             >
               {/* Close Button for Mobile */}
@@ -218,7 +219,7 @@ const handleRemoveFile = (indexToRemove) => {
 
             <div className="p-6">
               <button
-                className={`flex justify-center w-full py-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 ${
+                className={`flex justify-center w-full py-3 px-3 rounded-lg text-lg font-semibold shadow-md transition-all duration-300 ${
                   selectedFiles.length < 1
                     ? 'bg-gray-400 text-white cursor-not-allowed'
                     : 'bg-red-600 text-white hover:bg-red-700'
