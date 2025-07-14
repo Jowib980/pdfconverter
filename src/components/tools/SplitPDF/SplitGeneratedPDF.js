@@ -23,7 +23,7 @@ function SplitGeneratedPDF({ files = [] }) {
   const token = uuidv4();
   const navigate = useNavigate();
 
-  const userString = Cookies.get("user");
+  const userString = Cookies.get("current_user");
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
   const [error, setError] = useState(false);
@@ -158,6 +158,26 @@ function SplitGeneratedPDF({ files = [] }) {
           <div className="selected-section flex min-h-screen bg-gray-50">
             <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
               
+            {!showSidebar && selectedFiles.length === 0 && (
+            <div className="sidetool absolute -top-4 -right-4 z-20">
+              <div className="relative">
+                <label className="relative cursor-pointer">
+                  <div className="bg-red-500 text-white rounded-full w-10 h-10 text-xl font-semibold shadow-lg hover:bg-red-600 flex items-center justify-center">
+                    +
+                  </div>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </label>
+                <span className="file-count absolute -top-2 -left-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {selectedFiles.length}
+                </span>
+              </div>
+            </div>
+          )}
               
                <div className={`upload-extra absolute mt-2 right-0 ${showSidebar ? 'hide-menu' : 'group-hover:flex'} flex-col gap-2 z-10`}>
               <button

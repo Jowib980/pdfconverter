@@ -22,7 +22,7 @@ const WrappedApp = () => {
   const hasGoogle = !!googleClientId;
 
   if (!hasGoogle) {
-    return <div>Missing gateway credentials.</div>;
+    console.log("Missing gateway credentials.");
   }
 
   const AppTree = (

@@ -16,7 +16,7 @@ import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 function PaypalPayment() {
   const location = useLocation();
   const plan = location.state?.plan;
-  const userString = Cookies.get("user");
+  const userString = Cookies.get("current_user");
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
   const [showModal, setShowModal] = useState(false);
@@ -88,6 +88,7 @@ function PaypalPayment() {
       
       toast.success("Payment successful.");
       navigate('/plans');
+      Cookies.remove('current_user');
     } catch (err) {
       console.error("Error saving payment:", err);
       toast.error("Payment was successful.");
@@ -95,7 +96,7 @@ function PaypalPayment() {
   };
 
    const handleRazorpayPayment = async () => {
-    const userString = Cookies.get("user");
+    const userString = Cookies.get("current_user");
     const user = userString ? JSON.parse(userString) : null;
 
     if (!user) {
@@ -176,7 +177,7 @@ function PaypalPayment() {
       const data = await response.json();
 
       if (response.ok) {
-        Cookies.set("user", JSON.stringify(data?.user), { expires: 30 });
+        Cookies.set("current_user", JSON.stringify(data?.user), { expires: 30 });
         Cookies.set("access_token", data?.access_token, { expires: 30 });
         Cookies.set("user_email", data?.user?.email, { expires: 30 });
 
@@ -226,7 +227,7 @@ function PaypalPayment() {
           const loginData = await loginResponse.json();
 
           if (loginResponse.ok) {
-            Cookies.set("user", JSON.stringify(loginData.user), { expires: 30 });
+            Cookies.set("current_user", JSON.stringify(loginData.user), { expires: 30 });
             Cookies.set("access_token", loginData.access_token, { expires: 30 });
             Cookies.set("user_email", email, { expires: 30 });
 
@@ -294,7 +295,7 @@ function PaypalPayment() {
                     <PayPalButtons
                       style={{ layout: "vertical", color: "blue", shape: "pill", label: "pay" }}
                       onClick={(data, actions) => {
-                        const userString = Cookies.get("user");
+                        const userString = Cookies.get("current_user");
                         const user = userString ? JSON.parse(userString) : null;
 
                         if (!user) {

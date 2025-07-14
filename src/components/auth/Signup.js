@@ -24,7 +24,6 @@ const token = Cookies.get("access_token");
   useEffect(() => {
     if(token) {
       Cookies.remove('access_token');
-      Cookies.remove('user');
     }
   })
 
@@ -122,7 +121,6 @@ const token = Cookies.get("access_token");
                 .then(data => {
                   if (data.token) {
                     localStorage.setItem("token", data.token);
-                    localStorage.setItem("user", JSON.stringify('data.user'));
                     alert("Google Login Successful!");
                     navigate('/');
                   } else {

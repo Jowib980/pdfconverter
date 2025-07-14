@@ -30,7 +30,7 @@ function RotateGeneratedPDF({ files = [] }) {
   const navigate = useNavigate();
   const [error, setError] = useState(false);
   
-  const userString = Cookies.get("user");
+  const userString = Cookies.get("current_user");
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
   const access_token = Cookies.get("access_token");
@@ -68,44 +68,42 @@ function RotateGeneratedPDF({ files = [] }) {
   }, [angle, selectedFiles]);
 
 
-const renderPdfThumbnail = async (file, canvas, angle) => {
-  if (!file || !canvas) return;
+  const renderPdfThumbnail = async (file, canvas, angle) => {
+    if (!file || !canvas) return;
 
-  const context = canvas.getContext("2d");
-  context.clearRect(0, 0, canvas.width, canvas.height); // Clear before rendering
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height); // Clear before rendering
 
-  const fileReader = new FileReader();
+    const fileReader = new FileReader();
 
-  fileReader.onload = async function () {
-    const typedarray = new Uint8Array(this.result);
+    fileReader.onload = async function () {
+      const typedarray = new Uint8Array(this.result);
 
-    try {
-      const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
-      const page = await pdf.getPage(1); // preview first page only
+      try {
+        const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
+        const page = await pdf.getPage(1); // preview first page only
 
-      const rotation = parseInt(angle, 10);
-      const viewport = page.getViewport({ scale: 0.5, rotation });
+        const rotation = parseInt(angle, 10);
+        const viewport = page.getViewport({ scale: 0.5, rotation });
 
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
 
-      const renderContext = {
-        canvasContext: context,
-        viewport,
-      };
+        const renderContext = {
+          canvasContext: context,
+          viewport,
+        };
 
-      // Wait for render to complete
-      const renderTask = page.render(renderContext);
-      await renderTask.promise;
-    } catch (error) {
-      console.error("Failed to render PDF preview", error);
-    }
+        // Wait for render to complete
+        const renderTask = page.render(renderContext);
+        await renderTask.promise;
+      } catch (error) {
+        console.error("Failed to render PDF preview", error);
+      }
+    };
+
+    fileReader.readAsArrayBuffer(file);
   };
-
-  fileReader.readAsArrayBuffer(file);
-};
-
-
 
 
   useEffect(() => {
@@ -123,22 +121,51 @@ const renderPdfThumbnail = async (file, canvas, angle) => {
       }
 
       if (files.length > 1 && access_token) {
-      const paymentDetails = context?.currentUser?.payment_details;
+      let currentUserDetails = context?.currentUser;
 
-        if (!paymentDetails || paymentDetails.length === 0) {
-          setShowPaymentModal(true);
-        } else {
-          const latestPayment = [...paymentDetails].sort(
-            (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
-          )[0];
+      // Fallback to cookie if context is empty or invalid
+      if (!currentUserDetails || typeof currentUserDetails !== 'object' || Array.isArray(currentUserDetails) || Object.keys(currentUserDetails).length === 0) {
+        try {
+          const cookieUser = Cookies.get('current_user');
+          console.log("Raw cookie:", cookieUser);
 
-          if (latestPayment?.transaction_status === 'completed' && latestPayment?.plan_type !== 'Free') {
-            setShowPaymentModal(false);
-          } else {
-            setShowPaymentModal(true);
+          if (cookieUser) {
+            const parsed = JSON.parse(decodeURIComponent(cookieUser));
+
+            // Check if it's a non-empty object
+            if (
+              parsed &&
+              typeof parsed === 'object' &&
+              !Array.isArray(parsed) &&
+              Object.keys(parsed).length > 0
+            ) {
+              currentUserDetails = parsed;
+            } else {
+              currentUserDetails = null;
+            }
           }
+        } catch (error) {
+          console.error("Error parsing current_user from cookies:", error);
+          currentUserDetails = null;
         }
       }
+
+      const paymentDetails = currentUserDetails?.payment_details;
+
+      if (!paymentDetails || paymentDetails.length === 0) {
+        setShowPaymentModal(true);
+      } else {
+        const latestPayment = [...paymentDetails].sort(
+          (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+        )[0];
+
+        const isPaid =
+          latestPayment?.transaction_status === 'completed' &&
+          latestPayment?.plan_type !== 'Free';
+
+        setShowPaymentModal(!isPaid);
+      }
+    }
     }
   }, [files, access_token]);
 
@@ -153,23 +180,51 @@ const renderPdfThumbnail = async (file, canvas, angle) => {
     return;
   }
 
-  if (totalFiles > 1) {
-  const paymentDetails = context?.currentUser?.payment_details;
+  if (totalFiles > 1 && access_token) {
+      let currentUserDetails = context?.currentUser;
 
-    if (!paymentDetails || paymentDetails.length === 0) {
-      setShowPaymentModal(true);
-    } else {
-      const latestPayment = [...paymentDetails].sort(
-        (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
-      )[0];
+        // Fallback to cookie if context is empty or invalid
+        if (!currentUserDetails || typeof currentUserDetails !== 'object' || Array.isArray(currentUserDetails) || Object.keys(currentUserDetails).length === 0) {
+          try {
+            const cookieUser = Cookies.get('current_user');
 
-      if (latestPayment?.transaction_status === 'completed' && latestPayment?.plan_type !== 'Free') {
-        setShowPaymentModal(false);
-      } else {
-        setShowPaymentModal(true);
-      }
+            if (cookieUser) {
+              const parsed = JSON.parse(decodeURIComponent(cookieUser));
+
+              // Check if it's a non-empty object
+              if (
+                parsed &&
+                typeof parsed === 'object' &&
+                !Array.isArray(parsed) &&
+                Object.keys(parsed).length > 0
+              ) {
+                currentUserDetails = parsed;
+              } else {
+                currentUserDetails = null;
+              }
+            }
+          } catch (error) {
+            console.error("Error parsing current_user from cookies:", error);
+            currentUserDetails = null;
+          }
+        }
+
+        const paymentDetails = currentUserDetails?.payment_details;
+
+        if (!paymentDetails || paymentDetails.length === 0) {
+          setShowPaymentModal(true);
+        } else {
+          const latestPayment = [...paymentDetails].sort(
+            (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+          )[0];
+
+          const isPaid =
+            latestPayment?.transaction_status === 'completed' &&
+            latestPayment?.plan_type !== 'Free';
+            setShowPaymentModal(!isPaid);
+        }
     }
-  }
+
 
 
   setSelectedFiles((prev) => [...prev, ...newFiles]);
@@ -231,7 +286,6 @@ const handleChange = (e) => {
       const data = await response.json();
 
       if (response.ok) {
-        Cookies.set("user", JSON.stringify(data.user), { expires: 30 });
         Cookies.set("access_token", data.access_token, { expires: 30 });
         Cookies.set("user_email", data?.user?.email, { expires: 30 });
 
@@ -262,7 +316,6 @@ const handleChange = (e) => {
           const loginData = await loginResponse.json();
 
           if (loginResponse.ok) {
-            Cookies.set("user", JSON.stringify(loginData?.user), { expires: 30 });
             Cookies.set("access_token", loginData?.access_token, { expires: 30 });
             Cookies.set("user_email", loginData?.user?.email, { expires: 30 });
 

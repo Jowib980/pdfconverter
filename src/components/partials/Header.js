@@ -7,13 +7,13 @@ import Cookies from 'js-cookie';
 function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const token = Cookies.get("access_token");
-  const userString = Cookies.get("user");
+  const userString = Cookies.get("current_user");
   let user = null;
   if (userString) {
     user = JSON.parse(userString);
 
   }
-  const role = user?.roles[0]?.name ?? null;
+  const role = Cookies.get('role');
   
 
   const navigate = useNavigate();
@@ -45,7 +45,7 @@ const isDesktop = screenWidth > 974;
 
   const handleLogout = () => {
     Cookies.remove('access_token');
-    Cookies.remove('user');
+    Cookies.remove('current_user');
     setIsAuthenticated(false);
     navigate('/login');
   }

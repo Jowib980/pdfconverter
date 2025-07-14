@@ -59,7 +59,7 @@ const handleChange = (e) => {
         setLoading(false);
         toast.success("Login successfully!");
         Cookies.set("access_token", data.access_token);
-        Cookies.set("user", JSON.stringify(data.user));
+        Cookies.set("role", data.role);
 
         navigate('/');
         
