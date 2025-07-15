@@ -87,8 +87,8 @@ function PaypalPayment() {
       const result = await response.json();
       
       toast.success("Payment successful.");
-      navigate('/plans');
       Cookies.remove('current_user');
+      navigate('/plans');
     } catch (err) {
       console.error("Error saving payment:", err);
       toast.error("Payment was successful.");

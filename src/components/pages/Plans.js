@@ -18,17 +18,55 @@ function Plans() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    let currentUserDetails = null;
 
-     if (context?.currentUser?.payment_details?.length > 0) {
-      const latestPayment = [...context.currentUser.payment_details].sort(
-        (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
-      )[0];
-
-      if (latestPayment?.transaction_status === 'completed') {
-        setCurrentPlan(latestPayment);
+    // ✅ Prefer context currentUser if it's a valid object
+    if (
+      context?.currentUser &&
+      typeof context.currentUser === 'object' &&
+      !Array.isArray(context.currentUser) &&
+      Object.keys(context.currentUser).length > 0
+    ) {
+      currentUserDetails = context.currentUser;
+    } else {
+      // ✅ Try to read from cookies
+      try {
+        const cookieUser = Cookies.get('current_user');
+        if (cookieUser) {
+          const parsed = JSON.parse(decodeURIComponent(cookieUser));
+          if (
+            parsed &&
+            typeof parsed === 'object' &&
+            !Array.isArray(parsed) &&
+            Object.keys(parsed).length > 0
+          ) {
+            currentUserDetails = parsed;
+          }
+        }
+      } catch (error) {
+        console.error("Error parsing current_user from cookies:", error);
       }
     }
+
+    // ✅ Check payment details
+    const paymentDetails = currentUserDetails?.payment_details;
+
+    if (!paymentDetails || paymentDetails.length === 0) {
+      setCurrentPlan(null);
+    } else {
+      const latestCompletedPayment = [...paymentDetails]
+        .filter(payment => payment.transaction_status === 'completed' && payment.plan_type !== 'Free')
+        .sort((a, b) => new Date(b.payment_date) - new Date(a.payment_date))[0];
+
+      if (latestCompletedPayment) {
+        setCurrentPlan(latestCompletedPayment); // Store full plan object
+      } else {
+        setCurrentPlan(null);
+      }
+    }
+
   }, [context]);
+
 
   const savePayment = async () => {
     setLoading(true);
@@ -56,6 +94,7 @@ function Plans() {
       });
 
       const result = await response.json();
+      Cookies.remove('current_user');
       
       navigate('/');
     } catch (err) {
