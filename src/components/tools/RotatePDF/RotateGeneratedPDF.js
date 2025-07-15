@@ -313,6 +313,11 @@ const handleChange = (e) => {
     return;
   }
 
+  if(selectedFiles.length > 1 && !access_token) {
+      setShowFileLimitPrompt(true);
+      return;
+    }
+
    if (selectedFiles.length > 1 && access_token) {
       let currentUserDetails = context?.currentUser;
 

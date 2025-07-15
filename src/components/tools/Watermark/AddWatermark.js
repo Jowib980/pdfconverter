@@ -389,6 +389,11 @@ const Convert = async () => {
     return;
   }
 
+  if(selectedFiles.length > 2 && !access_token) {
+      setShowFileLimitPrompt(true);
+      return;
+    }
+
    if (selectedFiles.length > 2 && access_token) {
       let currentUserDetails = context?.currentUser;
 
