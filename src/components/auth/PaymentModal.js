@@ -22,7 +22,7 @@ function PaymentModal({
 	return (
 		<div className="content">
 			{showPaymentModal && (
-				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+				<div className="fixed inset-0 z-[1050] flex items-center justify-center bg-black bg-opacity-50">
 		          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-2xl scrollbar-red overflow-y-auto max-h-screen">
 		            <div className='modal-header p-6'>
 			            <button

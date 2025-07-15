@@ -8,16 +8,18 @@ import { useConfig } from '../../ConfigContext';
 
 function Plans() {
 	const navigate = useNavigate();
-  const userString = Cookies.get("user");
+  const userString = Cookies.get("current_user");
   const user = userString ? JSON.parse(userString) : null;
   const user_id = user?.id ?? null;
+  const access_token = Cookies.get('access_token');
   const [CurrentPlan, setCurrentPlan] = useState(null);
   const apiCalledRef = useRef(false);
   const context = useConfig();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (context?.currentUser?.payment_details?.length > 0) {
+
+     if (context?.currentUser?.payment_details?.length > 0) {
       const latestPayment = [...context.currentUser.payment_details].sort(
         (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
       )[0];

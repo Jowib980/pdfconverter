@@ -23,8 +23,8 @@ function VerifyOtp() {
           "Accept": "application/json"
         },
         body: JSON.stringify({
-          email: email,
-          otp: otp
+          email,
+          otp
         })
       });
 
@@ -36,7 +36,6 @@ function VerifyOtp() {
 
       toast.success(data.message);
       Cookies.set('access_token', data.access_token);
-      Cookies.set('user_email', JSON.stringify(data.user?.email));
       Cookies.set('role', data.role);
       navigate('/');
 

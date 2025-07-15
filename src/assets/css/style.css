@@ -471,7 +471,7 @@ canvas.jpg {
     display: none !important;
 }
 
-@media (min-width:  250px) and (max-width:  767px) {
+@media (min-width:  200px) and (max-width:  639px) {
 
 
     .sidetool {
@@ -492,9 +492,15 @@ canvas.jpg {
         top: 146px;
         margin-top: 12px;
     }
+
+    .mobile-button {
+        display: block;        
+    }
+
+
 }
 
-@media (min-width: 250px) and (max-width:  911px)
+@media (min-width: 200px) and (max-width:  911px)
 {
     .premium-section {
         background-color: #47474f;
@@ -515,13 +521,6 @@ canvas.jpg {
     .file-count {
         border: 2px solid rgb(239 68 68 / var(--tw-bg-opacity));
     }
-
-    
-
-    .mobile-button {
-        display: block;        
-    }
-
 
 }
 

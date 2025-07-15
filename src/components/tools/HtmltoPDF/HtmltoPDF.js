@@ -32,10 +32,7 @@ function HtmltoPDF({ files = [], url = [] }) {
       setSelectedFiles(files);
     }
 
-    if(url.length) {
-      setUrlData(url);
-    }
-  }, [files, url]);
+  }, [files]);
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
@@ -43,9 +40,14 @@ function HtmltoPDF({ files = [], url = [] }) {
     setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
   };
 
+  useEffect(() => {
+    if (url?.length) {
+      setUrlData(url);
+    }
+  }, [url]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setUrlData(e.target.value);
   };
 
   const Convert = async () => {
@@ -128,14 +130,14 @@ function HtmltoPDF({ files = [], url = [] }) {
       )}
 
       {/* Selected Files Section */}
-      {selectedFiles.length && !isConverting && !conversionDone && (
+      {selectedFiles.length > 0 && !isConverting && !conversionDone && (
         <>
-        <div className="selected-section flex min-h-screen bg-gray-">
+        <div className="selected-section flex min-h-screen bg-gray-50">
           
           <div className="flex-1 flex flex-col justify-center items-center px-4 relative group">
             
             {!showSidebar && (
-            <div className="sidetool absolute -top-4 -right-4 z-20">
+            <div className="sidetool absolute top-4 -right-4 z-20">
               <div className="relative">
                 <label className="relative cursor-pointer">
                   <div className="bg-red-500 text-white rounded-full w-10 h-10 text-xl font-semibold shadow-lg hover:bg-red-600 flex items-center justify-center">
@@ -149,9 +151,11 @@ function HtmltoPDF({ files = [], url = [] }) {
                     onChange={handleFileChange}
                   />
                 </label>
-                <span className="file-count absolute -top-2 -left-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {selectedFiles.length}
-                </span>
+                {selectedFiles.length > 0 && (
+                  <span className="file-count absolute -top-2 -left-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {selectedFiles.length}
+                  </span>
+                )}
               </div>
             </div>
           )}
@@ -216,21 +220,22 @@ function HtmltoPDF({ files = [], url = [] }) {
                 bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
                 w-[300px] sm:w-[350px]
                 fixed top-0 right-0 h-screen z-50
-                ${showSidebar ? 'translate-x-0  mt-8 pt-6' : 'translate-x-full'}
+                ${showSidebar ? 'translate-x-0  z-[1050]' : 'translate-x-full'}
                 sm:relative sm:translate-x-0 sm:flex
                 scrollbar-red overflow-y-auto max-h-screen
               `}
             >
-              {/* Close Button for Mobile */}
+             
+            {selectedFiles.length > 0 ? (
+              <>
+            <div className="flex justify-between p-6 text-center border-b">
+              <h1 className="tool-heading text-xl font-semibold">HTML to PDF</h1>
+
               <div className="sm:hidden p-4 flex justify-end">
                 <button onClick={() => setShowSidebar(false)}>
                   <FaTimesCircle className="text-red-500 text-2xl" />
                 </button>
               </div>
-            {selectedFiles.length > 0 ? (
-              <>
-            <div className="p-6 text-center border-b">
-              <h1 className="tool-heading text-xl font-semibold">HTML to PDF</h1>
             </div>
 
             <div className="p-6">
@@ -338,40 +343,40 @@ function HtmltoPDF({ files = [], url = [] }) {
                 bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
                 w-[300px] sm:w-[350px]
                 fixed top-0 right-0 h-screen z-50
-                ${showSidebar ? 'translate-x-0  mt-8 pt-6' : 'translate-x-full'}
+                ${showSidebar ? 'translate-x-0  z-[1050]' : 'translate-x-full'}
                 sm:relative sm:translate-x-0 sm:flex
                 scrollbar-red overflow-y-auto max-h-screen
               `}
             >
-              {/* Close Button for Mobile */}
+             
+            {setUrlData ? (
+              <>
+            <div className="flex justify-between p-6 text-center border-b">
+              <h1 className="tool-heading text-xl font-semibold">HTML to PDF</h1>
+
               <div className="sm:hidden p-4 flex justify-end">
                 <button onClick={() => setShowSidebar(false)}>
                   <FaTimesCircle className="text-red-500 text-2xl" />
                 </button>
               </div>
-            {setUrlData ? (
-              <>
-            <div className="p-6 text-center border-b">
-              <h1 className="tool-heading text-xl font-semibold">HTML to PDF</h1>
             </div>
 
             <div className="p-6">
               <h3 className="text-lg font-semibold">Website Url</h3>
               <input
-                    type="url"
-                    name="html_url"
-                    placeholder="https://example.com"
-                    value={urlData}
-                    onChange={handleChange}
-                    className="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500 outline-none"
-                  />
-
+                type="url"
+                name="html_url"
+                placeholder="https://example.com"
+                value={urlData}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500 outline-none"
+              />
             </div>
 
             <div className="p-6">
               <h3 className="text-lg font-semibold mb-2">PDF Options</h3>
 
-              <label className="block mb-1">Orientation</label>
+              <label className="block mb-1 text-left font-semibold">Orientation</label>
               <select
                 name="orientation"
                 className="w-full mb-4 border rounded px-3 py-2"
@@ -381,7 +386,7 @@ function HtmltoPDF({ files = [], url = [] }) {
                 <option value="landscape">Landscape</option>
               </select>
 
-              <label className="block mb-1">Screen Size</label>
+              <label className="block mb-1 text-left font-semibold">Screen Size</label>
               <select
                 name="screen_size"
                 className="w-full mb-4 border rounded px-3 py-2"
@@ -392,7 +397,7 @@ function HtmltoPDF({ files = [], url = [] }) {
                 <option value="375x667">Mobile (375x667)</option>
               </select>
 
-              <label className="block mb-1">Page Size</label>
+              <label className="block mb-1 text-left font-semibold">Page Size</label>
               <select
                 name="page_size"
                 className="w-full mb-4 border rounded px-3 py-2"
@@ -403,7 +408,7 @@ function HtmltoPDF({ files = [], url = [] }) {
                 <option value="Legal">Legal</option>
               </select>
 
-              <label className="block mb-1">Margins</label>
+              <label className="block mb-1 text-left font-semibold">Margins</label>
               <select
                 name="margin"
                 className="w-full mb-4 border rounded px-3 py-2"
@@ -444,6 +449,11 @@ function HtmltoPDF({ files = [], url = [] }) {
 
                 {/* Overlay arrow + message */}
                 <div className="relative z-10 text-center text-white">
+                  <div className="sm:hidden p-4 flex justify-center">
+                    <button onClick={() => setShowSidebar(false)}>
+                      <FaTimesCircle className="text-white text-4xl" />
+                    </button>
+                  </div>
                   <p className="font-semibold text-sm mb-2">No file selected.</p>
                   <div className="flex justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="75" height="66" viewBox="0 0 150 132">

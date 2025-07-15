@@ -16,6 +16,7 @@ import LoginModal from '../../auth/LoginModal';
 import { useConfig } from '../../../ConfigContext';
 import PaymentModal from '../../auth/PaymentModal';
 import FileLimitPrompt from '../../auth/FileLimitPrompt';
+import VerifyOtpModal from '../../auth/VerifyOtpModal';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -57,6 +58,10 @@ function RotateGeneratedPDF({ files = [] }) {
       confirm_password: '',
     });
   const context = useConfig();
+  const login = context?.login;
+  const register = context?.register;
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
   useEffect(() => {
     selectedFiles.forEach((file, index) => {
@@ -170,66 +175,66 @@ function RotateGeneratedPDF({ files = [] }) {
   }, [files, access_token]);
 
   const handleFileChange = (e) => {
-  const newFiles = Array.from(e.target.files);
+    const newFiles = Array.from(e.target.files);
 
-  const totalFiles = selectedFiles.length + newFiles.length;
+    const totalFiles = selectedFiles.length + newFiles.length;
 
-  // If total exceeds 1 and user not logged in, block and show modal
-  if (totalFiles > 1 && !access_token) {
-    setShowModal(true);
-    return;
-  }
-
-  if (totalFiles > 1 && access_token) {
-      let currentUserDetails = context?.currentUser;
-
-        // Fallback to cookie if context is empty or invalid
-        if (!currentUserDetails || typeof currentUserDetails !== 'object' || Array.isArray(currentUserDetails) || Object.keys(currentUserDetails).length === 0) {
-          try {
-            const cookieUser = Cookies.get('current_user');
-
-            if (cookieUser) {
-              const parsed = JSON.parse(decodeURIComponent(cookieUser));
-
-              // Check if it's a non-empty object
-              if (
-                parsed &&
-                typeof parsed === 'object' &&
-                !Array.isArray(parsed) &&
-                Object.keys(parsed).length > 0
-              ) {
-                currentUserDetails = parsed;
-              } else {
-                currentUserDetails = null;
-              }
-            }
-          } catch (error) {
-            console.error("Error parsing current_user from cookies:", error);
-            currentUserDetails = null;
-          }
-        }
-
-        const paymentDetails = currentUserDetails?.payment_details;
-
-        if (!paymentDetails || paymentDetails.length === 0) {
-          setShowPaymentModal(true);
-        } else {
-          const latestPayment = [...paymentDetails].sort(
-            (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
-          )[0];
-
-          const isPaid =
-            latestPayment?.transaction_status === 'completed' &&
-            latestPayment?.plan_type !== 'Free';
-            setShowPaymentModal(!isPaid);
-        }
+    // If total exceeds 1 and user not logged in, block and show modal
+    if (totalFiles > 1 && !access_token) {
+      setShowModal(true);
+      return;
     }
 
+    if (totalFiles > 1 && access_token) {
+        let currentUserDetails = context?.currentUser;
+
+          // Fallback to cookie if context is empty or invalid
+          if (!currentUserDetails || typeof currentUserDetails !== 'object' || Array.isArray(currentUserDetails) || Object.keys(currentUserDetails).length === 0) {
+            try {
+              const cookieUser = Cookies.get('current_user');
+
+              if (cookieUser) {
+                const parsed = JSON.parse(decodeURIComponent(cookieUser));
+
+                // Check if it's a non-empty object
+                if (
+                  parsed &&
+                  typeof parsed === 'object' &&
+                  !Array.isArray(parsed) &&
+                  Object.keys(parsed).length > 0
+                ) {
+                  currentUserDetails = parsed;
+                } else {
+                  currentUserDetails = null;
+                }
+              }
+            } catch (error) {
+              console.error("Error parsing current_user from cookies:", error);
+              currentUserDetails = null;
+            }
+          }
+
+          const paymentDetails = currentUserDetails?.payment_details;
+
+          if (!paymentDetails || paymentDetails.length === 0) {
+            setShowPaymentModal(true);
+          } else {
+            const latestPayment = [...paymentDetails].sort(
+              (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+            )[0];
+
+            const isPaid =
+              latestPayment?.transaction_status === 'completed' &&
+              latestPayment?.plan_type !== 'Free';
+              setShowPaymentModal(!isPaid);
+          }
+      }
 
 
-  setSelectedFiles((prev) => [...prev, ...newFiles]);
-  setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
-};
+
+    setSelectedFiles((prev) => [...prev, ...newFiles]);
+    setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
+  };
 
 const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -265,70 +270,38 @@ const handleChange = (e) => {
   }
 
 
+
   const handleSubmit = async () => {
-    setShowModal(false);
-
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json'
-        },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          password: form.password,
-          password_confirmation: form.confirm_password,
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        Cookies.set("access_token", data.access_token, { expires: 30 });
-        Cookies.set("user_email", data?.user?.email, { expires: 30 });
-
-
-      }
+      const message = await register(form.name, form.email, form.password, form.confirm_password);
+      toast.success(message);
+      setShowModal(false);
+      setRegisteredEmail(form.email); // Save email for OTP
+      setShowOtpModal(true);
     } catch (error) {
-      console.error("Registration error:", error);
-      
-      toast.error("An error occurred during registration.");
+      console.log("❌ Caught error in handleSubmit:", error.message); // ADD THIS
+      toast.error(error.message || "Something went wrong");
     }
   };
 
+
   const handleLogin = async () => {
-    setShowLoginModal(false);
     try {
-          const loginResponse = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}login`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Accept: 'application/json'
-            },
-            body: JSON.stringify({
-              email: form.email,
-              password: form.password,
-            })
-          });
-
-          const loginData = await loginResponse.json();
-
-          if (loginResponse.ok) {
-            Cookies.set("access_token", loginData?.access_token, { expires: 30 });
-            Cookies.set("user_email", loginData?.user?.email, { expires: 30 });
-
-          } else {
-            toast.error("Login failed. Try again later.");
-          }
-      } catch (error) {
-        console.error("Login error:", error);
-        toast.error("An error occurred during registration.");
+      const message = await login(form.email, form.password);
+      toast.success(message);
+      setShowLoginModal(false);
+    } catch (err) {
+      toast.error(err.message);
+      setShowLoginModal(false);
     }
-  }
+  };
+
+
 
   const Convert = async () => {
+    setShowLoginModal(false);
+    setShowModal(false);
+    setShowPaymentModal(false);
   if (!selectedFiles.length) {
     alert("Please add at least one .doc/.docx file.");
     return;
@@ -340,23 +313,51 @@ const handleChange = (e) => {
     return;
   }
 
-  // If multiple files, check payment or show prompt
-  const paymentDetails = context?.currentUser?.payment_details;
+   if (selectedFiles.length > 1 && access_token) {
+      let currentUserDetails = context?.currentUser;
 
-  const latestPayment =
-    Array.isArray(paymentDetails) && paymentDetails.length > 0
-      ? [...paymentDetails].sort((a, b) => new Date(b.payment_date) - new Date(a.payment_date))[0]
-      : null;
+        // Fallback to cookie if context is empty or invalid
+        if (!currentUserDetails || typeof currentUserDetails !== 'object' || Array.isArray(currentUserDetails) || Object.keys(currentUserDetails).length === 0) {
+          try {
+            const cookieUser = Cookies.get('current_user');
 
-  const hasPayment =
-    latestPayment?.transaction_status === "completed" &&
-    latestPayment?.plan_type !== "Free";
+            if (cookieUser) {
+              const parsed = JSON.parse(decodeURIComponent(cookieUser));
 
-  if (hasPayment) {
-    await convertFiles(); // Allow multi-file
-  } else {
-    setShowFileLimitPrompt(true); // Show upgrade modal
-  }
+              // Check if it's a non-empty object
+              if (
+                parsed &&
+                typeof parsed === 'object' &&
+                !Array.isArray(parsed) &&
+                Object.keys(parsed).length > 0
+              ) {
+                currentUserDetails = parsed;
+              } else {
+                currentUserDetails = null;
+              }
+            }
+          } catch (error) {
+            console.error("Error parsing current_user from cookies:", error);
+            currentUserDetails = null;
+          }
+        }
+
+        const paymentDetails = currentUserDetails?.payment_details;
+
+        if (!paymentDetails || paymentDetails.length === 0) {
+          setShowFileLimitPrompt(true);
+        } else {
+          const latestPayment = [...paymentDetails].sort(
+            (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+          )[0];
+
+          const isPaid =
+            latestPayment?.transaction_status === 'completed' &&
+            latestPayment?.plan_type !== 'Free';
+
+          await convertFiles();
+        }
+    }
 };
 
 
@@ -364,6 +365,8 @@ const convertFiles = async () => {
   setShowFileLimitPrompt(false);
   setIsConverting(true);
   setConversionDone(false);
+  setShowPaymentModal(false);
+
 
   const updatedStatus = new Array(selectedFiles.length).fill("Converting...");
     setConversionStatus(updatedStatus);
@@ -436,6 +439,17 @@ const handleRemoveFile = (indexToRemove) => {
             handleChange={handleChange}
             handleLoginRedirect={handleLoginRedirect}
             closeModal={closeModal}
+          />
+        )}
+
+
+         {showOtpModal && (
+          <VerifyOtpModal
+            email={registeredEmail}
+            onSuccess={() => {
+              toast.success("Verified and logged in");
+              setShowOtpModal(false);
+            }}
           />
         )}
 
@@ -530,9 +544,9 @@ const handleRemoveFile = (indexToRemove) => {
               {selectedFiles.map((file, index) => (
 
 
-                <div key={index} className="bg-white p-4 rounded-xl shadow-lg w-[180px]">
+                <div key={index} className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center w-40 relative group">
                   <button
-                    className="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                    className="absolute top-2 right-2 text-red-500 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
                     onClick={() => handleRemoveFile(index)}
                     title="Remove file"
                   >
@@ -573,21 +587,22 @@ const handleRemoveFile = (indexToRemove) => {
               bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
               w-[300px] sm:w-[350px]
               fixed top-0 right-0 h-screen z-50
-              ${showSidebar ? 'translate-x-0 mt-8 pt-6' : 'translate-x-full'}
+              ${showSidebar ? 'translate-x-0 z-[1050]' : 'translate-x-full'}
               sm:relative sm:translate-x-0 sm:flex
               scrollbar-red overflow-y-auto max-h-screen
             `}
           >
-            {/* Close Button for Mobile */}
-            <div className="sm:hidden p-4 flex justify-end">
-              <button onClick={() => setShowSidebar(false)}>
-                <FaTimesCircle className="text-red-500 text-2xl" />
-              </button>
-            </div>
+           
               {selectedFiles.length > 0 ? (
               <>
-            <div className="p-6 text-center border-b">
+            <div className="flex justify-between p-6 text-center border-b">
               <h1 className="tool-heading text-xl font-semibold">Rotate PDF</h1>
+              <div className="sm:hidden p-4 flex justify-end">
+                <button onClick={() => setShowSidebar(false)}>
+                  <FaTimesCircle className="text-red-500 text-2xl" />
+                </button>
+              </div>
+
             </div>
             <div className="p-6">
               <label className="block font-medium text-gray-700 mb-2"> Rotatie Pages:</label>
@@ -635,6 +650,11 @@ const handleRemoveFile = (indexToRemove) => {
 
                 {/* Overlay arrow + message */}
                 <div className="relative z-10 text-center text-white">
+                  <div className="sm:hidden p-4 flex justify-center">
+                    <button onClick={() => setShowSidebar(false)}>
+                      <FaTimesCircle className="text-white text-4xl" />
+                    </button>
+                  </div>
                   <p className="font-semibold text-sm mb-2">No file selected.</p>
                   <div className="flex justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="75" height="66" viewBox="0 0 150 132">

@@ -39,7 +39,7 @@ function ExcelFile() {
               Select Excel file
               <input
                 type="file"
-                accept=".xls,.xlsx"
+                accept=".xlsx"
                 multiple
                 onChange={handleFileChange}
                 className="hidden"

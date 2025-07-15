@@ -44,11 +44,18 @@ const isDesktop = screenWidth > 974;
   }, [token]);
 
   const handleLogout = () => {
-    Cookies.remove('access_token');
-    Cookies.remove('current_user');
-    setIsAuthenticated(false);
-    navigate('/login');
+  Cookies.remove('access_token');
+  Cookies.remove('current_user');
+  localStorage.clear();
+  setIsAuthenticated(false);
+
+  // ✅ Check if URL includes '-pdf'
+  if (window.location.pathname.includes('-pdf')) {
+    window.history.back(); // Go back to previous page
+  } else {
+    navigate('/login'); // Redirect to login
   }
+};
 
   const navItems = [
       {
@@ -307,14 +314,14 @@ const isDesktop = screenWidth > 974;
                   <Link
                     to="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center px-4 py-2 rounded-md border border-red-600 text-red-600 hover:bg-red-50 font-medium"
+                    className="w-full text-center px-4 py-2 mb-2 rounded-md border border-red-600 text-red-600 hover:bg-red-50 font-medium"
                   >
                     Login
                   </Link>
                   <Link
                     to="/signup"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full text-center px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 font-medium ml-2"
+                    className="w-full text-center px-4 py-2 mb-2 rounded-md bg-red-600 text-white hover:bg-red-700 font-medium ml-2"
                   >
                     Sign up
                   </Link>
@@ -323,6 +330,7 @@ const isDesktop = screenWidth > 974;
                 <div className="py-6"></div>
                 </>
               ) : (
+              <>
                 <button
                   onClick={() => {
                     Cookies.remove("access_token");
@@ -331,10 +339,12 @@ const isDesktop = screenWidth > 974;
                     navigate("/login");
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full text-left px-4 py-2 mt-2 text-sm text-red-600 hover:text-red-800"
+                  className="w-full text-center px-4 py-2 rounded-md mt-2 text-xl border border-red-600 mb-2 text-red-600 hover:text-red-800"
                 >
                   Logout
                 </button>
+                <div className="py-6"></div>
+              </>
               )}
             </div>
         </div>

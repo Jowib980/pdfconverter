@@ -219,21 +219,22 @@ function SplitGeneratedPDF({ files = [] }) {
                 bg-white border-l border-gray-200 flex flex-col justify-between transition-transform duration-300 ease-in-out
                 w-[300px] sm:w-[350px]
                 fixed top-0 right-0 h-screen z-50
-                ${showSidebar ? 'translate-x-0 mt-8 pt-6' : 'translate-x-full'}
+                ${showSidebar ? 'translate-x-0 z-[1050]' : 'translate-x-full'}
                 sm:relative sm:translate-x-0 sm:flex
                 scrollbar-red overflow-y-auto max-h-screen
               `}
             >
-              {/* Close Button for Mobile */}
-              <div className="sm:hidden p-4 flex justify-end">
-                <button onClick={() => setShowSidebar(false)}>
-                  <FaTimesCircle className="text-red-500 text-2xl" />
-                </button>
-              </div>
+              
               {selectedFiles.length > 0 ? (
                 <>
-              <div className="p-6 text-center border-b">
+              <div className="flex justify-between p-6 text-center border-b">
                 <h1 className="tool-heading text-xl font-semibold">Split</h1>
+
+                <div className="sm:hidden p-4 flex justify-end">
+                  <button onClick={() => setShowSidebar(false)}>
+                    <FaTimesCircle className="text-red-500 text-2xl" />
+                  </button>
+                </div>
               </div>
               <div className="p-6">
                 <button
@@ -261,6 +262,11 @@ function SplitGeneratedPDF({ files = [] }) {
 
                 {/* Overlay arrow + message */}
                 <div className="relative z-10 text-center text-white">
+                  <div className="sm:hidden p-4 flex justify-center">
+                    <button onClick={() => setShowSidebar(false)}>
+                      <FaTimesCircle className="text-white text-4xl" />
+                    </button>
+                  </div>
                   <p className="font-semibold text-sm mb-2">No file selected.</p>
                   <div className="flex justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="75" height="66" viewBox="0 0 150 132">
