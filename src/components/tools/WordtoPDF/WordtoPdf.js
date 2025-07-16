@@ -110,7 +110,7 @@ function WordtoPdf({ files = [] }) {
                   navigate('/plans');
                 }, 5000);
               } else {
-                setShowPaymentModal(false);
+                setShowPaymentModal(true);
               }
             } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
             
@@ -120,7 +120,7 @@ function WordtoPdf({ files = [] }) {
                   navigate('/plans');
                 }, 5000);
               } else {
-                setShowPaymentModal(false);
+                setShowPaymentModal(true);
               }
             } else {
               // Paid user
@@ -193,7 +193,7 @@ function WordtoPdf({ files = [] }) {
                   navigate('/plans');
                 }, 5000);
               } else {
-                setShowPaymentModal(false);
+                setShowPaymentModal(true);
               }
             } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
             
@@ -203,7 +203,7 @@ function WordtoPdf({ files = [] }) {
                   navigate('/plans');
                 }, 5000);
               } else {
-                setShowPaymentModal(false);
+                setShowPaymentModal(true);
               }
             } else {
               // Paid user
@@ -345,7 +345,7 @@ const handleChange = (e) => {
                   navigate('/plans');
                 }, 5000);
               } else {
-                await convertFiles();
+                setShowFileLimitPrompt(true);
               }
             } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
             
@@ -355,7 +355,7 @@ const handleChange = (e) => {
                   navigate('/plans');
                 }, 5000);
               } else {
-                await convertFiles();
+                setShowFileLimitPrompt(true);
               }
             } else {
               // Paid user
