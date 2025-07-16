@@ -85,8 +85,9 @@ const token = Cookies.get("access_token");
     <ToastContainer />
 
     {loading ? (
-
-      <Loader />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-70">
+          <Loader />
+        </div>
       ): (
 
       <div className="grid grid-cols-1 md:grid-cols-12 w-full max-w-6xl bg-white shadow-lg rounded-lg overflow-hidden">
