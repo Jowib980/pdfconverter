@@ -233,18 +233,18 @@ const handleChange = (e) => {
 
 
   const Convert = async () => {
-  if (!selectedFiles.length) {
-    alert("Please add at least one .doc/.docx file.");
-    return;
-  }
+    if (!selectedFiles.length) {
+      alert("Please add at least one .doc/.docx file.");
+      return;
+    }
 
-  // Always allow 1 file without prompt
-  if (selectedFiles.length === 1) {
-    await convertFiles();
-    return;
-  }
+    // Always allow 1 file without prompt
+    if (selectedFiles.length === 1) {
+      await convertFiles();
+      return;
+    }
 
-  if(selectedFiles.length > 1 && !access_token) {
+    if(selectedFiles.length > 1 && !access_token) {
       setShowFileLimitPrompt(true);
       return;
     }

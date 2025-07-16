@@ -102,7 +102,6 @@ export const ConfigProvider = ({ children }) => {
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (!response.ok) {
         if (response.status === 422 && data.errors) {
@@ -121,6 +120,8 @@ export const ConfigProvider = ({ children }) => {
 
     localStorage.setItem("access_token", data.access_token);
 
+      console.log("OTP response user:", data?.user);
+      await savePayment(data?.user);
 
       await fetchCurrentUser();
 
@@ -165,12 +166,12 @@ export const ConfigProvider = ({ children }) => {
         // ✅ Safely store user
         const user = data.user;
         setCurrentUser(user);
-
         Cookies.set("current_user", JSON.stringify(user), {
           expires: 1,
           sameSite: 'Lax',  // ensure compatibility
         });
 
+        Cookies.set('roles', user?.roles[0]?.name)
 
         return user;
 
@@ -200,6 +201,52 @@ export const ConfigProvider = ({ children }) => {
     }
   };
 
+  const savePayment = async (user) => {
+    if (!user) {
+      console.log("❌ savePayment called with null user");
+      return;
+    }
+
+    console.log("✅ savePayment called with:", user); // <-- Confirm it gets called
+
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_API_URL}save-payment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user?.id,
+          payer_email: user?.email,
+          plan_type: 'Free',
+          plan_amount: '0',
+          transaction_id: '',
+          transaction_status: '',
+          payment_date: '',
+          payer_id: '',
+          payer_name: user?.name,
+          gateway: '',
+          currency: '',
+          raw_response: ''
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.log("❌ Failed to save payment:", result);
+      } else {
+        console.log("✅ Payment saved successfully:", result);
+      }
+
+      Cookies.remove('current_user');
+    } catch (err) {
+      console.error("🔥 Error saving payment:", err);
+    }
+  };
+
+
   useEffect(() => {
 
     if (!apiCalledRef.current && gateways.length === 0) {
@@ -223,7 +270,7 @@ export const ConfigProvider = ({ children }) => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <ConfigContext.Provider value={{ config, gateways, currentUser, login, register, verifyOtp }}>
+    <ConfigContext.Provider value={{ config, gateways, currentUser, login, register, verifyOtp, savePayment, fetchCurrentUser }}>
       {children}
     </ConfigContext.Provider>
   );

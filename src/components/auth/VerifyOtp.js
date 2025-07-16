@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
+import { useConfig } from '../../ConfigContext';
 
 function VerifyOtp() {
   const [otp, setOtp] = useState('');
@@ -10,6 +11,8 @@ function VerifyOtp() {
   const location = useLocation();
   const navigate = useNavigate();
   const email = location.state?.email;
+  const context = useConfig();
+  const savePayment = context?.savePayment;
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -37,12 +40,22 @@ function VerifyOtp() {
       toast.success(data.message);
       Cookies.set('access_token', data.access_token);
       Cookies.set('role', data.role);
+      await handlePlan(data.user);
       navigate('/');
 
     } catch (error) {
       toast.error(error.message || 'Something went wrong.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handlePlan = async (user) => {
+    try {
+      const message = await savePayment(user);
+      console.log("Add free plan");
+    } catch (err) {
+      console.error(err.message);
     }
   };
 

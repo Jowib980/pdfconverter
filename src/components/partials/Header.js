@@ -3,17 +3,28 @@ import { Link, useNavigate } from "react-router-dom";
 import logo from '../../assets/images/logo.png';
 import { FaBars, FaTimes, FaCaretDown } from 'react-icons/fa';
 import Cookies from 'js-cookie';
+import { useConfig } from '../../ConfigContext';
 
 function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const token = Cookies.get("access_token");
-  const userString = Cookies.get("current_user");
-  let user = null;
-  if (userString) {
-    user = JSON.parse(userString);
+const token = Cookies.get("access_token");
+const context = useConfig();
 
+let user = null;
+const cookieUser = Cookies.get("current_user");
+
+if (cookieUser && typeof cookieUser === "string" && cookieUser.trim() !== "") {
+  try {
+    user = JSON.parse(cookieUser);
+  } catch (err) {
+    console.error("Invalid JSON in current_user cookie:", err);
   }
-  const role = Cookies.get('role');
+} else if (context?.currentUser && typeof context.currentUser === "object") {
+  user = context.currentUser;
+}
+
+const role = Cookies.get("role");
+
   
 
   const navigate = useNavigate();

@@ -62,6 +62,7 @@ function WordtoPdf({ files = [] }) {
         setShowModal(true);
       }
 
+
       if (files.length > 1 && access_token) {
       let currentUserDetails = context?.currentUser;
 
@@ -92,23 +93,45 @@ function WordtoPdf({ files = [] }) {
         }
 
         const paymentDetails = currentUserDetails?.payment_details;
+          const convertedCount = parseInt(currentUserDetails?.converted_documents_count ?? 0);
 
-        if (!paymentDetails || paymentDetails.length === 0) {
-          setShowPaymentModal(true);
-        } else {
-          const latestPayment = [...paymentDetails].sort(
-            (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
-          )[0];
+          if (!paymentDetails || paymentDetails.length === 0) {
+            setShowPaymentModal(true);
+          } else {
+            const latestPayment = [...paymentDetails].sort(
+              (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+            )[0];
 
-          const isPaid =
-            latestPayment?.transaction_status === 'completed' &&
-            latestPayment?.plan_type !== 'Free';
+           if (latestPayment?.plan_type === 'Free') {
+            
+              if (convertedCount >= 10) {
+                toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
+                setTimeout(() => {
+                  navigate('/plans');
+                }, 5000);
+              } else {
+                setShowPaymentModal(false);
+              }
+            } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
+            
+              if(convertedCount >= 100) {
+                toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
+                setTimeout(() => {
+                  navigate('/plans');
+                }, 5000);
+              } else {
+                setShowPaymentModal(false);
+              }
+            } else {
+              // Paid user
+              setShowPaymentModal(false);
+            }
+          }
 
-          setShowPaymentModal(!isPaid);
         }
       }
 
-    }
+    
   }, [files, access_token]);
 
   const handleFileChange = (e) => {
@@ -122,7 +145,8 @@ function WordtoPdf({ files = [] }) {
       return;
     }
 
-    if (totalFiles > 1 && access_token) {
+
+      if (totalFiles > 1 && access_token) {
         let currentUserDetails = context?.currentUser;
 
           // Fallback to cookie if context is empty or invalid
@@ -152,6 +176,7 @@ function WordtoPdf({ files = [] }) {
           }
 
           const paymentDetails = currentUserDetails?.payment_details;
+          const convertedCount = parseInt(currentUserDetails?.converted_documents_count ?? 0);
 
           if (!paymentDetails || paymentDetails.length === 0) {
             setShowPaymentModal(true);
@@ -160,16 +185,36 @@ function WordtoPdf({ files = [] }) {
               (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
             )[0];
 
-            const isPaid =
-              latestPayment?.transaction_status === 'completed' &&
-              latestPayment?.plan_type !== 'Free';
-              setShowPaymentModal(!isPaid);
+           if (latestPayment?.plan_type === 'Free') {
+            
+              if (convertedCount >= 10) {
+                toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
+               setTimeout(() => {
+                  navigate('/plans');
+                }, 5000);
+              } else {
+                setShowPaymentModal(false);
+              }
+            } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
+            
+              if(convertedCount >= 100) {
+                toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
+                setTimeout(() => {
+                  navigate('/plans');
+                }, 5000);
+              } else {
+                setShowPaymentModal(false);
+              }
+            } else {
+              // Paid user
+              setShowPaymentModal(false);
+            }
           }
       }
 
-
     setSelectedFiles((prev) => [...prev, ...newFiles]);
     setConversionStatus((prev) => [...prev, ...new Array(newFiles.length).fill("⏳ Pending")]);
+  
   };
 
 const handleChange = (e) => {
@@ -236,6 +281,7 @@ const handleChange = (e) => {
     setShowLoginModal(false);
     setShowModal(false);
     setShowPaymentModal(false);
+
     if (!selectedFiles.length) {
       alert("Please add at least one .doc/.docx file.");
       return;
@@ -247,7 +293,7 @@ const handleChange = (e) => {
       return;
     }
 
-    if(selectedFiles.length > 1 && !access_token) {
+    if (selectedFiles.length > 1 && !access_token) {
       setShowFileLimitPrompt(true);
       return;
     }
@@ -255,49 +301,69 @@ const handleChange = (e) => {
     if (selectedFiles.length > 1 && access_token) {
       let currentUserDetails = context?.currentUser;
 
-        // Fallback to cookie if context is empty or invalid
-        if (!currentUserDetails || typeof currentUserDetails !== 'object' || Array.isArray(currentUserDetails) || Object.keys(currentUserDetails).length === 0) {
-          try {
-            const cookieUser = Cookies.get('current_user');
+      // Fallback to cookie if context is empty or invalid
+      if (
+        !currentUserDetails ||
+        typeof currentUserDetails !== 'object' ||
+        Array.isArray(currentUserDetails) ||
+        Object.keys(currentUserDetails).length === 0
+      ) {
+        try {
+          const cookieUser = Cookies.get('current_user');
 
-            if (cookieUser) {
-              const parsed = JSON.parse(decodeURIComponent(cookieUser));
-
-              // Check if it's a non-empty object
-              if (
-                parsed &&
-                typeof parsed === 'object' &&
-                !Array.isArray(parsed) &&
-                Object.keys(parsed).length > 0
-              ) {
-                currentUserDetails = parsed;
-              } else {
-                currentUserDetails = null;
-              }
+          if (cookieUser) {
+            const parsed = JSON.parse(decodeURIComponent(cookieUser));
+            if (
+              parsed &&
+              typeof parsed === 'object' &&
+              !Array.isArray(parsed) &&
+              Object.keys(parsed).length > 0
+            ) {
+              currentUserDetails = parsed;
             }
-          } catch (error) {
-            console.error("Error parsing current_user from cookies:", error);
-            currentUserDetails = null;
+          }
+        } catch (error) {
+          console.error("Error parsing current_user from cookies:", error);
+        }
+      }
+
+          const paymentDetails = currentUserDetails?.payment_details;
+          const convertedCount = parseInt(currentUserDetails?.converted_documents_count ?? 0);
+
+          if (!paymentDetails || paymentDetails.length === 0) {
+            setShowPaymentModal(true);
+          } else {
+            const latestPayment = [...paymentDetails].sort(
+              (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
+            )[0];
+
+           if (latestPayment?.plan_type === 'Free') {
+            
+              if (convertedCount >= 10) {
+                toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
+                setTimeout(() => {
+                  navigate('/plans');
+                }, 5000);
+              } else {
+                await convertFiles();
+              }
+            } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
+            
+              if(convertedCount >= 100) {
+                toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
+                setTimeout(() => {
+                  navigate('/plans');
+                }, 5000);
+              } else {
+                await convertFiles();
+              }
+            } else {
+              // Paid user
+              await convertFiles();
+            }
           }
         }
-
-        const paymentDetails = currentUserDetails?.payment_details;
-
-        if (!paymentDetails || paymentDetails.length === 0) {
-          setShowFileLimitPrompt(true);
-        } else {
-          const latestPayment = [...paymentDetails].sort(
-            (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
-          )[0];
-
-          const isPaid =
-            latestPayment?.transaction_status === 'completed' &&
-            latestPayment?.plan_type !== 'Free';
-
-          await convertFiles();
-        }
-    }
-};
+  };
 
 
 const convertFiles = async () => {

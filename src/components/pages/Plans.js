@@ -16,6 +16,7 @@ function Plans() {
   const apiCalledRef = useRef(false);
   const context = useConfig();
   const [loading, setLoading] = useState(false);
+  const CurrentUserApi = context?.fetchCurrentUser;
 
   useEffect(() => {
     let currentUserDetails = null;
@@ -45,6 +46,15 @@ function Plans() {
         }
       } catch (error) {
         console.error("Error parsing current_user from cookies:", error);
+      }
+    }
+
+      if (!currentUserDetails && typeof CurrentUserApi === 'function') {
+      try {
+        CurrentUserApi(); // Assume this updates context.currentUser
+        currentUserDetails = context?.currentUser; // Re-read updated context
+      } catch (err) {
+        console.error("Failed to fetch current user from API:", err);
       }
     }
 

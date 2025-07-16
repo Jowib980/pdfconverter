@@ -86,7 +86,7 @@ function SplitGeneratedPDF({ files = [] }) {
 
   const Convert = async () => {
     if (!selectedFiles.length) {
-      alert("Please add at least one .pdf file.");
+      toast.error("Please add at least one .pdf file.");
       return;
     }
 
