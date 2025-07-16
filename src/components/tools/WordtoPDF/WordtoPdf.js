@@ -203,7 +203,7 @@ function WordtoPdf({ files = [] }) {
                   navigate('/plans');
                 }, 5000);
               } else {
-                setShowPaymentModal(true);
+                setShowPaymentModal(false);
               }
             } else {
               // Paid user
@@ -355,7 +355,7 @@ const handleChange = (e) => {
                   navigate('/plans');
                 }, 5000);
               } else {
-                setShowFileLimitPrompt(true);
+                await convertFiles();
               }
             } else {
               // Paid user
