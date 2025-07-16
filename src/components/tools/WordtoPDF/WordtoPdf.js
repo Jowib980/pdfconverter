@@ -102,7 +102,7 @@ function WordtoPdf({ files = [] }) {
               (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
             )[0];
 
-           if (latestPayment?.plan_type === 'Free') {
+            if (latestPayment?.plan_type === 'Free') {
             
               if (convertedCount >= 10) {
                 toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
@@ -120,7 +120,7 @@ function WordtoPdf({ files = [] }) {
                   navigate('/plans');
                 }, 5000);
               } else {
-                setShowPaymentModal(true);
+                setShowPaymentModal(false);
               }
             } else {
               // Paid user
