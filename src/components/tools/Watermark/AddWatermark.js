@@ -118,6 +118,7 @@ function AddWatermark({ files = [] }) {
         }
 
         const paymentDetails = currentUserDetails?.payment_details;
+        const convertedCount = currentUserDetails?.converted_documents_count;
 
         if (!paymentDetails || paymentDetails.length === 0) {
           setShowPaymentModal(true);
@@ -126,11 +127,27 @@ function AddWatermark({ files = [] }) {
             (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
           )[0];
 
-          const isPaid =
-            latestPayment?.transaction_status === 'completed' &&
-            latestPayment?.plan_type !== 'Free';
-
-          setShowPaymentModal(!isPaid);
+          if(latestPayment?.plan_type === 'Free') {
+            if(convertedCount >= 10) {
+              toast.error("You have reached the monthly limit for Free plan. Please upgrade");
+              setTimeout(() => {
+                navigate('/plans');
+              }, 5000);
+            } else {
+              setShowPaymentModal(true);
+            }
+          } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
+            if(convertedCount >= 100) {
+              toast.error("You have reached the monthly limit for Standard plan. Please upgrade");
+              setTimeout(() => {
+                navigate('/plans');
+              }, 5000);
+            } else {
+              setShowPaymentModal(true);
+            }
+          } else {
+            setShowPaymentModal(false);
+          }
         }
       }
 
@@ -178,6 +195,7 @@ function AddWatermark({ files = [] }) {
           }
 
           const paymentDetails = currentUserDetails?.payment_details;
+          const convertedCount = currentUserDetails?.converted_documents_count;
 
           if (!paymentDetails || paymentDetails.length === 0) {
             setShowPaymentModal(true);
@@ -186,10 +204,27 @@ function AddWatermark({ files = [] }) {
               (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
             )[0];
 
-            const isPaid =
-              latestPayment?.transaction_status === 'completed' &&
-              latestPayment?.plan_type !== 'Free';
-              setShowPaymentModal(!isPaid);
+            if(latestPayment?.plan_type === 'Free') {
+              if(convertedCount >= 10) {
+                toast.error("You have reached the monthly limit for Free plan. Please upgrade");
+                setTimeout(() => {
+                  navigate('/plans');
+                }, 5000);
+              } else {
+                setShowPaymentModal(true);
+              }
+            } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
+              if(convertedCount >= 100) {
+                toast.error("You have reached the monthly limit for Standard plan. Please upgrade");
+                setTimeout(() => {
+                  navigate('/plans');
+                }, 5000);
+              } else {
+                setShowPaymentModal(false);
+              }
+            } else {
+              setShowPaymentModal(false);
+            }
           }
       }
 
@@ -424,6 +459,7 @@ const Convert = async () => {
         }
 
         const paymentDetails = currentUserDetails?.payment_details;
+        const convertedCount = currentUserDetails?.converted_documents_count;
 
         if (!paymentDetails || paymentDetails.length === 0) {
           setShowFileLimitPrompt(true);
@@ -432,11 +468,27 @@ const Convert = async () => {
             (a, b) => new Date(b.payment_date) - new Date(a.payment_date)
           )[0];
 
-          const isPaid =
-            latestPayment?.transaction_status === 'completed' &&
-            latestPayment?.plan_type !== 'Free';
-
-          await convertFiles();
+          if(latestPayment?.plan_type === 'Free') {
+            if(convertedCount >= 10) {
+              toast.error("You have reached the monthly limit for Free plan. Please upgrade");
+              setTimeout(() => {
+                navigate('/plans');
+              }, 5000);
+            } else {
+              setShowFileLimitPrompt(true);
+            }
+          } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
+            if(convertedCount >= 100) {
+              toast.error("You have reached the monthly limit for Standard plan. Please upgrade");
+              setTimeout(() => {
+                navigate('/plans');
+              }, 5000);
+            } else {
+              await convertFiles();
+            }
+          } else {
+            await convertFiles();
+          }
         }
     }
 };

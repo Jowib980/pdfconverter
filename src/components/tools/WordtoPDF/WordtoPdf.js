@@ -115,7 +115,7 @@ function WordtoPdf({ files = [] }) {
             } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
             
               if(convertedCount >= 100) {
-                toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
+                toast.error("You have reached the monthly limit for Standard plan. Please upgrade.")
                 setTimeout(() => {
                   navigate('/plans');
                 }, 5000);
@@ -198,7 +198,7 @@ function WordtoPdf({ files = [] }) {
             } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
             
               if(convertedCount >= 100) {
-                toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
+                toast.error("You have reached the monthly limit for Standard plan. Please upgrade.")
                 setTimeout(() => {
                   navigate('/plans');
                 }, 5000);
@@ -350,7 +350,7 @@ const handleChange = (e) => {
             } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
             
               if(convertedCount >= 100) {
-                toast.error("You have reached the monthly limit for Free plan. Please upgrade.")
+                toast.error("You have reached the monthly limit for Standard plan. Please upgrade.")
                 setTimeout(() => {
                   navigate('/plans');
                 }, 5000);
