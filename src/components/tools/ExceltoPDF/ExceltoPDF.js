@@ -186,7 +186,7 @@ function ExceltoPDF({ files = [] }) {
             }
           } else if(latestPayment?.plan_type === 'Standard' && latestPayment?.transaction_status === 'completed') {
             if(convertedCount >= 100) {
-              toast.error("You have reached the monthly limit for Standard Plan. Plase upgrade");
+              toast.error("You have reached the monthly limit for Standard Plan. Please upgrade");
               setTimeout(() => {
                 navigate('/plans');
               }, 5000);

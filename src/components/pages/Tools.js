@@ -188,7 +188,7 @@ function Tools() {
         <h1 className="home-title text-center font-bold py-4">
           Every tool you need to work with PDFs in one place
         </h1>
-        <h2 className="home-subtitle text-center">Every tool you need to use PDFs, at your fingertips. All are 100% FREE and easy to use! Merge, split, compress, convert, rotate, unlock and watermark PDFs with just a few clicks.</h2>
+        <h2 className="home-subtitle text-center">Every tool you need to use PDFs, at your fingertips. All are 100% FREE and easy to use! Merge, split, convert, rotate and watermark PDFs with just a few clicks.</h2>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 p-4 m-4">

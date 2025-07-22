@@ -121,7 +121,7 @@ const isDesktop = screenWidth > 974;
 
   return (
     <header className="header bg-white shadow fixed top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex items-center justify-between">
+      <div className="max-w-7xl h-[60px] mx-auto sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
         <div className="text-xl font-bold text-red-600">
           <Link to="/">
@@ -182,7 +182,7 @@ const isDesktop = screenWidth > 974;
           {isDesktop && (
             <>
               {navItems.map(({ title, url, dropdownGrouped }) => (
-                <div key={url} className="group relative">
+                <div key={url} className="group relative py-4">
                   <Link
                     to={url}
                     className="rounded-lg px-3 py-2 text-slate-700 font-medium hover:text-red-600"
@@ -220,7 +220,7 @@ const isDesktop = screenWidth > 974;
           {/* Auth Section (Always visible) */}
           {!isAuthenticated ? (
             <>
-              <div className="group relative">
+              <div className="group relative py-4">
                 <Link
                   to="/login"
                   className="rounded-lg px-2 py-2 text-slate-700 font-medium hover:text-red-600"
@@ -228,7 +228,7 @@ const isDesktop = screenWidth > 974;
                   Login
                 </Link>
               </div>
-              <div className="group relative">
+              <div className="group relative py-4">
                 <Link
                   to="/signup"
                   className="rounded-lg px-2 py-2 text-white bg-red-600 font-medium hover:bg-red-700"
